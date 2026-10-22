@@ -136,6 +136,8 @@ pub mod end_reason {
 
 /// The client API major version this binding is written against.
 const API_MAJOR: c_ulong = 2;
+/// `MPV_ERROR_OPTION_NOT_FOUND`: this mpv was built without the option.
+const OPTION_NOT_FOUND: c_int = -5;
 
 struct Api {
     client_api_version: unsafe extern "C" fn() -> c_ulong,
@@ -241,6 +243,18 @@ impl Mpv {
         let (name, value) = (cstring(name)?, cstring(value)?);
         // SAFETY: valid handle and NUL-terminated strings that outlive the call.
         self.check(unsafe { (self.api.set_option_string)(self.handle.as_ptr(), name.as_ptr(), value.as_ptr()) })
+    }
+
+    /// Like `set_option`, but an option this mpv was built without isn't an error.
+    /// Returns whether it was set.
+    pub fn set_option_if_built(&self, name: &str, value: &str) -> Result<bool, String> {
+        let (name, value) = (cstring(name)?, cstring(value)?);
+        // SAFETY: as in `set_option`.
+        let code = unsafe { (self.api.set_option_string)(self.handle.as_ptr(), name.as_ptr(), value.as_ptr()) };
+        if code == OPTION_NOT_FOUND {
+            return Ok(false);
+        }
+        self.check(code).map(|()| true)
     }
 
     pub fn initialize(&self) -> Result<(), String> {

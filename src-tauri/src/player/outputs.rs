@@ -16,7 +16,7 @@ use serde::Serialize;
 use tauri::{AppHandle, State};
 
 use super::mpv::Mpv;
-use super::{PlayerState, STREAM_HARDENING};
+use super::{PlayerState, STREAM_HARDENING, set_required};
 
 pub const AUTO: &str = "auto";
 /// More than any real machine has; the rest are ignored.
@@ -124,7 +124,7 @@ pub struct Listing {
 fn list_without_player(app: &AppHandle) -> Result<Vec<Device>, String> {
     let mpv = Mpv::load(&super::libmpv(app)?)?;
     for (name, value) in STREAM_HARDENING.iter().copied().chain([("vo", "null"), ("idle", "yes"), ("terminal", "no")]) {
-        mpv.set_option(name, value).map_err(|e| format!("mpv option {name}: {e}"))?;
+        set_required(&mpv, name, value).map_err(|e| format!("mpv option {name}: {e}"))?;
     }
     mpv.initialize()?;
     read_list(&mpv).ok_or_else(|| "couldn't list sound outputs".into())

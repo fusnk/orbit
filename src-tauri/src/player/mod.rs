@@ -108,6 +108,17 @@ const REQUIRED_OPTIONS: &[(&str, &str)] = &[
     ("hwdec", "auto-safe"),
 ];
 
+/// Options that exist only in an mpv built with scripting: the script loader, and
+/// the on-screen controller and yt-dlp hook, which are Lua scripts. The macOS
+/// libmpv has no scripting, so it lacks them and can't run any script either;
+/// for these alone, a missing option is as safe as "no".
+const SCRIPTING_ONLY: &[&str] = &["load-scripts", "osc", "ytdl"];
+
+/// Sets an option mpv must have (hardening or required). Only `SCRIPTING_ONLY` ones may be missing.
+pub(crate) fn set_required(mpv: &Mpv, name: &str, value: &str) -> Result<(), String> {
+    if SCRIPTING_ONLY.contains(&name) { mpv.set_option_if_built(name, value).map(drop) } else { mpv.set_option(name, value) }
+}
+
 /// Built-in overlays nothing can open anyway (mpv gets no input); off to save work.
 /// Names vary between mpv versions, so failures here are ignored.
 const OPTIONAL_OPTIONS: &[(&str, &str)] = &[("load-stats-overlay", "no"), ("load-osd-console", "no"), ("load-auto-profiles", "no")];
@@ -468,7 +479,7 @@ impl PlayerState {
         #[cfg(target_os = "linux")]
         mpv.set_option("video-timing-offset", "0")?;
         for (name, value) in STREAM_HARDENING.iter().chain(REQUIRED_OPTIONS) {
-            mpv.set_option(name, value).map_err(|e| format!("mpv option {name}: {e}"))?;
+            set_required(&mpv, name, value).map_err(|e| format!("mpv option {name}: {e}"))?;
         }
         for (name, value) in OPTIONAL_OPTIONS {
             let _ = mpv.set_option(name, value);
@@ -2379,6 +2390,19 @@ mod tests {
             assert!(super::STREAM_HARDENING.contains(&option), "{option:?}");
         }
         assert!(super::STREAM_HARDENING.iter().any(|(n, v)| *n == "stream-lavf-o" && v.contains("protocol_whitelist")));
+    }
+
+    #[test]
+    fn only_scripting_options_may_be_missing_from_mpv() {
+        // The macOS libmpv has no scripting and so no load-scripts, osc or ytdl:
+        // refusing to play without them left video unplayable on a Mac.
+        for name in ["load-scripts", "osc", "ytdl"] {
+            assert!(super::SCRIPTING_ONLY.contains(&name), "{name}");
+        }
+        // Everything else that hardens or is required still has to apply.
+        for (name, _) in super::STREAM_HARDENING.iter().chain(super::REQUIRED_OPTIONS) {
+            assert_eq!(super::SCRIPTING_ONLY.contains(name), ["load-scripts", "osc", "ytdl"].contains(name), "{name}");
+        }
     }
 
     #[test]

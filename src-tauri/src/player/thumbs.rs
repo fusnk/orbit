@@ -12,7 +12,7 @@ use std::time::{Duration, Instant, SystemTime};
 use tauri::{AppHandle, Manager, State};
 
 use super::mpv::{Mpv, event};
-use super::{STREAM_HARDENING, check_stream_url};
+use super::{STREAM_HARDENING, check_stream_url, set_required};
 
 const WIDTH: u32 = 288;
 const WAIT_LOADED: Duration = Duration::from_secs(15);
@@ -130,7 +130,7 @@ pub async fn thumbs_start(app: AppHandle, thumbs: State<'_, Thumbs>, url: String
         // The same hardening as the player: no mpv config or scripts, no
         // yt-dlp, and a remote playlist may not reach local files.
         for (name, value) in STREAM_HARDENING.iter().copied().chain(options) {
-            mpv.set_option(name, value).map_err(|e| format!("preview option {name}: {e}"))?;
+            set_required(&mpv, name, value).map_err(|e| format!("preview option {name}: {e}"))?;
         }
         for name in ["osc", "load-stats-overlay", "load-osd-console", "load-auto-profiles"] {
             let _ = mpv.set_option(name, "no");

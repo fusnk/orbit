@@ -10,7 +10,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 
-use super::super::STREAM_HARDENING;
+use super::super::{STREAM_HARDENING, set_required};
 use super::super::mpv::{Mpv, event};
 use super::vad::{Framer, SAMPLE_RATE};
 
@@ -68,7 +68,7 @@ pub fn energies(library: &Path, cache: &Path, video: &str, aid: Option<u32>, can
             ("ocopy-metadata", "no"),
         ];
         for (name, value) in STREAM_HARDENING.iter().copied().chain(options) {
-            mpv.set_option(name, value).map_err(|_| AudioError::Failed)?;
+            set_required(&mpv, name, value).map_err(|_| AudioError::Failed)?;
         }
         for name in ["osc", "load-stats-overlay", "load-osd-console", "load-auto-profiles"] {
             let _ = mpv.set_option(name, "no");
