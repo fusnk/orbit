@@ -24,12 +24,12 @@ unsafe extern "C" {
 /// `NSWindowBelow`, for `addSubview:positioned:relativeTo:`.
 const BELOW: isize = -1;
 
-/// `objc_msgSend` as a function of the given type.
+/// `objc_msgSend` as a function of the given type. Used inside `unsafe`: the caller
+/// gives the exact argument and return types of the method it sends.
 macro_rules! msg {
-    ($ty:ty) => {{
-        // SAFETY: objc_msgSend is called with the exact argument and return types of the method.
-        unsafe { std::mem::transmute::<unsafe extern "C" fn(), $ty>(objc_msgSend) }
-    }};
+    ($ty:ty) => {
+        std::mem::transmute::<unsafe extern "C" fn(), $ty>(objc_msgSend)
+    };
 }
 
 fn sel(name: &CStr) -> Sel {
