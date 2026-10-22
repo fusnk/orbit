@@ -42,6 +42,26 @@ pub struct EventEndFile {
     pub playlist_entry_id: i64,
 }
 
+/// `mpv_event_log_message` from client.h.
+#[repr(C)]
+pub struct EventLogMessage {
+    pub prefix: *const c_char,
+    pub level: *const c_char,
+    pub text: *const c_char,
+}
+
+/// A string mpv hands out with an event ("" for null).
+///
+/// # Safety
+/// `ptr` is null or a NUL-terminated string valid for this call.
+pub unsafe fn text(ptr: *const c_char) -> String {
+    if ptr.is_null() {
+        return String::new();
+    }
+    // SAFETY: forwarded to the caller.
+    unsafe { CStr::from_ptr(ptr) }.to_string_lossy().into_owned()
+}
+
 /// `mpv_event_start_file` from client.h.
 #[repr(C)]
 pub struct EventStartFile {
@@ -51,6 +71,7 @@ pub struct EventStartFile {
 pub mod event {
     pub const NONE: i32 = 0;
     pub const SHUTDOWN: i32 = 1;
+    pub const LOG_MESSAGE: i32 = 2;
     pub const SET_PROPERTY_REPLY: i32 = 4;
     pub const START_FILE: i32 = 6;
     pub const END_FILE: i32 = 7;
@@ -149,6 +170,7 @@ struct Api {
     set_property_async: unsafe extern "C" fn(*mut Handle, u64, *const c_char, c_int, *mut c_void) -> c_int,
     command: unsafe extern "C" fn(*mut Handle, *mut *const c_char) -> c_int,
     observe_property: unsafe extern "C" fn(*mut Handle, u64, *const c_char, c_int) -> c_int,
+    request_log_messages: unsafe extern "C" fn(*mut Handle, *const c_char) -> c_int,
     wait_event: unsafe extern "C" fn(*mut Handle, c_double) -> *mut Event,
     wakeup: unsafe extern "C" fn(*mut Handle),
     error_string: unsafe extern "C" fn(c_int) -> *const c_char,
@@ -192,7 +214,7 @@ impl Mpv {
             Path::new(env!("ORBIT_SYSTEM_LIBMPV"))
         };
         // SAFETY: loading runs the DLL's initializers; the file is Orbit's own pinned copy.
-        let lib = unsafe { load_library(path) }.map_err(|e| format!("couldn't load libmpv: {e}"))?;
+        let lib = unsafe { load_library(path) }.map_err(|e| format!("couldn't load libmpv: {}", with_cause(&e)))?;
         // SAFETY: the symbol types match client.h for API version 2.x, checked below.
         let api = unsafe {
             Api {
@@ -205,6 +227,7 @@ impl Mpv {
                 set_property_async: *lib.get(b"mpv_set_property_async\0").map_err(|e| e.to_string())?,
                 command: *lib.get(b"mpv_command\0").map_err(|e| e.to_string())?,
                 observe_property: *lib.get(b"mpv_observe_property\0").map_err(|e| e.to_string())?,
+                request_log_messages: *lib.get(b"mpv_request_log_messages\0").map_err(|e| e.to_string())?,
                 wait_event: *lib.get(b"mpv_wait_event\0").map_err(|e| e.to_string())?,
                 wakeup: *lib.get(b"mpv_wakeup\0").map_err(|e| e.to_string())?,
                 error_string: *lib.get(b"mpv_error_string\0").map_err(|e| e.to_string())?,
@@ -296,6 +319,13 @@ impl Mpv {
 
     /// Waits for the next event (`timeout` < 0 waits forever). Only one
     /// thread may call this; the event stays valid until the next call.
+    /// Asks for mpv's own log messages from `min_level` up, as LOG_MESSAGE events.
+    pub fn request_log_messages(&self, min_level: &str) -> Result<(), String> {
+        let level = cstring(min_level)?;
+        // SAFETY: valid handle and a NUL-terminated string that outlives the call.
+        self.check(unsafe { (self.api.request_log_messages)(self.handle.as_ptr(), level.as_ptr()) })
+    }
+
     pub fn wait_event(&self, timeout: f64) -> &Event {
         // SAFETY: never returns null; the event lives until the next wait_event.
         unsafe { &*(self.api.wait_event)(self.handle.as_ptr(), timeout) }
@@ -334,6 +364,15 @@ impl Drop for Mpv {
     }
 }
 
+/// An error with what caused it: libloading keeps the system's reason (dyld's or
+/// Windows') as the source, and its own text alone ("dlopen failed") says nothing.
+fn with_cause(error: &dyn std::error::Error) -> String {
+    match error.source() {
+        Some(cause) => format!("{error}: {cause}"),
+        None => error.to_string(),
+    }
+}
+
 #[cfg(windows)]
 unsafe fn load_library(path: &Path) -> Result<Library, libloading::Error> {
     use libloading::os::windows::{LOAD_LIBRARY_SEARCH_DEFAULT_DIRS, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR, Library as WinLibrary};
@@ -366,5 +405,19 @@ mod loadfile_tests {
         assert_eq!(loadfile_args("u", "replace", "start=5", true), ["loadfile", "u", "replace", "-1", "start=5"]);
         // mpv 0.37 and older: `loadfile <url> [<flags> [<options>]]`.
         assert_eq!(loadfile_args("u", "replace", "start=5", false), ["loadfile", "u", "replace", "start=5"]);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::with_cause;
+
+    #[test]
+    fn a_library_that_wont_load_says_why() {
+        // A Mac build showed only "dlopen failed": the reason dyld gave was dropped.
+        // SAFETY: the file doesn't exist, so nothing is loaded or run.
+        let error = unsafe { libloading::Library::new("/nonexistent/orbit-libmpv-test.dylib") }.unwrap_err();
+        let text = with_cause(&error);
+        assert!(text.contains("orbit-libmpv-test"), "{text}");
     }
 }

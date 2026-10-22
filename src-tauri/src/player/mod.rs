@@ -492,6 +492,9 @@ impl PlayerState {
             let _ = mpv.set_option("sub-fonts-dir", fonts);
         }
         mpv.initialize()?;
+        // mpv's own errors go to Orbit's log: they say why a file failed when its end
+        // reason alone ("something happened") doesn't, e.g. a video output that can't start.
+        let _ = mpv.request_log_messages("error");
         for (id, name, fmt) in OBSERVED {
             mpv.observe(*id, name, *fmt)?;
         }
@@ -558,6 +561,14 @@ fn event_loop(mpv: &Mpv, surface: &Surface, stop: &AtomicBool, app: &AppHandle, 
                 continue;
             }
             event::SHUTDOWN => break,
+            event::LOG_MESSAGE => {
+                // SAFETY: LOG_MESSAGE events carry an mpv_event_log_message whose strings are valid during this event.
+                let (prefix, text) = unsafe {
+                    let msg = &*(ev.data as *const mpv::EventLogMessage);
+                    (mpv::text(msg.prefix), mpv::text(msg.text))
+                };
+                crate::diagnostics::warn(&format!("mpv: [{prefix}] {}", text.trim_end()));
+            }
             event::START_FILE => {
                 // SAFETY: START_FILE events carry an mpv_event_start_file.
                 entry = unsafe { &*(ev.data as *const mpv::EventStartFile) }.playlist_entry_id;
