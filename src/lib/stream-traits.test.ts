@@ -4,7 +4,8 @@ import { otherFilmYear, streamLabels } from './stream-traits';
 vi.mock('./ipc', () => ({ settings: { get: async () => null, set: async () => {} } }));
 
 describe('a source size', () => {
-  it('is written in Orbit’s language', async () => {
+  // The German catalog is compiled on first import; alongside the rest of the suite that alone can pass the time limit.
+  it('is written in Orbit’s language', { timeout: 60_000 }, async () => {
     const { setLanguage } = await import('../i18n');
     await setLanguage('de').catch(() => {});
     try {

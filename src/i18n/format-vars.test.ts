@@ -20,7 +20,8 @@ describe('numbers in strings', () => {
 });
 
 describe('one-decimal numbers (ratings)', () => {
-  it('follow Orbit’s language, not the system’s', async () => {
+  // The German catalog is compiled on first import; alongside the rest of the suite that alone can pass the time limit.
+  it('follow Orbit’s language, not the system’s', { timeout: 60_000 }, async () => {
     await setLanguage('de').catch(() => {});
     expect(formatDecimal(7)).toBe('7,0');
     await setLanguage('en').catch(() => {});

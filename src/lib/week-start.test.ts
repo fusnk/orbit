@@ -1,8 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { firstDayOfWeek, leadingDays, weekdayOrder } from './week-start';
 
+// Node has `getWeekInfo` built in: tests that take it away put it back, whatever order they run in.
+const builtIn = Object.getOwnPropertyDescriptor(Intl.Locale.prototype, 'getWeekInfo');
 afterEach(() => {
   vi.restoreAllMocks();
+  if (builtIn) Object.defineProperty(Intl.Locale.prototype, 'getWeekInfo', builtIn);
+  else delete (Intl.Locale.prototype as { getWeekInfo?: unknown }).getWeekInfo;
 });
 
 describe('firstDayOfWeek', () => {
@@ -15,12 +19,12 @@ describe('firstDayOfWeek', () => {
     vi.spyOn(Intl.Locale.prototype, 'weekInfo', 'get').mockReturnValue(undefined as never);
     Object.defineProperty(Intl.Locale.prototype, 'getWeekInfo', { value: () => ({ firstDay: 7 }), configurable: true });
     expect(firstDayOfWeek('de')).toBe(0);
-    delete (Intl.Locale.prototype as { getWeekInfo?: unknown }).getWeekInfo;
   });
 
   it('falls back to a small table without it: Monday for most, Sunday or Saturday where used', () => {
     // No week info at all (older WebKit).
     vi.spyOn(Intl.Locale.prototype, 'weekInfo', 'get').mockReturnValue(undefined as never);
+    Object.defineProperty(Intl.Locale.prototype, 'getWeekInfo', { value: undefined, configurable: true });
     expect(firstDayOfWeek('en-US')).toBe(0);
     expect(firstDayOfWeek('en-CA')).toBe(0);
     expect(firstDayOfWeek('ja')).toBe(0);

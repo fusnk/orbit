@@ -42,6 +42,9 @@ describe('Discord: hide on limited profiles', () => {
   it('needs a parent to turn off on a limited profile, and saves nothing until one is found', async () => {
     profile.limited = true;
     parentNeeded = true;
+    // On to start with, whichever test ran before this one.
+    await setHideOnLimited(true);
+    calls.length = 0;
     await expect(setHideOnLimited(false)).rejects.toBe('parent-pin-needed');
     expect(saved()).toEqual([]);
     expect(discordOptions().hideOnLimited).toBe(true);

@@ -5,7 +5,7 @@ vi.mock('../lib/ipc', () => ({ settings: { get: vi.fn(), set: vi.fn() } }));
 const { everyCatalogLoaded, everyTranslation, loadEveryCatalog, setLanguage, t } = await import('./index');
 
 describe('language catalogs loaded on demand', () => {
-  it('loads a language when it is chosen, before its strings are used', async () => {
+  it('loads a language when it is chosen, before its strings are used', { timeout: 60_000 }, async () => {
     await setLanguage('de');
     try {
       expect(t('browse.nav.home')).toBe('Startseite');

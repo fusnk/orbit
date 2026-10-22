@@ -19,6 +19,7 @@ import { checkStremioAccount, noteStremioAccount, setSyncEnabled, stremioSyncSta
 import { row } from './playback';
 import { errorText } from '../../components/state-message';
 import { isAndroid } from '../../lib/platform';
+import { maskEmail } from '../../lib/mask-email';
 
 interface Offered {
   index: number;
@@ -92,7 +93,8 @@ export function stremioSection({ heading = true }: { heading?: boolean } = {}): 
         })
         .catch((err: unknown) => (message.textContent = errorText(err, { service: 'stremio', action: true })));
     });
-    control.replaceChildren(h('span', { class: 'provider-status' }, email), importButton, signOut);
+    // Masked so a screenshot of Settings doesn't show it; the whole address on hover.
+    control.replaceChildren(h('span', { class: 'provider-status', title: email }, maskEmail(email)), importButton, signOut);
     showSync(true);
     noteStremioAccount(true);
   }

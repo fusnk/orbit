@@ -23,9 +23,11 @@ beforeAll(() => {
 
 const { androidBack, installBackHandling, onBack } = await import('./back');
 
+// Installed once for the whole file (as the app does at startup), so each test works in any order.
+let pages = 0;
+beforeAll(() => installBackHandling(() => (pages > 0 ? (pages--, true) : false)));
+
 describe("Android's Back button", () => {
-  let pages = 0;
-  beforeAll(() => installBackHandling(() => (pages > 0 ? (pages--, true) : false)));
 
   it('closes what is open first, then goes back through pages, then lets Android leave', () => {
     pages = 1;

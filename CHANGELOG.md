@@ -2,7 +2,7 @@
 
 All notable changes to Orbit are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and Orbit uses [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] - Unreleased
+## [0.1.0] - 2026-10-22
 
 Orbit's first public release, for Windows 10 and 11 (64-bit). Orbit bundles no content and no content addons: it ships with Cinemeta for catalogs and metadata and OpenSubtitles for subtitles, and plays what your own addons, services, media servers and files provide.
 
