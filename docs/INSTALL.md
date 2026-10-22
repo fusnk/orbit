@@ -35,7 +35,28 @@ Windows warns about installers from publishers it doesn't know. Orbit's installe
 
 ## macOS
 
-No build yet. Orbit's interface and Rust code compile on macOS, but playback (the libmpv video surface) isn't implemented there.
+**Needs:** macOS 11 Big Sur or later, on Apple silicon or Intel (one download works on both).
+
+1. Open the [Releases](https://github.com/fusnk/orbit/releases) page and download the latest `Orbit_x.y.z_universal.dmg`.
+2. Open it and drag **Orbit** to **Applications**.
+3. Open Orbit from Applications. The first time, macOS says it can't check Orbit for malware, because Orbit isn't notarized by Apple (see [Why macOS asks first](#why-macos-asks-first)). Click **Done**, then open **System Settings → Privacy & Security**, scroll down to the message about Orbit and click **Open Anyway**, then confirm with your password or Touch ID. macOS remembers the choice; you only do this once.
+
+On macOS 14 Sonoma and earlier, Control-click Orbit in Applications and choose **Open** instead.
+
+Updates arrive the same way as on Windows (Settings → General → About Orbit) and don't need **Open Anyway** again. After an update macOS may ask once more for your password before Orbit can read the keys it saved in your keychain: choose **Always Allow**.
+
+### Where Orbit keeps your things on a Mac
+
+- `~/Library/Application Support/io.github.fusnk.orbit`: the database (your library, history, lists, settings and profiles), avatars, wallpaper and theme images, and Orbit's copy of yt-dlp.
+- `~/Library/Caches/io.github.fusnk.orbit`: caches.
+- `~/Library/Logs/io.github.fusnk.orbit`: logs.
+- Your login keychain: your tokens and keys, under `io.github.fusnk.orbit`.
+
+To uninstall, quit Orbit and drag it from Applications to the Trash (the Bin in UK English). Delete the folders above (and the keychain entries, in Keychain Access) to remove your data too.
+
+### Why macOS asks first
+
+Apple only lets apps open without asking when the developer has paid for an Apple Developer account and sent each version to Apple to be checked. Orbit doesn't, so macOS can't vouch for it. Updates installed through Orbit itself are checked against Orbit's own update signature. Download Orbit only from this repository's Releases page.
 
 ## Linux
 

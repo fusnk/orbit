@@ -1,20 +1,27 @@
 # JSON-style YAML. The "# vX.Y.Z" after each pinned action makes it YAML only:
 # validate with a YAML parser. Actions are pinned to a full commit SHA so a moved
 # tag can't change what runs here; Dependabot (.github/dependabot.yml) bumps them.
-# Pushing a v<version> tag builds the Windows installer, signs the update
-# artifacts, writes latest.json and attaches everything to a DRAFT release.
+# Pushing a v<version> tag builds the Windows installer and the macOS app (one
+# universal .dmg for Apple silicon and Intel), signs the update artifacts, writes
+# latest.json and attaches everything to a DRAFT release.
 # Nothing reaches users until the draft is published (docs/RELEASING.md).
 #
 # libmpv-2.dll and yt-dlp.exe are fetched by scripts/setup-libmpv.mjs and
 # scripts/setup-ytdlp.mjs, the same way local builds get them: each pins one
 # release URL and its SHA-256 and refuses a file that doesn't match. They are
 # bundled through src-tauri/tauri.windows.conf.json; no binary is committed.
+# On macOS the same scripts fetch libmpv.dylib (with the libraries it loads) and
+# yt-dlp_macos, bundled through src-tauri/tauri.macos.conf.json. The Mac app is
+# ad-hoc signed, not notarized: people open it once with System Settings →
+# Privacy & Security → Open Anyway (docs/INSTALL.md).
+#
+# The macOS job runs after the Windows one: both add their entries to the same
+# latest.json, and two jobs writing it at once could drop one.
 #
 # A tag can point at a commit CI never saw (CI runs on main and its PRs), so the
 # release checks the commit itself before building anything from it.
 #
 # TODO Linux: add an ubuntu-24.04 entry once Linux packaging is settled (system libmpv, see docs/linux.md).
-# TODO macOS: add macos-latest once native playback works there (the updater then needs its `zip` feature).
 # TODO Windows code signing: configure a certificate or signing service with GitHub secrets.
 # The signing secrets belong to the "release" environment (Settings → Environments), limited
 # to v* tags with a required reviewer, so a workflow pushed on any other branch can't read them.
@@ -133,6 +140,78 @@
             "uploadUpdaterJson": true,
             "uploadUpdaterSignatures": true,
             "updaterJsonPreferNsis": true
+          }
+        }
+      ]
+    },
+    "macos": {
+      "needs": "windows",
+      "environment": "release",
+      "permissions": {
+        "contents": "write"
+      },
+      "runs-on": "macos-latest",
+      "timeout-minutes": 60,
+      "steps": [
+        {
+          "uses": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803", # v6.1.0
+          "with": {
+            "persist-credentials": false
+          }
+        },
+        {
+          "uses": "pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1", # v4.3.0
+          "with": {
+            "version": "12.6.0"
+          }
+        },
+        {
+          "uses": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38", # v6.5.0
+          "with": {
+            "node-version": "24",
+            "cache": "pnpm"
+          }
+        },
+        {
+          "uses": "dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec", # stable (branch, as of 2026-10-22)
+          "with": {
+            "targets": "aarch64-apple-darwin,x86_64-apple-darwin"
+          }
+        },
+        {
+          "uses": "Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0", # v2.9.3
+          "with": {
+            "workspaces": "src-tauri -> target"
+          }
+        },
+        {
+          "run": "pnpm install --frozen-lockfile"
+        },
+        {
+          "name": "Prepare bundled macOS resources",
+          "run": "pnpm run setup:libmpv\npnpm run setup:ytdlp"
+        },
+        {
+          "name": "Turn on signed update artifacts for this build only",
+          "run": "node -e \"const fs=require('fs');const p='src-tauri/tauri.conf.json';const c=JSON.parse(fs.readFileSync(p,'utf8'));c.bundle.createUpdaterArtifacts=true;fs.writeFileSync(p,JSON.stringify(c,null,2))\""
+        },
+        {
+          "name": "Build the app and attach it to the draft release",
+          "uses": "tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f", # v1.0.0
+          "env": {
+            "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}",
+            "TAURI_SIGNING_PRIVATE_KEY": "${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}",
+            "TAURI_SIGNING_PRIVATE_KEY_PASSWORD": "${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}"
+          },
+          "with": {
+            "tauriScript": "pnpm tauri",
+            "args": "--target universal-apple-darwin --bundles app,dmg",
+            "tagName": "${{ github.ref_name }}",
+            "releaseName": "Orbit ${{ github.ref_name }}",
+            "releaseDraft": true,
+            "prerelease": false,
+            "uploadUpdaterJson": true,
+            "uploadUpdaterSignatures": true
           }
         }
       ]
