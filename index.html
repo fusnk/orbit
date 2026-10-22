@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orbit · Everything you watch, in one place</title>
+<meta name="description" content="Orbit is a free, open-source desktop player for the Stremio addon ecosystem. It picks the best source, matches the subtitles and remembers where you stopped.">
+<meta name="theme-color" content="#0f0b0e">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Orbit · Everything you watch, in one place">
+<meta property="og:description" content="A free, open-source desktop player for the Stremio addon ecosystem. Nine Looks, 19 languages, Live TV and your own addons.">
+<meta property="og:url" content="https://fusnk.github.io/orbit/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/figtree-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="mark" aria-hidden="true"></span>orbit</a>
+    <nav aria-label="Sections"><a href="#play">How it plays</a><a href="#addons">Addons</a><a href="#features">Features</a><a href="#faq">FAQ</a></nav>
+    <a class="gh" href="https://github.com/fusnk/orbit" aria-label="Orbit on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+    <a class="btn primary" href="https://github.com/fusnk/orbit/releases">Download</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="beam" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Desktop player for the Stremio addon ecosystem</p>
+        <h1 style="margin-top:18px">Everything you watch. <em>In one place.</em></h1>
+        <p class="lede">Orbit brings your addons, your library and your Live TV into one fast app that <strong>picks the best source, matches the subtitles and remembers where you stopped</strong>.</p>
+        <div class="ctas">
+          <a class="btn primary" href="https://github.com/fusnk/orbit/releases"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download for Windows</a>
+          <a class="btn" href="#play">See how it plays</a>
+        </div>
+        <p class="fine">Free and open source under GPL-3.0, published on <a href="https://github.com/fusnk/orbit">GitHub</a>. Orbit includes no content: you choose the addons.</p>
+      </div>
+      <div class="stage">
+        <div class="ring" aria-hidden="true"><i></i></div>
+        <div class="app" id="app" role="img" aria-label="Orbit's Home screen, styled by the Look you pick below">
+          <div class="app-bar"><span class="m"></span><b>orbit</b><div class="pills"><span class="on">Home</span><span>Movies</span><span>TV Shows</span><span>Anime</span><span>Discover</span><span>Live TV</span></div></div>
+          <div class="hero-art" id="art"></div>
+          <div class="hero-copy">
+            <span class="tagline">#1 IN MOVIES</span>
+            <h4>Glass Horizon</h4>
+            <div class="meta"><b>2026</b> · 1h 58m · Drama · 4K HDR</div>
+            <span class="play">Continue at 42:10</span>
+          </div>
+          <div class="rowlab">Continue Watching</div>
+          <div class="row" id="row"></div>
+        </div>
+        <div class="looks" role="group" aria-label="Try a Look">
+          <span class="eyebrow">Try a Look</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="play">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Press play. Orbit does the rest.</h2>
+        <p>Every addon you install answers with its own list of sources. Orbit reads them all, ranks them by what you care about, and starts the best one, usually before you've let go of the button.</p>
+      </div>
+      <div class="reel">
+        <div class="sources" aria-label="Example of ranked sources for one film">
+          <div class="hd"><span>Glass Horizon · 6 sources</span><span>Score</span></div>
+          <div class="src best"><span class="rank">01</span><span><b>2160p · HDR10 · Atmos</b> · cached <span class="pick">PICKED</span></span><span class="score">96</span></div>
+          <div class="src"><span class="rank">02</span><span><b>2160p · SDR</b> · cached</span><span class="score">88</span></div>
+          <div class="src"><span class="rank">03</span><span><b>1080p · HDR</b> · 5.1</span><span class="score">81</span></div>
+          <div class="src"><span class="rank">04</span><span><b>1080p</b> · web</span><span class="score">74</span></div>
+          <div class="src"><span class="rank">05</span><span><b>720p</b> · web</span><span class="score">52</span></div>
+          <div class="src"><span class="rank">06</span><span><b>480p</b> · placeholder clip</span><span class="score">0</span></div>
+        </div>
+        <ol class="steps">
+          <li><time>0:00:00</time><div><h3>The best source starts</h3><p>Ranked by quality, audio, size and what played well for you before, with a "Why?" next to every pick. Sources that stalled last time drop down the list, and if one fails Orbit moves to the next.</p></div></li>
+          <li><time>0:00:02</time><div><h3>Subtitles match the release</h3><p>Orbit picks the subtitle made for the file you're watching, in your language, and can strip the [DOOR CREAKS] lines if you'd rather not see them.</p></div></li>
+          <li><time>0:01:32</time><div><h3>The intro skips itself</h3><p>Intros, recaps and credits show on the timeline, so you can skip them by hand or let Orbit do it.</p></div></li>
+          <li><time>0:42:10</time><div><h3>It remembers where you stopped</h3><p>Come back tomorrow and the button says “Continue at 42:10”. Next episode, same source, same subtitles.</p></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="addons">
+    <div class="wrap addons">
+      <div class="copy">
+        <h2 class="h2">Bring your own addons.</h2>
+        <p>Orbit speaks the open Stremio addon protocol. Paste a manifest link or a stremio:// link from any addon's page, or sign in to Stremio and import the addons you already use.</p>
+        <p>Before anything is saved, Orbit shows you what the addon provides. Its answers are checked and size-capped, and links that carry your keys are encrypted on your PC.</p>
+      </div>
+      <form class="paste" id="paste" autocomplete="off">
+        <label class="eyebrow" for="manifest">Paste a manifest URL or stremio:// link</label>
+        <div class="field" style="margin-top:12px">
+          <input id="manifest" name="manifest" value="https://example-subtitles.app/manifest.json" spellcheck="false">
+          <button class="btn primary" type="submit">Load</button>
+        </div>
+        <div class="review" id="review">
+          <div class="r"><span>Addon</span><b>Example Subtitles 2.1.0</b></div>
+          <div class="r"><span>Provides</span><b>Subtitles for movies and shows</b></div>
+          <div class="r"><span>Connection</span><b>https only</b></div>
+          <div class="r"><span>Saved to</span><b>This profile</b></div>
+        </div>
+        <p class="note" id="note">An example addon. Orbit ships with none: no streams, no catalogs, no content.</p>
+      </form>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Everything else you'd expect, and some you wouldn't.</h2>
+        <p>Built for a mouse, a keyboard and a controller on the couch. Every part of it can be rearranged.</p>
+      </div>
+      <div class="programme">
+        <div class="item"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></svg><div><h3>Live TV with a guide</h3><p>Your IPTV playlists and guides, channel surfing, favourites and catch-up.</p></div></div>
+        <div class="item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><div><h3>Your Jellyfin and Plex</h3><p>Your own media server's library, next to everything else, on your home network.</p></div></div>
+        <div class="item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><div><h3>Downloads for offline</h3><p>Save a film or a whole season for the plane. Paused downloads pick up where they left off.</p></div></div>
+        <div class="item"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="4"/><circle cx="16" cy="12" r="4"/></svg><div><h3>Stremio, Letterboxd and AniList</h3><p>Watch progress syncs with Stremio, your Letterboxd watchlist shows up on Home, anime episodes count on AniList.</p></div></div>
+        <div class="item"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="10" rx="5"/><path d="M7 10v4M5 12h4M15 11h.01M18 13h.01"/></svg><div><h3>The Couch Look and controllers</h3><p>Big type, a TV-style player and full gamepad and remote navigation, plus a phone remote on your Wi-Fi.</p></div></div>
+        <div class="item"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16"/></svg><div><h3>Nine Looks and a Theme Studio</h3><p>Change the whole app in one tap, or move the menu, recolour the seek bar and write your own CSS while you watch it happen.</p></div></div>
+        <div class="item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v10H8l-4 4z"/></svg><div><h3>Profiles with content limits</h3><p>A profile per person, each with its own history, and age limits a child can't switch off.</p></div></div>
+        <div class="item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6l-6 6 6 6M14 6l6 6-6 6"/></svg><div><h3>Ctrl+K for everything</h3><p>Search titles, jump to a setting, switch Looks or pause your watch history from one box.</p></div></div>
+      </div>
+      <div class="langs" aria-label="Languages Orbit speaks"><span>English</span><span>Español</span><span>Français</span><span>Português</span><span>Deutsch</span><span>Italiano</span><span>Nederlands</span><span>Polski</span><span>Čeština</span><span>Svenska</span><span>Bahasa Indonesia</span><span lang="ja">日本語</span><span lang="ko">한국어</span><span lang="ru">Русский</span><span lang="uk">Українська</span><span>Türkçe</span><span lang="zh">简体中文</span><span lang="ar" dir="rtl">العربية</span><span lang="he" dir="rtl">עברית</span></div>
+      <p class="eyebrow langs-note">19 languages, two of them right to left</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head"><h2>Private by design.</h2><p>Orbit treats every addon's answer as untrusted and keeps your accounts on your computer.</p></div>
+      <div class="trust">
+        <div><span class="k">Keys</span><h3>Your keys stay in your OS keychain</h3><p>Debrid keys and sign-ins live in Windows Credential Manager, never in plain text and never in a link Orbit builds.</p></div>
+        <div><span class="k">Addons</span><h3>Every answer is checked</h3><p>Responses are validated, size-capped and timed out. An addon's settings page opens in your own browser, never inside Orbit, and Orbit never runs an addon's code.</p></div>
+        <div><span class="k">History</span><h3>Pause your history any time</h3><p>One switch keeps what you play out of Continue Watching and out of every service you've connected. No analytics, no telemetry, no account to make.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap split">
+      <div>
+        <h2 class="h2">Where Orbit runs.</h2>
+        <div class="plat">
+          <div class="now">Windows 10 and 11<span>FIRST RELEASE</span></div>
+          <div>Android TV<span>IN DEVELOPMENT</span></div>
+          <div>Linux<span>LATER</span></div>
+          <div>macOS<span>LATER</span></div>
+        </div>
+      </div>
+      <div>
+        <details open><summary>Does Orbit come with movies or shows?</summary><p>No. Orbit is a player. It shows what the addons and services you add provide, the same way a web browser shows the sites you visit.</p></details>
+        <details><summary>Do my Stremio addons work?</summary><p>Yes. Orbit uses the same open addon protocol, so any addon installs with its link, and you can import the ones already on your Stremio account.</p></details>
+        <details><summary>Is it really free?</summary><p>Yes, and the <a href="https://github.com/fusnk/orbit">source code</a> is public under GPL-3.0. There are no ads and no accounts to make.</p></details>
+        <details><summary>Will it play 4K HDR?</summary><p>Orbit plays through mpv, with picture settings for weaker PCs and for the best picture, HDR output, and audio passthrough where your setup supports it.</p></details>
+        <details><summary>Can I use a controller?</summary><p>Yes. Every screen works with arrows, a remote or a gamepad, and the Couch Look makes it readable from across the room.</p></details>
+        <details><summary>Which languages does it speak?</summary><p>Nineteen, from English and Español to 日本語 and العربية, following your system language. Translations are open to anyone who wants to improve one.</p></details>
+        <details><summary>Where do I report a problem?</summary><p>Open an issue on <a href="https://github.com/fusnk/orbit/issues">GitHub</a>. Security problems go through the <a href="https://github.com/fusnk/orbit/security/policy">security policy</a> instead.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing" id="get">
+    <div class="wrap">
+      <p class="eyebrow">Free for Windows 10 and 11</p>
+      <h2>Press play. <span>We'll take it from there.</span></h2>
+      <div class="ctas">
+        <a class="btn primary" href="https://github.com/fusnk/orbit/releases"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download for Windows</a>
+        <a class="btn" href="https://github.com/fusnk/orbit">View the source on GitHub</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Orbit · <a href="https://github.com/fusnk/orbit/blob/main/LICENSE">GPL-3.0</a> · Includes no content</span>
+    <span>Stremio is a trademark of its owner. Orbit is an independent app and isn't affiliated with Stremio.</span>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+</body>
+</html>
