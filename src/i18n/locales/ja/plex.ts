@@ -1,0 +1,30 @@
+import type { plex as source } from '../en/plex';
+import type { Catalog } from '../types';
+
+export const plex: Catalog<typeof source> = {
+  'plex.settings.intro': 'PlexアカウントのPlex Media Serverから再生します。サーバーにある映画やエピソードにはPlexのソースが表示され、その行をホームに追加できます。ログインはPlex自身のページで行うため、Orbitがパスワードを見ることはありません。',
+  'plex.settings.connect': 'Plexで接続',
+  'plex.settings.connect-hint': 'ブラウザでPlexのログインページを開きます。そこでOrbitを許可してから、ここに戻ってください。',
+  'plex.settings.opening': 'ブラウザでPlexを開いています…',
+  'plex.settings.waiting': 'ブラウザでPlexにログインし、Orbitを許可してください。待機中…',
+  'plex.settings.open-again': 'ログインページをもう一度開く',
+  'plex.settings.cancel': 'キャンセル',
+  'plex.settings.choose': '使用するサーバーを選択してください：',
+  'plex.settings.shared': '{server}（共有されたサーバー）',
+  'plex.settings.reaching': '{server}に接続中…',
+  'plex.settings.server-label': 'サーバー',
+  'plex.settings.connected-as': '{server}に{user}として接続中',
+  'plex.settings.connected': '{server}に接続しました。',
+  'plex.settings.connected-first': '{server}に接続しました。ホームに「最近追加された作品」を追加しました。他のPlexの行は「設定 → ホームとライブラリ → ホームの行」で追加できます。',
+  'plex.settings.disconnect': '切断',
+  'plex.settings.disconnected': '切断し、OrbitはPlexのログイン情報を消去しました。Plex側でも無効にするには、plex.tvの「Authorized Devices」からOrbitを削除してください。',
+  'plex.settings.insecure': '保護されていない通信',
+  'plex.settings.insecure-title': 'Orbitは暗号化されていないhttpでこのサーバーに接続しているため、ログイン情報や動画は暗号化されずに送信されます。家庭内では問題ありませんが、インターネット経由で使う場合はPlexで安全な接続をオンにしてください。',
+  'plex.rows.kind': 'Plex',
+  'plex.rows.resume': '続きを見る',
+  'plex.rows.latest': '最近追加された作品',
+  'plex.rows.label': 'Plex：{row}',
+  'plex.rows.not-connected': '先に「設定 → アカウントとサービス」でPlexサーバーに接続してください。',
+  'plex.rows.libraries-failed': 'サーバーのライブラリを読み込めませんでした。',
+  'plex.source.origin': 'Plex · {server}',
+};

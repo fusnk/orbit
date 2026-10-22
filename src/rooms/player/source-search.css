@@ -1,0 +1,215 @@
+/* Play's source search (source-search.ts): the title over its artwork, as the
+   player's loading screen draws it, with a rolling list of addons below. */
+
+.source-search {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background: #000;
+  color: #fff;
+  isolation: isolate;
+  animation: search-in 220ms var(--ease);
+}
+
+.source-search.leaving {
+  opacity: 0;
+  transition: opacity 180ms var(--ease);
+  pointer-events: none;
+}
+
+@keyframes search-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.search-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.search-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse at 50% 55%, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.82) 70%);
+}
+
+.search-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: min(460px, 100%);
+  padding: 0 var(--space-6);
+  text-align: center;
+}
+
+.search-title {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.search-card .title-logo {
+  max-width: min(420px, 100%);
+  max-height: clamp(64px, 10vh, 120px);
+  margin-inline: auto;
+  object-position: 50% 100%;
+}
+
+.search-episode {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-accent-hi, var(--color-accent));
+}
+
+/* Five rows tall; the active one in the middle, the rest fading off above and below. */
+.search-window {
+  position: relative;
+  width: 100%;
+  height: calc(52px * 5);
+  margin-top: var(--space-4);
+  overflow: hidden;
+  mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent);
+}
+
+.search-reel {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(52px * 2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 52px;
+  padding: 0 18px;
+  transform: scale(var(--scale, 1));
+  transition:
+    opacity 320ms var(--ease),
+    transform 320ms var(--ease);
+}
+
+.search-row.active {
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.search-row .search-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-note {
+  flex: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #b5aea7;
+  font-variant-numeric: tabular-nums;
+}
+
+.search-row.found .search-note {
+  color: #fff;
+}
+
+/* The ring while an addon is being asked. */
+.search-ring {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: conic-gradient(var(--color-accent) 0 28%, rgba(255, 255, 255, 0.14) 28% 100%);
+  mask: radial-gradient(circle, transparent 7px, #000 7.5px);
+  animation: search-spin 900ms linear infinite;
+}
+
+@keyframes search-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.search-mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  animation: search-settle 260ms var(--ease);
+}
+
+.search-mark .icon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.6;
+}
+
+.search-mark.found {
+  background: var(--color-success);
+  color: #06140b;
+}
+
+.search-mark.empty {
+  background: rgba(255, 255, 255, 0.14);
+  color: #d9d3cc;
+}
+
+.search-mark.failed {
+  background: color-mix(in srgb, var(--color-danger) 85%, #000);
+  color: #fff;
+}
+
+@keyframes search-settle {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+}
+
+.search-status {
+  min-height: 1.4em;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: #cdc7c0;
+  font-variant-numeric: tabular-nums;
+}
+
+.search-cancel {
+  margin-top: var(--space-2);
+}
+
+/* Reduced motion: no spinning, sliding or popping; the list still moves to the active row. */
+.source-search.still,
+.source-search.still :is(.search-ring, .search-mark) {
+  animation: none;
+}
+
+.source-search.still :is(.search-reel, .search-row) {
+  transition: none;
+}
+
+.source-search.still .search-ring {
+  background: rgba(255, 255, 255, 0.3);
+}

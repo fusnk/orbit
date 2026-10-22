@@ -1,0 +1,28 @@
+import type { playertools as source } from '../en/playertools';
+
+export const playertools: Record<keyof typeof source, string> = {
+  'playertools.speed.custom': "مخصّصة",
+  'playertools.speed.custom-label': "سرعة مخصّصة",
+  'playertools.speed.slower': "أبطأ (−0.05×)",
+  'playertools.speed.faster': "أسرع (+0.05×)",
+  'playertools.subs.try-another': "تجربة ترجمة أخرى",
+  'playertools.subs.try-another-detail': "التطابق الأفضل التالي بـ{language}",
+  'playertools.subs.cycled': "الترجمة {position} من {total} · {source}",
+  'playertools.subs.no-other': "لا توجد ترجمات أخرى للتجربة",
+  'playertools.paste.action': "لصق الترجمة…",
+  'playertools.paste.detail': "نص SRT أو WebVTT",
+  'playertools.paste.title': "لصق الترجمة",
+  'playertools.paste.hint': "الصق نص ملف SRT أو WebVTT. يُضاف إلى هذا الفيديو فقط.",
+  'playertools.paste.field': "نص الترجمة",
+  'playertools.paste.placeholder': "1\n00:00:01,000 --> 00:00:03,000\nمرحبًا!",
+  'playertools.paste.add': "إضافة الترجمة",
+  'playertools.paste.cancel': "إلغاء",
+  'playertools.paste.empty': "الصق نص الترجمة أولًا.",
+  'playertools.paste.too-big': "هذا أكثر من 2 ميغابايت من النص.",
+  'playertools.paste.bad': "لا يبدو هذا ترجمة SRT أو WebVTT.",
+  'playertools.paste.added': "أُضيفت الترجمة الملصوقة",
+  'playertools.paste.name': "ترجمة ملصوقة",
+  'playertools.caps.setting': "إصلاح الترجمة المكتوبة بالأحرف الكبيرة",
+  'playertools.caps.hint': "تتحوّل الأسطر المكتوبة كلها بأحرف لاتينية كبيرة إلى كتابة عادية. يعمل مع ترجمات الإضافات والملفات التي تضيفها والنص الملصوق، لا مع الترجمات المضمّنة في ملف الفيديو. تفقد الأسماء أحرفها الكبيرة أيضًا.",
+  'playertools.caps.error': "تعذّر تطبيق إعداد الأحرف الكبيرة",
+};

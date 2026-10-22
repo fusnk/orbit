@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'Notes sur les affiches',
+  'posters.ratings-hint': 'Les notes IMDb, TMDB et Letterboxd sur l’image, d’après ce qu’Orbit sait déjà de chaque titre. Minimal affiche une note ; Complet les affiche toutes.',
+  'posters.ratings-minimal': 'Minimal',
+  'posters.ratings-full': 'Complet',
+  'posters.provider': 'Fournisseur d’affiches',
+  'posters.provider-hint': 'D’où viennent les affiches. RPDB dessine les notes sur ses affiches et demande votre propre clé RPDB (ratingposterdb.com). Quand RPDB n’a pas d’affiche pour un titre, Orbit affiche l’affiche habituelle avec ses propres notes. S’applique aux affiches affichées ensuite.',
+  'posters.provider-orbit': 'Orbit (intégré)',
+  'posters.rpdb.key': 'Clé RPDB',
+  'posters.rpdb.key-hint': 'Votre clé de ratingposterdb.com. Elle est gardée dans le trousseau du système et n’est envoyée qu’à RPDB.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'Vérification auprès de RPDB…',
+  'posters.rpdb.connected': 'Clé RPDB enregistrée. Les affiches viendront de RPDB.',
+  'posters.rpdb.saved': 'Enregistrée',
+  'posters.rpdb.removed': 'Clé RPDB supprimée.',
+  'posters.rpdb.key-format': 'Ce n’est pas une clé RPDB. Les clés commencent par t0-, t1-, t2-, etc.',
+  'posters.rpdb.refused': 'RPDB n’a pas accepté cette clé.',
+  'posters.rpdb.busy': 'RPDB reçoit trop de requêtes en ce moment. Réessayez dans un instant.',
+  'posters.rpdb.unreachable': 'Impossible de joindre RPDB pour vérifier la clé.',
+  'posters.rpdb.style': 'Style d’affiche RPDB',
+  'posters.rpdb.style-hint': 'Les notes que RPDB dessine. Les clés gratuites n’incluent que Par défaut ; les autres styles demandent un palier RPDB payant.',
+  'posters.rpdb.style-default': 'Par défaut',
+  'posters.rpdb.style-certs': 'Classifications d’âge',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'Sans texte du titre',
+  'posters.description': 'Notes : {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} sur 5',
+};

@@ -1,0 +1,30 @@
+import type { plex as source } from '../en/plex';
+import type { Catalog } from '../types';
+
+export const plex: Catalog<typeof source> = {
+  'plex.settings.intro': "从你 Plex 账号下的 Plex Media Server 播放。服务器上有的电影和剧集会多出一个 Plex 来源，它的栏目也可以放到首页。你在 Plex 自己的页面登录，所以 Orbit 永远看不到你的密码。",
+  'plex.settings.connect': "使用 Plex 连接",
+  'plex.settings.connect-hint': "在浏览器中打开 Plex 登录页。在那里允许 Orbit，然后回到这里。",
+  'plex.settings.opening': "正在浏览器中打开 Plex…",
+  'plex.settings.waiting': "请在浏览器中登录 Plex 并允许 Orbit。等待中…",
+  'plex.settings.open-again': "重新打开登录页",
+  'plex.settings.cancel': "取消",
+  'plex.settings.choose': "选择要使用的服务器：",
+  'plex.settings.shared': "{server}（与你共享）",
+  'plex.settings.reaching': "正在连接 {server}…",
+  'plex.settings.server-label': "服务器",
+  'plex.settings.connected-as': "已以 {user} 身份连接到 {server}",
+  'plex.settings.connected': "已连接到 {server}。",
+  'plex.settings.connected-first': "已连接到 {server}。“最近添加”已加入首页；可在 设置 → 首页与片库 → 首页栏目 中添加更多 Plex 栏目。",
+  'plex.settings.disconnect': "断开连接",
+  'plex.settings.disconnected': "已断开连接，Orbit 已忘记其 Plex 登录信息。如需在 Plex 端也撤销授权，请在 plex.tv 的“已授权设备”中移除 Orbit。",
+  'plex.settings.insecure': "不安全",
+  'plex.settings.insecure-title': "Orbit 通过普通 http 连接此服务器，登录信息和视频以未加密方式传输。在家里没问题；通过互联网使用时请在 Plex 中开启安全连接。",
+  'plex.rows.kind': "Plex",
+  'plex.rows.resume': "继续观看",
+  'plex.rows.latest': "最近添加",
+  'plex.rows.label': "Plex：{row}",
+  'plex.rows.not-connected': "请先在 设置 → 账号与服务 中连接 Plex 服务器。",
+  'plex.rows.libraries-failed': "无法加载服务器的媒体库。",
+  'plex.source.origin': "Plex · {server}",
+};

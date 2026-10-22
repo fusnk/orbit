@@ -1,0 +1,383 @@
+/* The Crimson theme's details (palette.ts THEME_STYLES; engine.ts sets
+   data-theme-style). Its colours do the rest: pure black panels make it
+   true black, so the ambient glow, page glows and lit shadows are already off
+   (the AMOLED rules). Everything here is drawn from the accent, so a person
+   who changes the accent keeps the details in their colour, and every rule is
+   keyed on :root[data-theme-style] so no other theme changes. Logical
+   properties only, so right-to-left mirrors it. */
+
+/* Only where text can be selected (the page is user-select: none, styles.css): on every element, the
+   rule gave each one drawn a selection style of its own to work out, about a quarter of a row's
+   drawing on a TV box. */
+:root[data-theme-style='crimson'] :is(input, textarea, [contenteditable], .selectable, .facts dd, .info-list dd)::selection,
+:root[data-theme-style='crimson'] :is(.selectable, .facts dd, .info-list dd) *::selection {
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+}
+
+/* ── Row headings: the source line under them ── */
+
+:root[data-theme-style='crimson'] .rail-titles {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+:root[data-theme-style='crimson'] .rail-titles .rail-source {
+  color: var(--color-text-muted);
+}
+
+/* A Top 10 row's heading (cards.ts splits a leading "Top 10" off): the
+   numbers big and outlined, the rest a small spaced caption under them. */
+:root[data-theme-style='crimson'] .rail-heading:has(.rail-heading-top) {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+:root[data-theme-style='crimson'] .rail-heading-top {
+  font-family: var(--font-display);
+  font-size: calc(46px + 14px * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  line-height: 0.85;
+  letter-spacing: calc(-0.01em + 0.05em * var(--font-display-tracking));
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-accent);
+}
+
+:root[data-theme-style='crimson'] .rail-heading-rest {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ── Top 10 cards: big outlined grey numerals (red when chosen), a rank badge on the poster ── */
+
+:root[data-theme-style='crimson'] .rank {
+  -webkit-text-stroke-width: 2.5px;
+}
+
+:root[data-theme-style='crimson'] .rank::before {
+  -webkit-text-stroke-color: var(--color-text-faint);
+}
+
+:root[data-theme-style='crimson'] .rank::after {
+  color: color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+
+:root[data-theme-style='crimson'] .ranked-frame::after {
+  content: attr(data-rank-badge);
+  position: absolute;
+  top: 0;
+  inset-inline-end: 0;
+  padding: 4px 7px 3px;
+  border-end-start-radius: var(--radius-sm);
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* ── Cards: a red rim instead of a lit glow under the chosen one ── */
+
+:root[data-theme-style='crimson'] .card:is(:hover, :focus-visible) .frame {
+  box-shadow:
+    inset 0 0 0 2px color-mix(in srgb, var(--color-accent) 85%, transparent),
+    0 18px 30px -16px rgba(0, 0, 0, 0.9);
+}
+
+:root[data-theme-style='crimson'][data-effects='reduced'] .card:is(:hover, :focus-visible) .frame {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-accent) 85%, transparent);
+}
+
+/* ── Episode labels in red: what's next or new ── */
+
+:root[data-theme-style='crimson'] .still-badge {
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+}
+
+:root[data-theme-style='crimson'] .continue-card:has(.still-badge) .card-sub,
+:root[data-theme-style='crimson'] .calendar-ep,
+:root[data-theme-style='crimson'] .status-tile[data-focus-id='status:episode'] .tile-line {
+  color: var(--color-accent-text);
+  font-weight: 700;
+}
+
+/* ── Controls: the selected one is red (Play stays the white pill) ── */
+
+:root[data-theme-style='crimson'] :is(.segment, .chip)[aria-pressed='true'],
+:root[data-theme-style='crimson'] .segment[aria-selected='true'] {
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+}
+
+:root[data-theme-style='crimson'] .chip[aria-pressed='true']:hover:not(:disabled) {
+  background: var(--color-accent-hi);
+}
+
+/* The active page: a dark pill edged in red, its line full red. No lit
+   shadow (the point is black). */
+:root[data-theme-style='crimson'] .nav-indicator {
+  background: color-mix(in srgb, var(--color-accent) 16%, var(--color-bg));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+
+/* Over artwork, the top bar's glass can sit on bright art: the active name stays full white. */
+:root[data-theme-style='crimson'][data-theme='dark'] .nav-item.active {
+  color: #fff;
+}
+
+/* Toolbars and strips (styles.css --strip-*): a faint wash and a neutral
+   rim, so the red stays on the one control that's selected. */
+:root[data-theme-style='crimson'] {
+  --strip-wash: linear-gradient(var(--strip-angle), color-mix(in srgb, var(--color-accent) 6%, transparent) 0%, transparent 45%);
+  --strip-ring: inset 0 0 0 1px var(--color-border-strong);
+}
+
+/* ── Landscape cards (the Crimson Look's card shape) ──
+   Logo cards (styles.css) with a "TOP 10" badge on titles a Top 10 row
+   ranks, and no text under the card but a new episode's line. Corners stay
+   small, and the card grows a little rather than lifting. */
+
+/* Close together, as one strip of art. */
+:root[data-theme-style='crimson'] .rail-track:has(> .landscape-card) {
+  gap: var(--space-2);
+}
+
+:root[data-theme-style='crimson'] .landscape-card .frame {
+  border-radius: min(var(--radius-card), 6px);
+  transition: transform var(--duration-hover) var(--ease);
+}
+
+:root[data-theme-style='crimson'] .landscape-card:is(:hover, :focus-visible) .frame,
+:root[data-theme-style='crimson'] .landscape-card:is(:hover, :focus-visible)::before {
+  transform: scale(1.03);
+}
+
+:root[data-motion='reduce'][data-theme-style='crimson'] .landscape-card .frame {
+  transition: none;
+}
+
+:root[data-motion='reduce'][data-theme-style='crimson'] .landscape-card:is(:hover, :focus-visible) .frame,
+:root[data-motion='reduce'][data-theme-style='crimson'] .landscape-card:is(:hover, :focus-visible)::before {
+  transform: none;
+}
+
+/* The name under the card goes (the logo or the name on the art says it);
+   a new episode's line stays. */
+:root[data-theme-style='crimson'] .landscape-card :is(.card-title, .card-sub) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+:root[data-theme-style='crimson'] .landscape-card .card-text:not(:has(.card-episode)) {
+  margin-block-start: 0;
+}
+
+:root[data-theme-style='crimson'] .landscape-card .still-shade {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), transparent 50%);
+}
+
+:root[data-theme-style='crimson'] .landscape-card .top-ten-badge {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  inset-inline-end: 0;
+  display: grid;
+  place-items: center;
+  inline-size: 30px;
+  padding: 4px 3px 5px;
+  border-end-start-radius: 2px;
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  text-align: center;
+  word-spacing: 100vw; /* "TOP" over "10", as one word per line */
+}
+
+/* The watched check moves beside the badge (the other corner holds the corner badge). */
+:root[data-theme-style='crimson'] .landscape-card .frame:has(.top-ten-badge) .watched-mark {
+  inset-inline-end: calc(30px + var(--space-2));
+}
+
+/* ── The top bar (Crimson Look: the menu after the wordmark) ──
+   Plain text links rather than a pill: the current page white on a
+   faint highlight, the rest grey until pointed at. The bar shades the art
+   behind it from the top, and turns solid once the page scrolls. */
+
+:root[data-theme-style='crimson'][data-nav='top'] .titlebar {
+  background-color: transparent;
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.35) 60%, transparent);
+  transition: background-color var(--duration-enter) var(--ease);
+}
+
+:root[data-theme-style='crimson'][data-nav='top'] #app:has(> .outlet.scrolled) > .titlebar {
+  background-color: var(--color-bg);
+}
+
+:root[data-theme-style='crimson'][data-nav='top'] .titlebar .nav {
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+:root[data-theme-style='crimson'][data-nav='top'] .nav-item {
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+:root[data-theme-style='crimson'][data-nav='top'] .nav-item:not(.active):is(:hover, :focus-visible) {
+  background: transparent;
+  color: var(--color-text);
+}
+
+:root[data-theme-style='crimson'][data-nav='top'] .nav-item.active {
+  color: #fff;
+}
+
+/* Once the bar turns solid (the page's own colour), white only holds on a
+   dark theme: a light one of the person's own (Theme Studio keeps the style)
+   takes its text colour, and the highlight darkens instead of lightening. */
+:root[data-theme-style='crimson'][data-theme='light'][data-nav='top'] #app:has(> .outlet.scrolled) > .titlebar .nav-item.active {
+  color: var(--color-text);
+}
+
+:root[data-theme-style='crimson'][data-theme='light'][data-nav='top'] #app:has(> .outlet.scrolled) > .titlebar .nav-indicator {
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+:root[data-theme-style='crimson'][data-nav='top'] .nav-indicator {
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+:root[data-theme-style='crimson'][data-nav='top'] .nav-indicator::after {
+  display: none;
+}
+
+/* Search: a bare icon, like the bar's other icons. */
+:root[data-theme-style='crimson'][data-nav='top'] .nav-item[data-room='search']:not(.active) {
+  background: transparent;
+}
+
+/* ── Home's mood chips: small corners on a quiet rim, the picked one solid
+   red (the Controls rule above) with no rim of its own ── */
+
+:root[data-theme-style='crimson'] .mood-chip {
+  height: 46px;
+  padding-inline: var(--space-5);
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+:root[data-theme-style='crimson'] .mood-chip:not([aria-pressed='true']):hover {
+  background: color-mix(in srgb, var(--base-text) 6%, transparent);
+}
+
+/* ── Title bar's end: avatar, bell and Quick settings as three round buttons
+   of one size, centred on the menu's row. Flat: no glass, no blur. The Arc
+   bar draws them as its own group (nav-layouts.css). ── */
+
+:root[data-theme-style='crimson']:not([data-nav='arc']) .titlebar-tools > :is(.profile-button, .alerts-button, .settings-button) {
+  width: var(--control-compact);
+  height: var(--control-compact);
+  align-self: center;
+  margin-inline-end: var(--space-2);
+  padding: 0;
+  border-radius: 50%;
+}
+
+:root[data-theme-style='crimson']:not([data-nav='arc']) .titlebar-tools > :is(.alerts-button, .settings-button) {
+  border: 1px solid var(--color-border-strong);
+  background: color-mix(in srgb, var(--color-bg) 55%, transparent);
+}
+
+:root[data-theme-style='crimson']:not([data-nav='arc']) .titlebar-tools > :is(.alerts-button, .settings-button):hover,
+:root[data-theme-style='crimson']:not([data-nav='arc']) .titlebar-tools > .settings-button.active {
+  background: var(--color-surface-overlay);
+}
+
+:root[data-theme-style='crimson']:not([data-nav='arc']) .titlebar-tools > .settings-button {
+  margin-inline-end: 10px;
+}
+
+:root[data-theme-style='crimson']:not([data-nav='arc']) .titlebar-tools > .profile-button .avatar {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Settings sidebar: flat black, square edges, the red kept to the open
+   category's full-height bar and filled tile. Other tiles are neutral grey,
+   so one red thing says where you are. ── */
+
+:root[data-theme-style='crimson'] .settings-nav-item {
+  border-radius: 0;
+}
+
+:root[data-theme-style='crimson'] .settings-nav-item::before {
+  inset-block: 0;
+  border-radius: 0;
+}
+
+:root[data-theme-style='crimson'] .settings-nav-tile {
+  border-radius: 4px;
+  background: var(--color-surface-raised);
+  color: var(--color-text-muted);
+}
+
+:root[data-theme-style='crimson'] .settings-nav-item:hover .settings-nav-tile {
+  background: var(--color-surface-overlay);
+  color: var(--color-text);
+}
+
+:root[data-theme-style='crimson'] .settings-nav-item.active {
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg));
+}
+
+:root[data-theme-style='crimson'] .settings-nav-item.active .settings-nav-tile {
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+}
+
+:root[data-theme-style='crimson'] .settings-profile {
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+}
+
+:root[data-theme-style='crimson'] .settings-profile-stat {
+  border-radius: 2px;
+}
+
+/* ── Profile avatars: rounded squares, not circles ──
+   A percentage, so the title-bar avatar and the big ones on "Who's
+   watching?" keep the same proportions; a picture is clipped to it
+   (profiles.css). The button around the title-bar one follows, so its
+   focus ring has the same shape. */
+:root[data-theme-style='crimson'] .avatar {
+  border-radius: 22%;
+}
+
+:root[data-theme-style='crimson'] .profile-button {
+  border-radius: 28%;
+}

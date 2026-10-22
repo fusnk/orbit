@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'التقييمات على الملصقات',
+  'posters.ratings-hint': 'تقييمات IMDb وTMDB وLetterboxd على الصورة، مما يعرفه Orbit مسبقًا عن كل عنوان. «مختصر» يعرض تقييمًا واحدًا، و«كامل» يعرضها كلها.',
+  'posters.ratings-minimal': 'مختصر',
+  'posters.ratings-full': 'كامل',
+  'posters.provider': 'مصدر الملصقات',
+  'posters.provider-hint': 'من أين تأتي الملصقات. يرسم RPDB التقييمات على ملصقاته ويحتاج إلى مفتاح RPDB الخاص بك (ratingposterdb.com). إذا لم يكن لدى RPDB ملصق لعنوان ما، يعرض Orbit الملصق المعتاد مع تقييماته. يُطبَّق على الملصقات التي تُرسم لاحقًا.',
+  'posters.provider-orbit': 'Orbit (مدمج)',
+  'posters.rpdb.key': 'مفتاح RPDB',
+  'posters.rpdb.key-hint': 'مفتاحك من ratingposterdb.com. يُحفظ في سلسلة مفاتيح النظام ولا يُرسل إلا إلى RPDB.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'جارٍ التحقق مع RPDB…',
+  'posters.rpdb.connected': 'حُفظ مفتاح RPDB. ستأتي الملصقات من RPDB.',
+  'posters.rpdb.saved': 'محفوظ',
+  'posters.rpdb.removed': 'أُزيل مفتاح RPDB.',
+  'posters.rpdb.key-format': 'لا يبدو هذا مفتاح RPDB. تبدأ المفاتيح بـ t0- أو t1- أو t2- وهكذا.',
+  'posters.rpdb.refused': 'لم يقبل RPDB هذا المفتاح.',
+  'posters.rpdb.busy': 'يتلقى RPDB طلبات كثيرة جدًا الآن. حاول مرة أخرى بعد قليل.',
+  'posters.rpdb.unreachable': 'تعذّر الوصول إلى RPDB للتحقق من المفتاح.',
+  'posters.rpdb.style': 'نمط ملصقات RPDB',
+  'posters.rpdb.style-hint': 'التقييمات التي يرسمها RPDB. المفاتيح المجانية تشمل «الافتراضي» فقط؛ الأنماط الأخرى تحتاج إلى مستوى RPDB مدفوع.',
+  'posters.rpdb.style-default': 'الافتراضي',
+  'posters.rpdb.style-certs': 'التصنيفات العمرية',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'بلا نص العنوان',
+  'posters.description': 'التقييمات: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} من 5',
+};

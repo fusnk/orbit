@@ -1,0 +1,33 @@
+/* ── Smooth skip: black over the video while it seeks (see skip-transition.ts) ── */
+
+.skip-fade {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  /* Back in: 500 ms (FADE_IN_MS). */
+  transition:
+    opacity 500ms var(--ease),
+    visibility 0s linear 500ms;
+}
+
+.skip-fade.on {
+  opacity: 1;
+  visibility: visible;
+  /* Out to black: 250 ms (FADE_OUT_MS). */
+  transition:
+    opacity 250ms var(--ease),
+    visibility 0s;
+}
+
+.skip-fade-label {
+  padding-inline: var(--space-4);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  text-align: center;
+}

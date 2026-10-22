@@ -1,0 +1,135 @@
+/* ── Resuming: which source to go on with (see resume-choice.ts) ─────────
+   A card over the scrim, the title's art fading into the panel colour, so it
+   reads in light and dark themes alike. */
+
+.resume-choice-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+
+.resume-choice {
+  position: relative;
+  width: min(460px, 100%);
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-panel);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border-strong),
+    var(--shadow-overlay);
+  animation: resume-choice-in var(--duration-popover) var(--ease);
+}
+
+.resume-choice-art {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--duration-enter) var(--ease);
+}
+
+.resume-choice-art.loaded {
+  opacity: 0.55;
+}
+
+.resume-choice-shade {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 190px;
+  background: linear-gradient(180deg, transparent 20%, var(--color-panel));
+}
+
+.resume-choice-body {
+  position: relative;
+  display: grid;
+  gap: var(--space-3);
+  padding: 96px var(--space-5) var(--space-5);
+}
+
+/* No art (or it failed to load): no room kept for it. */
+.resume-choice:not(:has(.resume-choice-art)) .resume-choice-body {
+  padding-block-start: var(--space-5);
+}
+
+.resume-choice-title {
+  overflow: hidden;
+  color: var(--color-text);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resume-options {
+  display: grid;
+  gap: var(--space-2);
+  margin-block-start: var(--space-1);
+}
+
+.resume-option {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.resume-option:hover {
+  background: var(--color-surface-overlay);
+}
+
+.resume-option:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.resume-option.primary {
+  background: var(--color-light);
+  color: var(--color-on-light);
+}
+
+.resume-option.primary:hover {
+  background: var(--color-light-hover);
+}
+
+.resume-option-label {
+  font-weight: 700;
+}
+
+.resume-option-detail,
+.resume-option-extra {
+  overflow: hidden;
+  font-size: var(--font-size-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.75;
+}
+
+.resume-option-extra {
+  opacity: 0.6;
+}
+
+.resume-choice-remember {
+  justify-self: start;
+}
+
+@keyframes resume-choice-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}

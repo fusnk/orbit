@@ -1,0 +1,13 @@
+/* Settings → Playback → Autoplay limits → Largest file: the row says what it is, so the slider shows only its track and value ("Any", "50 GB"). */
+.autoplay-size {
+  inline-size: 260px;
+  max-inline-size: 100%;
+}
+
+.autoplay-size .slider {
+  grid-template-columns: 1fr 7ch;
+}
+
+.autoplay-size .slider-label {
+  display: none;
+}

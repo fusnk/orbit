@@ -1,0 +1,28 @@
+import type { playertools as source } from '../en/playertools';
+
+export const playertools: Record<keyof typeof source, string> = {
+  'playertools.speed.custom': "Własna",
+  'playertools.speed.custom-label': "Własna prędkość",
+  'playertools.speed.slower': "Wolniej (−0,05×)",
+  'playertools.speed.faster': "Szybciej (+0,05×)",
+  'playertools.subs.try-another': "Spróbuj innych napisów",
+  'playertools.subs.try-another-detail': "Następne najlepsze dopasowanie: {language}",
+  'playertools.subs.cycled': "Napisy {position} z {total} · {source}",
+  'playertools.subs.no-other': "Brak innych napisów do wypróbowania",
+  'playertools.paste.action': "Wklej napisy…",
+  'playertools.paste.detail': "Tekst SRT lub WebVTT",
+  'playertools.paste.title': "Wklej napisy",
+  'playertools.paste.hint': "Wklej tekst pliku SRT lub WebVTT. Zostanie dodany tylko do tego filmu.",
+  'playertools.paste.field': "Tekst napisów",
+  'playertools.paste.placeholder': "1\n00:00:01,000 --> 00:00:03,000\nCześć!",
+  'playertools.paste.add': "Dodaj napisy",
+  'playertools.paste.cancel': "Anuluj",
+  'playertools.paste.empty': "Najpierw wklej tekst napisów.",
+  'playertools.paste.too-big': "To ponad 2 MB tekstu.",
+  'playertools.paste.bad': "To nie wygląda na napisy SRT ani WebVTT.",
+  'playertools.paste.added': "Dodano wklejone napisy",
+  'playertools.paste.name': "Wklejone napisy",
+  'playertools.caps.setting': "Popraw napisy WIELKIMI LITERAMI",
+  'playertools.caps.hint': "Wiersze pisane samymi wielkimi literami dostają zwykłą pisownię. Działa dla napisów z dodatków, dodanych plików i wklejonego tekstu, nie dla napisów wewnątrz pliku wideo. Imiona też tracą wielkie litery.",
+  'playertools.caps.error': "Nie udało się zastosować ustawienia WIELKICH LITER",
+};

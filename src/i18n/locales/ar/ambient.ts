@@ -1,0 +1,26 @@
+import type { ambient as source } from '../en/ambient';
+
+export const ambient: Record<keyof typeof source, string> = {
+  'ambient.label': 'الوضع المحيطي',
+  'ambient.hint.details': 'Enter للتفاصيل',
+  'ambient.slide.resume': 'استئناف',
+  'ambient.slide.resume-episode': 'استئناف {episode}',
+  'ambient.slide.library': 'في مكتبتي',
+  'ambient.slide.recent': 'شوهد مؤخرًا',
+  'ambient.slide.trending': 'رائج الآن',
+  'ambient.settings.heading': 'الوضع المحيطي',
+  'ambient.settings.after': 'البدء بعد',
+  'ambient.settings.after-hint': 'عند عدم الضغط على أي شيء طوال هذه المدة، ينتقل Orbit إلى عرض بطيء للصور. ولا يحدث ذلك أبدًا أثناء التشغيل.',
+  'ambient.settings.source': 'ما يعرضه',
+  'ambient.settings.source-hint': 'ما تشاهده وما حفظته، أو الرائج، أو كلاهما بالتناوب.',
+  'ambient.settings.source-for-you': 'لك',
+  'ambient.settings.source-trending': 'الرائج',
+  'ambient.settings.source-both': 'كلاهما',
+  'ambient.settings.clock': 'إظهار الساعة',
+  'ambient.settings.clock-hint': 'الوقت والتاريخ في إحدى الزوايا.',
+  'ambient.settings.paused': 'عند الإيقاف المؤقت أيضًا',
+  'ambient.settings.paused-hint': 'يبدأ فوق المشغّل بعد إيقافه مؤقتًا طوال هذه المدة. يبقى التشغيل كما كان تمامًا.',
+  'ambient.settings.preview': 'معاينة',
+  'ambient.settings.preview-label': 'شاهده الآن',
+  'ambient.settings.preview-hint': 'يبدأ الوضع المحيطي فورًا. اضغط أي مفتاح أو حرّك الفأرة للعودة.',
+};

@@ -1,0 +1,70 @@
+/*
+ * Skip intro / recap / credits, Next episode, and Next Up's Play: quiet when
+ * they appear (small, outlined, low contrast), then filled and larger a few
+ * seconds on or near the end (see skipProminence in skip.ts). Every layout,
+ * Cinema included, uses these same buttons. With reduced motion the script
+ * starts them prominent, and nothing animates.
+ */
+.skip-segment[data-prominence],
+.next-up-actions .button.primary[data-prominence] {
+  transition:
+    height 600ms var(--ease),
+    padding-inline 600ms var(--ease),
+    font-size 600ms var(--ease),
+    background-color 600ms var(--ease),
+    color 600ms var(--ease),
+    box-shadow 600ms var(--ease),
+    opacity 300ms var(--ease);
+}
+
+/*
+ * Up a while (data-tucked, see skip-controller.ts): it fades out with the
+ * controls and comes back with them. Only faded, so it keeps its place in
+ * the focus order; focused, it shows.
+ */
+.player.idle .skip-segment[data-tucked]:not(:focus-visible) {
+  opacity: 0;
+}
+
+.skip-segment[data-prominence='subtle'] {
+  height: var(--control-chip);
+  padding-inline: var(--space-4);
+  background: rgba(20, 19, 18, 0.4);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--font-size-xs);
+}
+
+.skip-segment[data-prominence='prominent'] {
+  height: var(--control-primary);
+  padding-inline: var(--space-6);
+  background: var(--color-light);
+  box-shadow: none;
+  color: var(--color-on-light);
+  font-size: var(--font-size-md);
+}
+
+.skip-segment[data-prominence='prominent']:hover {
+  background: var(--color-light-hover);
+}
+
+.next-up-actions .button.primary[data-prominence='subtle'] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  color: var(--color-text);
+}
+
+.skip-segment[data-prominence]:focus-visible,
+.next-up-actions .button.primary[data-prominence]:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+:root[data-motion='reduce'] :is(.skip-segment, .next-up-actions .button.primary)[data-prominence] {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) :is(.skip-segment, .next-up-actions .button.primary)[data-prominence] {
+    transition: none;
+  }
+}

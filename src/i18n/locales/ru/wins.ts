@@ -1,0 +1,70 @@
+import type { wins as source } from '../en/wins';
+import type { Catalog } from '../types';
+
+export const wins: Catalog<typeof source> = {
+  // Discover filters: a range of years, runtime, cast and director (rooms/explore/filter-bar.ts)
+  'explore.filters.year-from': 'С',
+  'explore.filters.year-to': 'По',
+  'explore.filters.runtime': 'Длительность',
+  'explore.filters.runtime-min': 'Не меньше',
+  'explore.filters.runtime-max': 'Не больше',
+  'explore.filters.minutes': '{count} мин',
+  'explore.filters.cast': 'Актёры',
+  'explore.filters.director': 'Режиссёр или съёмочная группа',
+  'explore.filters.person-search': 'Поиск людей: {what}',
+  'explore.filters.person-placeholder': 'Введите имя',
+  'explore.filters.person-none': 'Никто не найден',
+  'explore.filters.person-clear': 'Убрать {name}',
+  // Settings → Playback → Rewind cache (rooms/settings/player.ts)
+  'settings.player.rewind': 'Кэш перемотки',
+  'settings.player.rewind-hint': 'Сколько видео держится в памяти, чтобы перемотка назад была мгновенной. «Больше» использует до ~600 МБ ОЗУ во время воспроизведения, «Максимум» — до ~1,5 ГБ. Применяется со следующего видео.',
+  'settings.player.rewind-standard': 'Стандартный',
+  'settings.player.rewind-more': 'Больше',
+  'settings.player.rewind-most': 'Максимум',
+  // Settings → Subtitles: opacity, box and outline colours (rooms/settings/subtitles.ts)
+  'subs.style.opacity': 'Непрозрачность текста',
+  'subs.style.box-colour': 'Цвет подложки',
+  'subs.style.box-opacity': 'Непрозрачность подложки',
+  'subs.style.box-opacity-hint': 'У подложки прямые углы: плеер не умеет рисовать скруглённые.',
+  'subs.style.outline-colour': 'Цвет обводки',
+  'player.subtitle-style.black': 'Чёрный',
+  'player.subtitle-style.grey': 'Серый',
+  'player.subtitle-style.navy': 'Тёмно-синий',
+  // Addons: health, counts and refreshing one manifest (rooms/addons/index.ts)
+  'addons.health.no-answer': 'Не ответил',
+  'addons.health.count': '{installed} · {enabled}',
+  'addons.health.installed.one': 'Установлен: {count}',
+  'addons.health.installed.few': 'Установлено: {count}',
+  'addons.health.installed.many': 'Установлено: {count}',
+  'addons.health.installed.other': 'Установлено: {count}',
+  'addons.health.enabled.one': 'Включён: {count}',
+  'addons.health.enabled.few': 'Включено: {count}',
+  'addons.health.enabled.many': 'Включено: {count}',
+  'addons.health.enabled.other': 'Включено: {count}',
+  'addons.health.refresh': 'Обновить аддон',
+  'addons.health.refreshing': 'Обновление {name}…',
+  'addons.health.refreshed': '{name} обновлён.',
+  'addons.health.unchanged': '{name} ответил: ничего не изменилось.',
+  'addons.health.refresh-failed': '{name} не ответил. Orbit продолжает использовать то, что было.',
+  // Source preferences: minimum size (rooms/settings/playback.ts, rooms/detail/streams.ts)
+  'sources.rules.min-size': 'Минимальный размер',
+  'sources.rules.min-size-hint': 'Для фильмов; для серий — треть от этого. Файлы меньше, часто подделки или экранки, уходят в конец списка, но не скрываются. Источники без указания размера не затрагиваются.',
+  'titles.why.under-size': 'Меньше вашего минимума в {size} ГБ',
+  // Searching collections (rooms/collections/overview.ts, page.ts)
+  'collections.search.label': 'Найти коллекцию',
+  'collections.search.placeholder': 'Найти коллекцию',
+  'collections.search.none': 'Подходящих коллекций нет',
+  'collections.search.none-detail': 'Поиск идёт по названиям и группам.',
+  'collections.search.titles-label': 'Найти в этой коллекции',
+  'collections.search.titles-placeholder': 'Найти фильм или сериал',
+  'collections.search.no-titles': 'Здесь ничего не найдено',
+  // Release Radar → Export to calendar (rooms/library/calendar.ts)
+  'radar.export': 'Экспорт в календарь (.ics)',
+  'radar.export.hint': 'Сохраняет то, что показывает Радар, в файл, который можно импортировать в любой календарь.',
+  'radar.export.name': 'Радар релизов Orbit',
+  // Automatic skips after a delay (rooms/player/skip-controller.ts, rooms/settings/playback.ts)
+  'playerplus.skip.auto-in': '{label} через {seconds}',
+  'playerplus.settings.skip-delay': 'Пауза перед автоматическим пропуском',
+  'playerplus.settings.skip-delay-hint': 'Для фрагментов с режимом «Автоматически»: сначала кнопка «Пропустить» ведёт обратный отсчёт. Нажмите любую клавишу, чтобы остановить его и смотреть.',
+  'playerplus.settings.skip-delay-none': 'Без паузы',
+};

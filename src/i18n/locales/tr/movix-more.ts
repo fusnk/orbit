@@ -1,0 +1,68 @@
+import type { movixMore as source } from '../en/movix-more';
+import type { Catalog } from '../types';
+
+/** Turkish strings for the Movix-inspired additions. */
+export const movixMore: Catalog<typeof source> = {
+  // Settings → Playback → Next episode: when Next Up appears and its style (rooms/settings/next-up-rows.ts)
+  'movix.next-up.when': 'Sıradaki ne zaman görünsün',
+  'movix.next-up.when-hint': 'Jeneriği bilinmeyen bölümler için. Biliniyorsa Sıradaki jenerikle birlikte gelir.',
+  'movix.next-up.when-percent': 'Bölümün bir noktasında',
+  'movix.next-up.when-before-end': 'Bitişten önce',
+  'movix.next-up.amount': 'Görüneceği yer',
+  'movix.next-up.amount-hint': 'Bölümün ne kadarında ya da bitişten kaç dakika önce. Bitişten önceki dakikalar hiçbir zaman bölümün yarısından önce gelmez.',
+  'movix.next-up.style': 'Sıradaki stili',
+  'movix.next-up.style-hint': 'Köşede küçük bir kart ya da görüntünün yanında bir panel.',
+  'movix.next-up.style-card': 'Kart',
+  'movix.next-up.style-panel': 'Panel',
+  // Exact air times from TVmaze: the setting and "Out today at 21:00" (catalog/air-times.ts, rooms/settings/general.ts)
+  'movix.air.setting': 'Tam yayın saatlerini bul',
+  'movix.air.setting-hint': 'Ücretsiz bir TV rehberi olan TVmaze’e yeni bölümlerin ne zaman yayınlanacağını sorar: Çıkış Radarı “Bugün 21:00’de” der, bildirimler bölüm yayınlandığında gelir ve otomatik oynatma bölüm çıkana kadar bekler. Yalnızca dizinin IMDb veya TheTVDB kimliği gönderilir.',
+  'movix.air.today': 'Bugün {time}’de',
+  'movix.air.tomorrow': 'Yarın {time}’de',
+  'movix.air.date': '{date}, {time}’de',
+  // Episode reminders: "Remind me" on an upcoming episode, and the notification (rooms/detail/reminder-button.ts, library/reminders.ts)
+  'movix.remind.set': 'Hatırlat',
+  'movix.remind.current': 'Hatırlatma: {when}',
+  'movix.remind.on-day': 'Çıktığı gün',
+  'movix.remind.days-before.one': '{count} gün önce',
+  'movix.remind.days-before.other': '{count} gün önce',
+  'movix.remind.none': 'Hatırlatma yok',
+  'movix.remind.saved': '{name} yeni bölümleri için hatırlatılacaksın: {when}.',
+  'movix.remind.removed': '{name} için artık hatırlatma yok.',
+  'movix.remind.full': 'En fazla {count} dizi için hatırlatma kurulabilir. {name} eklemek için birini kaldır.',
+  'movix.remind.today': '{code} bugün çıkıyor.',
+  'movix.remind.today-at': '{code} bugün {time}’de çıkıyor.',
+  'movix.remind.tomorrow': '{code} yarın çıkıyor.',
+  'movix.remind.tomorrow-at': '{code} yarın {time}’de çıkıyor.',
+  'movix.remind.in-days.one': '{code} {count} gün sonra çıkıyor.',
+  'movix.remind.in-days.other': '{code} {count} gün sonra çıkıyor.',
+  // A film’s end screen: the next film in its franchise, offered first (rooms/player/end-screen.ts)
+  'movix.end.next-in': '{name} serisinde sıradaki',
+  // Lists: description, sort, export and import of one list (rooms/lists/lists.ts)
+  'movix.lists.sort': 'Sıralama',
+  'movix.lists.sort-added': 'Eklenme tarihi',
+  'movix.lists.sort-title': 'Ad',
+  'movix.lists.sort-year': 'Yıl',
+  'movix.lists.sort-rating': 'Puan',
+  'movix.lists.description': 'Açıklama',
+  'movix.lists.add-description': 'Açıklama ekle',
+  'movix.lists.edit-description': 'Açıklamayı düzenle',
+  'movix.lists.export': 'Listeyi dışa aktar',
+  'movix.lists.import': 'Liste içe aktar',
+  'movix.lists.imported.one': '“{name}” {count} başlıkla içe aktarıldı.',
+  'movix.lists.imported.other': '“{name}” {count} başlıkla içe aktarıldı.',
+  'movix.lists.skipped.one': 'Dosyadaki {count} başlık okunamadı ve atlandı.',
+  'movix.lists.skipped.other': 'Dosyadaki {count} başlık okunamadı ve atlandı.',
+  'movix.lists.file-too-large': 'Bu dosya bir liste olamayacak kadar büyük.',
+  'movix.lists.file-not-list': 'Bu dosya Orbit’ten dışa aktarılmış bir liste değil.',
+  'movix.lists.file-empty': 'Bu liste dosyasında Orbit’in okuyabileceği başlık yok.',
+  'errors.lists.description': 'Liste açıklaması tek satırda en fazla {max} karakterdir.',
+  // Settings → General → Comfort → Reduce visual effects → Auto: what it decided and why (rooms/settings/appearance.ts)
+  'movix.effects.auto-off': 'Otomatik olarak kapalı: Bu cihaz efektleri rahatça kaldırıyor.',
+  'movix.effects.auto-tv': 'Otomatik olarak açık: Bu bir TV.',
+  'movix.effects.auto-cores.one': 'Otomatik olarak açık: Bu cihazda {count} işlemci çekirdeği var.',
+  'movix.effects.auto-cores.other': 'Otomatik olarak açık: Bu cihazda {count} işlemci çekirdeği var.',
+  'movix.effects.auto-memory': 'Otomatik olarak açık: Bu cihazın belleği {memory}.',
+  'movix.effects.auto-frames.one': 'Otomatik olarak açık: Arayüz burada saniyede {count} karede çalıştı.',
+  'movix.effects.auto-frames.other': 'Otomatik olarak açık: Arayüz burada saniyede {count} karede çalıştı.',
+};

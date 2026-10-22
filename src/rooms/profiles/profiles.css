@@ -1,0 +1,942 @@
+/* "Who's watching?" (after the user's reference): a dark field with an accent
+   glow from the top, round avatars, names underneath. */
+.who {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  background: var(--color-bg);
+  color: var(--color-text);
+  isolation: isolate;
+}
+
+/* `display: grid` above would otherwise win over [hidden] (the picker steps aside for Theme Studio's prompt). */
+.who[hidden] {
+  display: none;
+}
+
+.who.overlay {
+  animation: page-in var(--duration-enter) var(--ease);
+}
+
+.who-glow {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: 55%;
+  background: radial-gradient(70% 90% at 50% 0%, color-mix(in srgb, var(--color-accent) 38%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+/* Reduce visual effects: no decorative glow. */
+:root[data-effects='reduced'] .who-glow {
+  display: none;
+}
+
+.who-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-10) var(--page-gutter);
+  text-align: center;
+}
+
+.who-title {
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.who-title.small {
+  font-size: 28px;
+}
+
+/* The profiles: big round pictures in a row that wraps, names underneath.
+   A tile lifts under the pointer or focus, and its picture gets a light ring. */
+.who-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-5) var(--space-6);
+  max-width: 900px;
+  margin-block-start: var(--space-4);
+}
+
+.who-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: var(--who-tile, 160px);
+  padding: var(--space-3) var(--space-2);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--color-text-muted);
+  transition:
+    color var(--duration-fast) var(--ease),
+    transform var(--duration-hover) var(--ease);
+}
+
+.who-tile:hover,
+.who-tile:focus-visible {
+  color: var(--color-text);
+  transform: translateY(-6px);
+}
+
+/* The avatar's ring is the focus mark, so the default ring around the tile would double it. */
+.who-tile:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.who-tile:hover .avatar,
+.who-tile:focus-visible .avatar {
+  box-shadow: 0 0 0 4px var(--color-bg), 0 0 0 7px var(--color-text);
+}
+
+.who-tile:active {
+  transform: translateY(-3px) scale(0.98);
+}
+
+/* Settings → Appearance → Motion: Reduce, or System with the OS asking for less (Full keeps the lift). */
+:root[data-motion='reduce'] :is(.who-tile, .who-tile:hover, .who-tile:focus-visible, .who-tile:active) {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) :is(.who-tile, .who-tile:hover, .who-tile:focus-visible, .who-tile:active) {
+    transform: none;
+  }
+}
+
+/* Smaller windows: the tiles shrink so four still fit in a row. */
+@media (width < 760px) {
+  .who {
+    --who-tile: 128px;
+  }
+
+  .who .avatar.large {
+    width: 96px;
+    height: 96px;
+    font-size: 38px;
+  }
+}
+
+.who-name {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A badge on the picture's corner: a lock for a PIN, the level for a content limit. */
+.who-badge {
+  position: absolute;
+  inset-block-end: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding-inline: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-overlay, var(--color-surface-raised));
+  color: var(--color-text);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  box-shadow: 0 0 0 3px var(--color-bg);
+}
+
+.who-badge-lock {
+  inset-inline-end: 2px;
+  padding-inline: 0;
+}
+
+.who-badge-lock .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.who-badge-kids {
+  inset-inline-start: 2px;
+  background: var(--color-accent);
+  color: #fff;
+}
+
+/* Both badges on one picture: the lock moves to the top corner. */
+.who-badge-lock:has(+ .who-badge-kids) {
+  inset-block-end: auto;
+  inset-block-start: 2px;
+}
+
+.who-tile-add .avatar.add {
+  color: var(--color-text-muted);
+}
+
+.who-tile-add:hover .avatar.add,
+.who-tile-add:focus-visible .avatar.add {
+  color: var(--color-text);
+}
+
+.who-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-start: var(--space-4);
+}
+
+/* "Manage profiles": a quiet link under the profiles, as the pattern has it. */
+.who-manage {
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition:
+    color var(--duration-hover) var(--ease),
+    text-decoration-color var(--duration-hover) var(--ease);
+}
+
+.who-manage:hover,
+.who-manage:focus-visible {
+  color: var(--color-text);
+  text-decoration-color: currentColor;
+}
+
+/* Avatars: the initial on the profile's colour, with a soft inner light. */
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 60%),
+    var(--avatar, var(--color-accent));
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: box-shadow var(--duration-fast) var(--ease);
+}
+
+.avatar.large {
+  width: 128px;
+  height: 128px;
+  font-size: 48px;
+}
+
+/* PIN entry: a real input under four dots, so typing, paste and screen readers all work. */
+.pin-field {
+  position: relative;
+  cursor: text;
+}
+
+.pin-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+}
+
+.pin-dots {
+  display: flex;
+  gap: 14px;
+  padding: 10px;
+  border-radius: var(--radius-full);
+}
+
+.pin-field:focus-within .pin-dots {
+  box-shadow: var(--focus-ring);
+}
+
+.pin-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--color-text-faint);
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.pin-dot.filled {
+  background: var(--color-text);
+  box-shadow: none;
+}
+
+.pin-dots.shake {
+  animation: shake 320ms var(--ease);
+}
+
+@keyframes shake {
+  20%,
+  60% {
+    transform: translateX(-8px);
+  }
+  40%,
+  80% {
+    transform: translateX(8px);
+  }
+}
+
+.pin-message {
+  min-height: 1.6em;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-danger-text);
+}
+
+/* The title-bar avatar button. */
+.profile-button {
+  align-self: center;
+  margin-inline-end: var(--space-2);
+  padding: 2px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.profile-button:hover .avatar {
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-text-faint);
+}
+
+/* The profile's name beside the avatar: shown only by the Arc bar, on wide windows (nav-layouts.css). */
+.profile-name {
+  display: none;
+}
+
+/* ── Managing profiles ─────────────────────────────────────────────────── */
+
+.who-avatar {
+  position: relative;
+}
+
+.who-edit-mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(11, 10, 9, 0.55);
+  color: #fff;
+}
+
+.who-tile.managing .avatar {
+  color: transparent;
+  text-shadow: none;
+}
+
+.who-edit-mark .icon {
+  width: 32px;
+  height: 32px;
+}
+
+.avatar.add {
+  background: var(--color-surface-raised);
+  color: var(--color-text-muted);
+  box-shadow: inset 0 0 0 2px var(--color-border-strong);
+}
+
+.avatar.add .icon {
+  width: 40px;
+  height: 40px;
+}
+
+.who-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: min(360px, 100%);
+}
+
+.who-form .who-name-field {
+  width: 100%;
+  height: 48px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.swatch {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--swatch);
+}
+
+.swatch[aria-pressed='true'] {
+  box-shadow: 0 0 0 3px var(--color-bg), 0 0 0 5px var(--color-text);
+}
+
+.who-section {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  /* One width for every section, so their top borders (the dividers) line up rather than each hugging its content. */
+  width: min(420px, 100%);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.who-section .muted {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+/* Long words (German, Arabic) or names don't fit five levels on one line: the choices wrap rather than spill out of their pill. */
+.who-section .segments {
+  flex-wrap: wrap;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+}
+
+/* A choice that needs another profile's PIN. */
+.who-section .segment:disabled {
+  opacity: 0.4;
+}
+
+.who-section-label {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+/* Picture avatars fill the circle. */
+.avatar.picture {
+  overflow: clip;
+  background: var(--color-surface-raised);
+}
+
+.avatar.picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* A TMDB character's portrait: the face, not the middle. */
+  object-position: 50% 20%;
+}
+
+/* ── Browsing a show's characters (TMDB) ─────────────────────────────── */
+
+.who-characters {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: min(760px, 100vw - 2 * var(--page-gutter));
+}
+
+.characters-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.character-titles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.character-title {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  text-align: start;
+}
+
+.character-title:hover,
+.character-title:focus-visible {
+  background: var(--color-surface-overlay, var(--color-surface-raised));
+}
+
+.character-title-poster {
+  width: 36px;
+  height: 54px;
+  overflow: clip;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.character-title-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.character-title-name {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.character-title-year {
+  color: var(--color-text-faint);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.characters-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.characters-head h2 {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}
+
+.characters-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.character-name {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.character-actor {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: var(--font-size-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.characters-credit {
+  margin: 0;
+  font-size: var(--font-size-xs);
+}
+
+.swatches[hidden] {
+  display: none;
+}
+
+/* ── Picture gradients ───────────────────────────────────────────────────
+   Every picture sits on a bold two-colour gradient, chosen per picture in
+   library/avatars.ts (AVATAR_GRADIENTS); classes, so no style strings. */
+.gradient-sunset {
+  --g1: #ff5fa2;
+  --g2: #7b4dff;
+}
+
+.gradient-lagoon {
+  --g1: #2fe0d0;
+  --g2: #138aa6;
+}
+
+.gradient-lemon {
+  --g1: #ffe066;
+  --g2: #ff9f2e;
+}
+
+.gradient-cherry {
+  --g1: #ff5a5f;
+  --g2: #c41f5a;
+}
+
+.gradient-ocean {
+  --g1: #4da3ff;
+  --g2: #3a3fd6;
+}
+
+.gradient-mint {
+  --g1: #8af5b8;
+  --g2: #1fa67a;
+}
+
+.gradient-grape {
+  --g1: #c07bff;
+  --g2: #5a2bd6;
+}
+
+.gradient-peach {
+  --g1: #ffc09a;
+  --g2: #ff6f6f;
+}
+
+.gradient-night {
+  --g1: #4453e0;
+  --g2: #161b4f;
+}
+
+.gradient-lime {
+  --g1: #e4f76a;
+  --g2: #4fc27a;
+}
+
+/* Only once the picture is there: an upload still loading shows the initial on its colour. */
+.avatar.picture.gradient,
+.character-photo.gradient {
+  background: linear-gradient(150deg, var(--g1), var(--g2));
+}
+
+/* ── Editing a profile: the big picture beside the name ─────────────── */
+
+.avatar.xl {
+  width: 136px;
+  height: 136px;
+  border-radius: var(--radius-lg);
+  font-size: 56px;
+}
+
+.who-identity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  width: min(560px, 100%);
+}
+
+.who-identity-fields {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.who-identity .who-name-field {
+  /* Not .text-field's flex: 1 — in this column that's a zero height basis, which squashed the field. */
+  flex: none;
+  width: 100%;
+  height: 48px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: start;
+}
+
+.picture-preview {
+  position: relative;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  transition: transform var(--duration-hover) var(--ease);
+}
+
+.picture-preview:hover:not(:disabled),
+.picture-preview:focus-visible {
+  transform: translateY(-4px);
+}
+
+.picture-preview:focus-visible {
+  outline: none;
+}
+
+.picture-preview:hover:not(:disabled) .avatar,
+.picture-preview:focus-visible .avatar {
+  box-shadow: 0 0 0 3px var(--color-bg), 0 0 0 6px var(--color-text);
+}
+
+/* The pencil on the picture's corner says it can be changed. */
+.picture-preview-edit {
+  position: absolute;
+  inset-block-end: -6px;
+  inset-inline-end: -6px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-light);
+  color: var(--color-on-light);
+  box-shadow: 0 0 0 3px var(--color-bg);
+}
+
+.picture-preview-edit .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.picture-preview:disabled .picture-preview-edit {
+  display: none;
+}
+
+/* Narrow windows: the picture goes above the name. */
+@media (width < 560px) {
+  .who-identity {
+    flex-direction: column;
+  }
+
+  .who-identity-fields {
+    align-items: stretch;
+    width: 100%;
+  }
+}
+
+/* ── Choosing a picture: big square tiles by group ──────────────────── */
+
+/* Sized by the window: the page around it is only as wide as what it holds. */
+.who-pictures {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: min(920px, 100vw - 2 * var(--page-gutter));
+}
+
+.who-pictures .who-actions {
+  justify-content: center;
+}
+
+.picture-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-align: start;
+}
+
+.picture-group .pin-message:empty {
+  display: none;
+}
+
+/* Under the grid only when choosing a profile failed: no gap otherwise. */
+.who-grid-message:empty {
+  display: none;
+}
+
+.picture-group-label {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.picture-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: var(--space-3);
+}
+
+.picture-tile {
+  position: relative;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  transition: transform var(--duration-hover) var(--ease);
+}
+
+.picture-tile:hover,
+.picture-tile:focus-visible {
+  transform: translateY(-4px);
+}
+
+.picture-tile:focus-visible {
+  outline: none;
+}
+
+.picture-tile:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+.avatar.tile {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-md);
+  font-size: 40px;
+}
+
+/* Chosen: a ring and a check; under focus or the pointer, a fainter ring. */
+.picture-tile:hover .avatar,
+.picture-tile:focus-visible .avatar {
+  box-shadow: 0 0 0 3px var(--color-bg), 0 0 0 5px var(--color-text-muted);
+}
+
+.picture-tile[aria-pressed='true'] .avatar {
+  box-shadow: 0 0 0 3px var(--color-bg), 0 0 0 6px var(--color-text);
+}
+
+.picture-check {
+  position: absolute;
+  inset-block-start: 6px;
+  inset-inline-end: 6px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-light);
+  color: var(--color-on-light);
+}
+
+.picture-check .icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 3;
+}
+
+/* Upload and Browse: an icon with its name, on the quiet surface. */
+.avatar.tile.add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-shadow: none;
+}
+
+.avatar.tile.add .icon {
+  width: 28px;
+  height: 28px;
+}
+
+.picture-tile-label {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+}
+
+.picture-tile:hover .avatar.add,
+.picture-tile:focus-visible .avatar.add {
+  color: var(--color-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .picture-tile,
+  .picture-tile:hover,
+  .picture-tile:focus-visible,
+  .picture-tile:active,
+  .picture-preview:hover:not(:disabled),
+  .picture-preview:focus-visible,
+  .character-option:hover,
+  .character-option:focus-visible {
+    transform: none;
+  }
+}
+
+/* ── Characters: square photos on gradient tiles ────────────────────── */
+
+.character-chips {
+  justify-content: center;
+}
+
+.character-chips[hidden] {
+  display: none;
+}
+
+.characters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.character-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  transition:
+    color var(--duration-fast) var(--ease),
+    transform var(--duration-hover) var(--ease);
+}
+
+.character-option:hover,
+.character-option:focus-visible {
+  color: var(--color-text);
+  transform: translateY(-4px);
+}
+
+.character-option:focus-visible {
+  outline: none;
+}
+
+.character-photo {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  margin-block-end: var(--space-1);
+  overflow: clip;
+  border-radius: var(--radius-md);
+  isolation: isolate;
+  transition: box-shadow var(--duration-fast) var(--ease);
+}
+
+/* The photo, faces first, fades into the gradient at the bottom and takes a
+   little of its colour (a light duotone). */
+.character-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+  filter: contrast(1.1) saturate(0.85);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent 98%);
+}
+
+.character-photo::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(150deg, var(--g1), var(--g2));
+  content: '';
+  mix-blend-mode: color;
+  opacity: 0.4;
+}
+
+.character-option:hover .character-photo,
+.character-option:focus-visible .character-photo {
+  box-shadow: 0 0 0 3px var(--color-bg), 0 0 0 5px var(--color-text);
+}
+
+.who-characters .character-search {
+  flex: none;
+  inline-size: 100%;
+  block-size: var(--control-primary);
+  font-size: var(--font-size-md);
+}

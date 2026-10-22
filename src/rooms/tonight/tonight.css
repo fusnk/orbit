@@ -1,0 +1,74 @@
+/* ── Tonight drawer: Surprise Me's form (discover.css), then three suggestions ── */
+
+.tonight-intro,
+.tonight-status {
+  margin: 0;
+}
+
+.tonight-status:empty {
+  display: none;
+}
+
+.tonight .segments {
+  flex-wrap: wrap;
+  align-self: flex-start;
+}
+
+.tonight-picks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.tonight-pick {
+  display: flex;
+  gap: var(--space-4);
+  padding-block-start: var(--space-4);
+  border-block-start: 1px solid var(--color-border);
+}
+
+.tonight-poster {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: oklch(0.35 0.06 var(--hue, 220));
+}
+
+.tonight-poster-name {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-align: center;
+}
+
+.tonight-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.tonight-name {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+.tonight-note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.tonight-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-start: auto;
+}

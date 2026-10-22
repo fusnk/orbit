@@ -1,0 +1,771 @@
+/* Theme Studio: a panel docked at the window's end side. The app narrows to
+   make room (and becomes the containing block for its own fixed parts, such
+   as a sidebar nav or the dock, so they stay beside the panel). */
+
+:root {
+  --studio-width: min(400px, 45vw);
+}
+
+:root[data-studio='open']:not(.player-open) #app {
+  inset-inline-end: var(--studio-width);
+  contain: layout;
+}
+
+/* The player has the whole window; the panel comes back when it closes. */
+html.player-open .studio {
+  display: none;
+}
+
+.studio {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  width: var(--studio-width);
+  background: var(--color-panel);
+  box-shadow: inset 1px 0 0 var(--color-border-strong);
+  color: var(--color-text);
+}
+
+[dir='rtl'] .studio {
+  box-shadow: inset -1px 0 0 var(--color-border-strong);
+}
+
+.studio-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-4) var(--space-3) var(--space-5);
+}
+
+.studio-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.studio-name {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(var(--font-display-tracking) * 0.02em);
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studio-header-actions {
+  display: flex;
+  flex: none;
+  gap: var(--space-2);
+}
+
+.studio-header-actions .round-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.studio-header-actions .icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+}
+
+.studio-tabs {
+  display: flex;
+  margin: 0 var(--space-4) var(--space-2);
+}
+
+.studio-tab-button {
+  flex: 1;
+}
+
+.studio-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--space-5) var(--space-6);
+}
+
+.studio-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+.studio-footer-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+
+/* Saving: looks like a disabled button, but keeps the keyboard focus (index.ts). */
+.studio-footer .button[aria-disabled='true'] {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.studio-footer .icon {
+  width: 15px;
+  height: 15px;
+  margin-inline-end: 6px;
+  stroke-width: 2;
+}
+
+.studio-status {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.studio[data-dirty='true'] .studio-status::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-inline-end: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  vertical-align: 1px;
+}
+
+.studio-confirm-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  background: color-mix(in srgb, var(--color-panel) 82%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.studio-confirm-layer[hidden] {
+  display: none;
+}
+
+.studio-confirm-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(var(--color-surface-raised), var(--color-surface-raised)), var(--color-panel);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong), 0 18px 48px rgba(0, 0, 0, 0.45);
+}
+
+.studio-confirm-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.studio-confirm-text {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.studio-confirm-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-block-start: var(--space-2);
+}
+
+/* ── Sections and fields ── */
+
+.studio-tab {
+  display: flex;
+  flex-direction: column;
+}
+
+.studio-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.studio-section:last-child {
+  border-bottom: 0;
+}
+
+.studio-section-title {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.studio-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.studio-field-row {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.studio-field-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.studio-field-label {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.studio-field-hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-text-faint);
+}
+
+.studio-segments {
+  flex-wrap: wrap;
+  align-self: flex-start;
+  border-radius: var(--radius-lg);
+}
+
+.studio-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ── Look ── */
+
+.studio-presets .chip {
+  padding-inline-start: 8px;
+}
+
+.studio-preset-dots {
+  display: inline-flex;
+}
+
+.studio-preset-dots > span {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px var(--color-panel);
+}
+
+.studio-preset-dots > span + span {
+  margin-inline-start: -5px;
+}
+
+.studio-color {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.studio-color-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* .text-field grows along a row; in these columns it keeps its height. */
+.studio-field > .text-field {
+  flex: none;
+}
+
+.studio-color .hex-field {
+  width: 96px;
+  direction: ltr;
+  padding: 0 var(--space-3);
+}
+
+.hex-field.invalid {
+  box-shadow: inset 0 0 0 1px var(--color-danger);
+}
+
+.studio-swatches {
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* "Accent" follows the theme, so it's marked as more than a colour. */
+.seek-accent-swatch {
+  background: conic-gradient(from 45deg, var(--color-accent-hi), var(--color-accent), var(--color-accent-lo), var(--color-accent-hi));
+}
+
+/* A slider: the filled part in the accent; a ring while it's being adjusted. */
+.studio-slider-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.studio-slider {
+  flex: 1;
+  height: 20px;
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+}
+
+.studio-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--color-accent) calc(var(--fraction, 0) * 100%), var(--color-surface-overlay) 0);
+}
+
+[dir='rtl'] .studio-slider::-webkit-slider-runnable-track {
+  background: linear-gradient(270deg, var(--color-accent) calc(var(--fraction, 0) * 100%), var(--color-surface-overlay) 0);
+}
+
+.studio-slider::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--color-text);
+  appearance: none;
+}
+
+.studio-slider:focus-visible {
+  outline: none;
+}
+
+.studio-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: var(--focus-ring);
+}
+
+.studio-slider.editing::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--color-accent);
+}
+
+.studio-slider-value {
+  min-width: 48px;
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  color: var(--color-text-muted);
+}
+
+/* A colour's swatch, and the readability warnings under the colours. */
+.theme-color {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+}
+
+.theme-color::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.theme-color::-webkit-color-swatch {
+  border: 0;
+  border-radius: 4px;
+}
+
+.theme-color:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.theme-warnings {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-danger-text);
+  font-size: var(--font-size-sm);
+}
+
+.theme-warnings:empty {
+  display: none;
+}
+
+.theme-warnings li::before {
+  content: '⚠ ';
+}
+
+/* The seek bar on a dark strip like the player's, whatever the theme. */
+.seek-sample-strip {
+  padding: var(--space-5) var(--space-5);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(120% 140% at 20% 0%, #2a2733, transparent 60%),
+    #0d0c10;
+  direction: ltr;
+}
+
+.seek-sample {
+  pointer-events: none;
+}
+
+.seek-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ── Layout ── */
+
+.studio-layouts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.studio-layout-card {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: var(--space-2) var(--space-2) var(--space-3);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: start;
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.studio-layout-card:hover {
+  background: var(--color-surface-raised);
+}
+
+.studio-layout-card[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.studio-layout-card:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.studio-layout-name {
+  padding: 0 var(--space-1);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.studio-layout-hint {
+  padding: 0 var(--space-1);
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--color-text-faint);
+}
+
+/* A small window: page grey, posters, and the nav as an accent-ish bar. */
+.layout-mini {
+  position: relative;
+  display: block;
+  height: 72px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+}
+
+.layout-mini-nav {
+  position: absolute;
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 6px;
+  background: var(--color-surface-overlay);
+}
+
+.layout-mini-nav > span {
+  width: 9px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-text-faint);
+}
+
+.layout-mini-nav > span:first-child {
+  background: var(--color-accent);
+}
+
+.layout-mini-page {
+  position: absolute;
+  inset: 16px 8px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.layout-mini-hero {
+  flex: 1;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--color-accent) 35%, var(--color-panel));
+}
+
+.layout-mini-row {
+  display: flex;
+  gap: 3px;
+}
+
+.layout-mini-row > span {
+  flex: 1;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--color-surface-overlay);
+}
+
+.layout-mini-top .layout-mini-nav,
+.layout-mini-cinematic .layout-mini-nav {
+  top: 4px;
+  inset-inline: 0;
+  width: max-content;
+  margin-inline: auto;
+}
+
+.layout-mini:is(.layout-mini-top, .layout-mini-cinematic)[data-align='start'] .layout-mini-nav {
+  margin-inline: 20px auto;
+}
+
+.layout-mini-arc .layout-mini-nav {
+  top: 4px;
+  inset-inline: 20px auto;
+  background: none;
+}
+
+.layout-mini-arc .layout-mini-nav > span:first-child {
+  background: var(--color-text);
+  box-shadow: 0 2px 0 -0.5px var(--color-accent);
+}
+
+.layout-mini-cinematic .layout-mini-page {
+  inset-block-start: 4px;
+}
+
+.layout-mini-cinematic .layout-mini-nav {
+  z-index: 1;
+  background: color-mix(in srgb, var(--color-text) 25%, transparent);
+}
+
+.layout-mini-sidebar .layout-mini-nav,
+.layout-mini-rail .layout-mini-nav {
+  inset-block: 6px;
+  inset-inline-start: 4px;
+  flex-direction: column;
+}
+
+.layout-mini-sidebar .layout-mini-nav > span {
+  width: 22px;
+}
+
+.layout-mini-rail .layout-mini-nav > span {
+  width: 5px;
+  height: 5px;
+}
+
+.layout-mini-sidebar .layout-mini-page {
+  inset-block: 6px;
+  inset-inline: 38px 8px;
+}
+
+.layout-mini-rail .layout-mini-page {
+  inset-block: 6px;
+  inset-inline: 22px 8px;
+}
+
+.layout-mini:is(.layout-mini-sidebar, .layout-mini-rail)[data-side='end'] .layout-mini-nav {
+  inset-inline: auto 4px;
+}
+
+.layout-mini-sidebar[data-side='end'] .layout-mini-page {
+  inset-inline: 8px 38px;
+}
+
+.layout-mini-rail[data-side='end'] .layout-mini-page {
+  inset-inline: 8px 22px;
+}
+
+.layout-mini-dock .layout-mini-nav {
+  bottom: 4px;
+  inset-inline: 0;
+  width: max-content;
+  margin-inline: auto;
+  z-index: 1;
+}
+
+.layout-mini-dock .layout-mini-page {
+  inset-block: 6px 6px;
+}
+
+.layout-mini-dock[data-place^='top'] .layout-mini-nav {
+  top: 4px;
+  bottom: auto;
+}
+
+.layout-mini-dock:is([data-place='top-start'], [data-place='bottom-start']) .layout-mini-nav {
+  margin-inline: 6px auto;
+}
+
+.layout-mini-dock:is([data-place='top-end'], [data-place='bottom-end']) .layout-mini-nav {
+  margin-inline: auto 6px;
+}
+
+.studio-nav-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.studio-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.studio-nav-item.dragging {
+  opacity: 0.5;
+}
+
+.studio-nav-item[data-hidden='true'] .text-field {
+  opacity: 0.5;
+}
+
+.studio-nav-item .text-field {
+  height: var(--control-chip);
+}
+
+.studio-nav-item .icon-button:disabled {
+  opacity: 0.3;
+}
+
+.studio-nav-item .icon-button .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.studio-hide[aria-pressed='true'] {
+  color: var(--color-text-faint);
+}
+
+.studio-grip {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  color: var(--color-text-faint);
+  cursor: grab;
+}
+
+.studio-grip .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Code ── */
+
+.studio-css {
+  min-height: 260px;
+  resize: vertical;
+  padding: var(--space-3);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+  tab-size: 2;
+  user-select: text;
+  direction: ltr;
+  text-align: start;
+}
+
+.studio-css.editing {
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+.studio-css:focus-visible:not(.editing) {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.studio-css-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.studio-css-count {
+  flex: none;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.studio-css-count.over {
+  color: var(--color-danger-text);
+  font-weight: 700;
+}
+
+.studio-cheats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.studio-cheats dt {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.studio-cheats dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0 0 var(--space-2);
+}
+
+.studio-cheats code {
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  word-break: normal;
+}
+
+/* Settings: the way in (Appearance's top row, and the rows that open the Studio at its colours, seek bar or menu pages). */
+.studio-open-row .button .icon,
+.studio-link .icon {
+  width: 16px;
+  height: 16px;
+  margin-inline-end: 6px;
+}

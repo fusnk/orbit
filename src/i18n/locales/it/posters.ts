@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'Valutazioni sulle locandine',
+  'posters.ratings-hint': 'I voti di IMDb, TMDB e Letterboxd sull’immagine, da ciò che Orbit sa già di ogni titolo. Minimo mostra un voto; Completo li mostra tutti.',
+  'posters.ratings-minimal': 'Minimo',
+  'posters.ratings-full': 'Completo',
+  'posters.provider': 'Fornitore delle locandine',
+  'posters.provider-hint': 'Da dove arrivano le locandine. RPDB disegna le valutazioni sulle sue locandine e richiede la tua chiave RPDB (ratingposterdb.com). Se RPDB non ha la locandina di un titolo, Orbit mostra quella solita con le sue valutazioni. Vale per le locandine disegnate dopo.',
+  'posters.provider-orbit': 'Orbit (integrato)',
+  'posters.rpdb.key': 'Chiave RPDB',
+  'posters.rpdb.key-hint': 'La tua chiave di ratingposterdb.com. Resta nel portachiavi di sistema e viene inviata solo a RPDB.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'Verifica con RPDB…',
+  'posters.rpdb.connected': 'Chiave RPDB salvata. Le locandine arriveranno da RPDB.',
+  'posters.rpdb.saved': 'Salvata',
+  'posters.rpdb.removed': 'Chiave RPDB rimossa.',
+  'posters.rpdb.key-format': 'Non sembra una chiave RPDB. Le chiavi iniziano con t0-, t1-, t2- e così via.',
+  'posters.rpdb.refused': 'RPDB non ha accettato la chiave.',
+  'posters.rpdb.busy': 'RPDB sta ricevendo troppe richieste. Riprova tra poco.',
+  'posters.rpdb.unreachable': 'Impossibile raggiungere RPDB per verificare la chiave.',
+  'posters.rpdb.style': 'Stile locandine RPDB',
+  'posters.rpdb.style-hint': 'Quali valutazioni disegna RPDB. Le chiavi gratuite includono solo Predefinito; gli altri stili richiedono un livello RPDB a pagamento.',
+  'posters.rpdb.style-default': 'Predefinito',
+  'posters.rpdb.style-certs': 'Classificazioni per età',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'Senza testo del titolo',
+  'posters.description': 'Valutazioni: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} su 5',
+};

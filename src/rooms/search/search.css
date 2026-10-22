@@ -1,0 +1,808 @@
+/* Search (rooms/search). Theme tokens throughout, so every theme (light
+   included) works; logical properties, so it mirrors right to left. Text on
+   artwork sits behind a dark shade and stays white, as on Home's banner.
+   Rows (.rail) bring their own page gutter; everything else is padded by
+   .search-pad to line up with them. */
+
+.search {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-block: 28px 72px;
+  isolation: isolate;
+}
+
+.search-pad {
+  padding-inline: var(--page-gutter);
+}
+
+.search-head {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+.search-title {
+  font-family: var(--font-display);
+  font-size: calc(var(--font-size-xl) + (clamp(28px, 3.4vw, 46px) - var(--font-size-xl)) * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.02em + 0.06em * var(--font-display-tracking));
+  line-height: 1;
+  text-wrap: balance;
+}
+
+/* ── The field ────────────────────────────────────────────────────────── */
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 980px;
+  height: 64px;
+  padding-block: 0;
+  padding-inline: 22px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border-strong),
+    0 24px 48px -28px rgba(0, 0, 0, 0.7);
+  color: var(--color-text-muted);
+  transition: box-shadow var(--duration-fast) var(--ease);
+}
+
+/* The ring sits on the box, not the bare input. */
+.search-box:has(.search-input:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+.search-box:has(.search-input.editing) {
+  box-shadow:
+    inset 0 0 0 2px var(--color-accent),
+    0 0 0 6px var(--color-accent-soft),
+    0 24px 48px -28px rgba(0, 0, 0, 0.7);
+}
+
+:root[data-effects='reduced'] .search-box,
+:root[data-effects='reduced'] .search-box:has(.search-input.editing) {
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+}
+
+:root[data-effects='reduced'] .search-box:has(.search-input.editing) {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.search-box > .icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--color-accent);
+}
+
+.text-field.search-input,
+.text-field.search-input.editing,
+.text-field.search-input:focus-visible {
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.search-clear {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.search-clear[hidden] {
+  display: none;
+}
+
+.search-clear:hover {
+  background: var(--color-surface-overlay);
+}
+
+.search-clear .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.search-kbd {
+  flex: none;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.search-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  max-width: 980px;
+}
+
+.search-note {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-faint);
+}
+
+/* ── Sections ─────────────────────────────────────────────────────────── */
+
+.search-idle,
+.search-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+.search-recent-slot:empty,
+.search-notice-slot:empty {
+  display: none;
+}
+
+.search-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.search-section[hidden] {
+  display: none;
+}
+
+.search-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.search-section-head.start {
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.search-section-head .count {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-faint);
+}
+
+.search-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.search-heading .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-faint);
+}
+
+.search-heading.large {
+  font-size: 20px;
+}
+
+.text-button,
+.button.quiet {
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.text-button:hover,
+.button.quiet:hover:not(:disabled) {
+  background: transparent;
+  color: var(--color-text);
+}
+
+/* A recent search: the query to repeat it, and × to forget it. */
+.recent-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 36px;
+  padding-block: 0;
+  padding-inline: 0 7px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  max-inline-size: 100%;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+/* A long search stays on the chip's one line, cut short, with its remove button in reach. */
+.recent-pick {
+  overflow: hidden;
+  min-inline-size: 0;
+  height: 100%;
+  padding-block: 0;
+  padding-inline: 14px 6px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent-remove {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-faint);
+}
+
+.recent-remove:hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.recent-remove .icon {
+  width: 12px;
+  height: 12px;
+}
+
+/* A search read as filters: "Showing: Horror · Movies · 2020s", each one removable. */
+.smart-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+}
+
+.smart-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.smart-label {
+  margin-inline-end: 4px;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.smart-chip-label {
+  overflow: hidden;
+  max-inline-size: 28ch;
+  padding-inline: 14px 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.smart-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+
+.smart-discover {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.smart-discover .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* The search reads as filters, but TMDB isn't connected. */
+.smart-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.smart-hint > .icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-faint);
+}
+
+/* ── Trending now: big artwork cards ──────────────────────────────────── */
+
+.search-spots {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+  height: clamp(200px, 21vw, 320px);
+}
+
+.search-spot,
+.search-spot-skeleton {
+  border-radius: var(--radius-lg);
+}
+
+.search-spot {
+  position: relative;
+  display: block;
+  min-width: 0;
+  overflow: clip;
+  padding: 0;
+  border: 0;
+  background: hsl(var(--hue, 220) 30% 22%);
+  color: #fff;
+  text-align: start;
+  isolation: isolate;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.search-spot-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.search-spot-art .art {
+  transition: transform var(--duration-hero) var(--ease);
+}
+
+.search-spot:hover .search-spot-art .art,
+.search-spot:focus-visible .search-spot-art .art {
+  transform: scale(1.04);
+}
+
+:root[data-motion='reduce'] .search-spot .search-spot-art .art {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .search-spot .search-spot-art .art {
+    transform: none;
+  }
+}
+
+/* Dark toward the bottom, where the text is, with the title's hue mixed in. */
+.search-spot-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(0deg, rgba(8, 8, 10, 0.9) 0%, rgba(8, 8, 10, 0.45) 42%, transparent 72%),
+    linear-gradient(0deg, hsl(var(--hue, 220) 55% 18% / 0.55) 0%, transparent 60%);
+}
+
+.search-spot:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* The rank as a large outlined numeral. */
+.search-spot-rank {
+  position: absolute;
+  inset-block-start: 6px;
+  inset-inline-start: 16px;
+  font-family: var(--font-display);
+  font-size: clamp(48px, 5vw, 76px);
+  font-weight: var(--font-display-weight);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(255, 255, 255, 0.85);
+  text-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.search-spot-text {
+  position: absolute;
+  inset-inline: 18px;
+  inset-block-end: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-spot-name {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 1.7vw, 26px);
+  font-weight: var(--font-display-weight);
+  line-height: 1.05;
+}
+
+.search-spot-meta,
+.search-top-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.search-spot-meta > :first-child {
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.16);
+  font-size: var(--font-size-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.search-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.search-score .icon {
+  width: 12px;
+  height: 12px;
+  color: var(--color-rating);
+}
+
+/* Name or logo: the logo, once loaded, takes the name's place (the name stays for screen readers). */
+.search-name {
+  display: block;
+}
+
+.search-name-text {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-wrap: balance;
+}
+
+.search-logo {
+  display: none;
+}
+
+.search-name.has-logo .search-name-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.search-name.has-logo .search-logo {
+  display: block;
+  max-width: min(70%, 320px);
+  max-height: 64px;
+  object-fit: contain;
+  object-position: left bottom;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.5));
+}
+
+:root[dir='rtl'] .search-name.has-logo .search-logo {
+  object-position: right bottom;
+}
+
+:root[data-effects='reduced'] .search-name.has-logo .search-logo {
+  filter: none;
+}
+
+.search-spot-skeleton {
+  height: 100%;
+}
+
+/* ── Genres ───────────────────────────────────────────────────────────── */
+
+.search-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.search-genre {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 40px;
+  padding-inline: 14px 18px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, hsl(var(--hue) 70% 50%) 14%, var(--color-surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, hsl(var(--hue) 70% 55%) 32%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.search-genre:hover {
+  background: color-mix(in srgb, hsl(var(--hue) 70% 50%) 26%, var(--color-surface));
+}
+
+/* Its own inset outline would otherwise replace the focus ring (same specificity, later rule). */
+.search-genre:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.search-genre-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: hsl(var(--hue) 75% 58%);
+}
+
+/* ── Top result ───────────────────────────────────────────────────────── */
+
+.search-top {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(300px, 32vw, 440px);
+  overflow: clip;
+  padding: clamp(22px, 3vw, 44px);
+  border-radius: var(--radius-xl);
+  /* The shade's own near-black, not the theme's panel: a title without art (some addons send none)
+     showed a light Look's white panel through the shade's clear side, under white text. */
+  background: rgb(11, 10, 9);
+  color: #fff;
+  cursor: pointer;
+  isolation: isolate;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 40px 80px -40px rgba(0, 0, 0, 0.85);
+}
+
+:root[data-effects='reduced'] .search-top {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.search-top-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.search-top-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(11, 10, 9, 0.92) 0%, rgba(11, 10, 9, 0.6) 40%, transparent 75%),
+    linear-gradient(0deg, rgba(11, 10, 9, 0.85) 0%, transparent 55%);
+}
+
+[dir='rtl'] .search-top-shade {
+  transform: scaleX(-1);
+}
+
+.search-top-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 620px;
+}
+
+.search-top-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.search-top-eyebrow .icon {
+  width: 12px;
+  height: 12px;
+  color: var(--color-rating);
+}
+
+.search-top-title {
+  max-width: 100%;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 3.8vw, 54px);
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.02em + 0.06em * var(--font-display-tracking));
+  line-height: 0.95;
+}
+
+.search-top-title .search-name.has-logo .search-logo {
+  max-width: min(420px, 100%);
+  max-height: 120px;
+}
+
+.search-top-meta {
+  font-size: 13px;
+}
+
+.search-top-meta .meta-dot {
+  opacity: 0.6;
+}
+
+.search-top-desc {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.search-top .hero-actions {
+  margin-top: 6px;
+}
+
+.search-top-skeleton {
+  height: clamp(300px, 32vw, 440px);
+  border-radius: var(--radius-xl);
+}
+
+.search-results[aria-busy='true'] {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* ── Suggestions and people ───────────────────────────────────────────── */
+
+/* "See in Discover" reads as a way onward, not a quiet link. */
+.search-suggestions .see-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+.search-suggestions .see-all .icon {
+  width: 14px;
+  height: 14px;
+  color: var(--color-accent);
+}
+
+.rail-track.search-people-track {
+  gap: 20px;
+}
+
+.search-person {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 132px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.search-person-photo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 116px;
+  height: 116px;
+  overflow: clip;
+  border-radius: 50%;
+  background: hsl(var(--hue, 220) 35% 32%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: transform var(--duration-hover) var(--ease);
+}
+
+.search-person-initials {
+  font-size: 30px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.search-person:hover .search-person-photo {
+  transform: translateY(-4px);
+}
+
+:root[data-motion='reduce'] .search-person:hover .search-person-photo {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .search-person:hover .search-person-photo {
+    transform: none;
+  }
+}
+
+.search-person:focus-visible {
+  outline: none;
+}
+
+.search-person:focus-visible .search-person-photo {
+  box-shadow: var(--focus-ring);
+}
+
+.search-person-name {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.search-person-known {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--color-text-faint);
+}
+
+/* ── Notices ──────────────────────────────────────────────────────────── */
+
+.search-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+  margin-inline: var(--page-gutter);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.search-notice-text {
+  display: flex;
+  flex: 1 1 280px;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.search-failures {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-faint);
+}
+
+@media (max-width: 900px) {
+  .search-spots {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+  }
+
+  .search-spot,
+  .search-spot-skeleton {
+    height: 200px;
+  }
+}

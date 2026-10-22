@@ -1,0 +1,57 @@
+/* Content limits: where a limit stops a page, and the badge on limited profiles. */
+
+/* A title page waiting for its rating: nothing of the title shows yet. */
+.detail.parental-gate {
+  min-block-size: 60vh;
+}
+
+.parental-page {
+  display: grid;
+  min-block-size: 60vh;
+  place-items: center;
+}
+
+.parental-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  max-inline-size: 520px;
+  margin-inline: auto;
+  padding-block: var(--space-10);
+  padding-inline: var(--page-gutter);
+  text-align: center;
+}
+
+.parental-block-icon {
+  display: grid;
+  inline-size: 64px;
+  block-size: 64px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-surface-raised);
+  color: var(--color-text-muted);
+}
+
+.parental-block-icon .icon {
+  inline-size: 28px;
+  block-size: 28px;
+}
+
+.parental-block-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+.parental-block .muted {
+  margin: 0;
+}
+
+.limit-section .switch {
+  flex-basis: 100%;
+  justify-content: space-between;
+}
+
+.parental-warning {
+  color: var(--color-text);
+}

@@ -1,0 +1,30 @@
+import type { plex as source } from '../en/plex';
+import type { Catalog } from '../types';
+
+export const plex: Catalog<typeof source> = {
+  'plex.settings.intro': "Plex hesabındaki bir Plex Media Server’dan oynat. Sunucudaki filmler ve bölümler bir Plex kaynağı kazanır, satırları da Ana Sayfa’ya eklenebilir. Girişi Plex’in kendi sayfasında yaparsın, bu yüzden Orbit şifreni asla görmez.",
+  'plex.settings.connect': "Plex ile bağlan",
+  'plex.settings.connect-hint': "Plex’in giriş sayfasını tarayıcında açar. Orada Orbit’e izin ver, sonra buraya dön.",
+  'plex.settings.opening': "Plex tarayıcında açılıyor…",
+  'plex.settings.waiting': "Tarayıcında Plex’e giriş yap ve Orbit’e izin ver. Bekleniyor…",
+  'plex.settings.open-again': "Giriş sayfasını yeniden aç",
+  'plex.settings.cancel': "İptal",
+  'plex.settings.choose': "Kullanılacak sunucuyu seç:",
+  'plex.settings.shared': "{server} (seninle paylaşılan)",
+  'plex.settings.reaching': "Bağlanılıyor: {server}…",
+  'plex.settings.server-label': "Sunucu",
+  'plex.settings.connected-as': "Kullanıcı: {user} · Sunucu: {server}",
+  'plex.settings.connected': "Bağlandı: {server}.",
+  'plex.settings.connected-first': "Bağlandı: {server}. “Son eklenenler” artık Ana Sayfa’da; daha fazla Plex satırını Ayarlar → Ana Sayfa ve Kitaplık → Ana Sayfa satırları bölümünden ekle.",
+  'plex.settings.disconnect': "Bağlantıyı kes",
+  'plex.settings.disconnected': "Bağlantı kesildi ve Orbit Plex oturumunu unuttu. Plex tarafında da iptal etmek için plex.tv’de Yetkili Cihazlar altından Orbit’i kaldır.",
+  'plex.settings.insecure': "Güvenli değil",
+  'plex.settings.insecure-title': "Orbit bu sunucuya düz http ile ulaşıyor, bu yüzden oturum bilgileri ve videolar şifrelenmeden iletilir. Evde sorun değil; internet üzerinden kullanım için Plex’te güvenli bağlantıları aç.",
+  'plex.rows.kind': "Plex",
+  'plex.rows.resume': "İzlemeye devam et",
+  'plex.rows.latest': "Son eklenenler",
+  'plex.rows.label': "Plex: {row}",
+  'plex.rows.not-connected': "Önce Ayarlar → Hesaplar ve Hizmetler bölümünden bir Plex sunucusuna bağlan.",
+  'plex.rows.libraries-failed': "Sunucunun kitaplıkları yüklenemedi.",
+  'plex.source.origin': "Plex · {server}",
+};

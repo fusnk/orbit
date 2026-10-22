@@ -1,0 +1,419 @@
+/* First-run setup (flow.ts): one quiet page over the app, the step in a
+   readable column, Back and Continue always in the same place at the foot.
+   Above the page and its title bar, under drawers, toasts and menus, so the
+   Settings sections inside can still open theirs. */
+.onboard {
+  position: fixed;
+  inset: 0;
+  z-index: 48;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.onboard-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: var(--header-height);
+  padding-inline: var(--page-gutter);
+}
+
+.onboard-progress {
+  display: flex;
+  gap: 6px;
+}
+
+.onboard-progress span {
+  width: 28px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-overlay);
+  transition: background var(--duration-hover) var(--ease);
+}
+
+.onboard-progress span.reached {
+  background: var(--color-accent);
+}
+
+.onboard-count {
+  flex: 1;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.onboard-scroll {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.onboard-column {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 100%);
+  margin-inline: auto;
+  padding: var(--space-8) var(--page-gutter) var(--space-12);
+}
+
+/* The Orbit mark, as the launch ident leaves it, only on the welcome. */
+.onboard-mark {
+  display: none;
+  width: 64px;
+  height: 61px;
+  margin-bottom: var(--space-6);
+  overflow: visible;
+}
+
+.onboard[data-step='welcome'] .onboard-mark {
+  display: block;
+}
+
+.onboard[data-step='welcome'] .onboard-column {
+  padding-top: clamp(var(--space-8), 8vh, 96px);
+}
+
+/* As wide as its words: arrow keys go on from the heading by its middle, which across the whole column
+   was over the second Look, not the first. */
+.onboard-title {
+  align-self: flex-start;
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display);
+  font-size: clamp(34px, 4vw, 56px);
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.01em + 0.05em * var(--font-display-tracking));
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+/* Focused for screen readers and as the start for arrow keys; it does nothing itself. */
+.onboard-title:focus,
+.onboard-title:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.onboard-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.onboard-body.entering {
+  animation: page-in var(--duration-enter) var(--ease-drawer);
+}
+
+:root[data-motion='reduce'] .onboard-body.entering {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .onboard-body.entering {
+    animation: none;
+  }
+}
+
+.onboard-lede {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.onboard-note {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+}
+
+.onboard-subhead {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+/* Languages: each in its own name and script. */
+.onboard-language-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-2);
+}
+
+.onboard-language-option {
+  min-height: var(--control-primary);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  text-align: start;
+  transition: background var(--duration-fast) var(--ease), border-color var(--duration-fast) var(--ease);
+}
+
+.onboard-language-option:hover:not(:disabled) {
+  background: var(--color-surface-raised);
+}
+
+.onboard-language-option[aria-pressed='true'] {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.onboard-language-option:disabled {
+  opacity: 0.5;
+}
+
+/* The Look cards come from Settings; the step's own heading and lede replace theirs. */
+.onboard .looks-heading,
+.onboard .looks-hint {
+  display: none;
+}
+
+.onboard .looks-grid {
+  margin-top: 0;
+}
+
+/* "Bring your stuff": three ways in, one per row. */
+.onboard-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.onboard-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: start;
+  transition: background var(--duration-fast) var(--ease), border-color var(--duration-fast) var(--ease);
+}
+
+.onboard-option:hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-raised);
+}
+
+.onboard-option-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.onboard-option-icon .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.onboard-option-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.onboard-option-name {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+.onboard-option-hint {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+}
+
+.onboard-option-go {
+  color: var(--color-text-faint);
+}
+
+.onboard-option[data-source='later'] {
+  border-style: dashed;
+  background: transparent;
+}
+
+.onboard-others {
+  align-self: flex-start;
+}
+
+[dir='rtl'] .onboard-option-go .icon,
+[dir='rtl'] .onboard .button .icon {
+  transform: scaleX(-1);
+}
+
+.onboard-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* The sections bring their own top rule and heading spacing from Settings. */
+.onboard-section .settings-subheading:first-child {
+  margin-top: 0;
+}
+
+.onboard-perks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.onboard-perks li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--font-size-md);
+  line-height: 1.45;
+}
+
+.onboard-perks .icon {
+  margin-top: 3px;
+  color: var(--color-success);
+  stroke-width: 2.4;
+}
+
+.onboard-get {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+
+/* The field from Settings, without its name and long hint: the heading and list above say both. */
+.onboard-tmdb .setting-row {
+  grid-template-columns: minmax(0, 1fr);
+  padding-block: var(--space-2) 0;
+  border-bottom: 0;
+}
+
+.onboard-tmdb .setting-text {
+  display: none;
+}
+
+.onboard-tmdb .provider-key {
+  justify-content: flex-start;
+}
+
+.onboard-section .onboard-subhead {
+  margin-bottom: 0;
+}
+
+.onboard-debrid {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.onboard-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--page-gutter);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+/* Back is hidden on the first step; Continue stays at the end either way. */
+.onboard-foot .button.primary {
+  margin-inline-start: auto;
+}
+
+.onboard-foot .button[hidden] {
+  display: none;
+}
+
+/* Home's "Getting started" card (checklist.ts), in the welcome card's frame. */
+.checklist .welcome-text {
+  flex: 0 1 auto;
+}
+
+.checklist-items {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checklist-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-compact);
+  padding-inline: 6px var(--space-4);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.checklist-item:hover:not(:disabled) {
+  background: var(--color-surface-overlay);
+}
+
+.checklist-item:disabled {
+  background: transparent;
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--color-text-faint);
+}
+
+.checklist-tick {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: 50%;
+}
+
+.checklist-item:disabled .checklist-tick {
+  border-color: transparent;
+  background: var(--color-success);
+  color: var(--color-on-light);
+}
+
+.checklist-tick .icon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.6;
+}
+
+@media (max-width: 1100px) {
+  .checklist {
+    flex-wrap: wrap;
+  }
+
+  .checklist-items {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  /* Dismiss stays in the card's corner, as on a wide window, not just after the title. */
+  .checklist .welcome-actions {
+    margin-inline-start: auto;
+  }
+}

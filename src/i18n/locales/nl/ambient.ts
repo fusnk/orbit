@@ -1,0 +1,26 @@
+import type { ambient as source } from '../en/ambient';
+
+export const ambient: Record<keyof typeof source, string> = {
+  'ambient.label': 'Sfeermodus',
+  'ambient.hint.details': 'Enter voor details',
+  'ambient.slide.resume': 'Hervatten',
+  'ambient.slide.resume-episode': '{episode} hervatten',
+  'ambient.slide.library': 'In Mijn bibliotheek',
+  'ambient.slide.recent': 'Onlangs bekeken',
+  'ambient.slide.trending': 'Nu populair',
+  'ambient.settings.heading': 'Sfeermodus',
+  'ambient.settings.after': 'Starten na',
+  'ambient.settings.after-hint': 'Als er zo lang niets wordt ingedrukt, gaat Orbit over in een rustige diavoorstelling van beelden. Nooit terwijl er iets speelt.',
+  'ambient.settings.source': 'Wat hij toont',
+  'ambient.settings.source-hint': 'Wat je kijkt en hebt bewaard, wat populair is, of beide om de beurt.',
+  'ambient.settings.source-for-you': 'Voor jou',
+  'ambient.settings.source-trending': 'Trending',
+  'ambient.settings.source-both': 'Beide',
+  'ambient.settings.clock': 'De klok tonen',
+  'ambient.settings.clock-hint': 'De tijd en datum in een hoek.',
+  'ambient.settings.paused': 'Ook bij pauze',
+  'ambient.settings.paused-hint': 'Start over de speler zodra die zo lang gepauzeerd is. Het afspelen blijft precies zoals het was.',
+  'ambient.settings.preview': 'Voorbeeld',
+  'ambient.settings.preview-label': 'Nu bekijken',
+  'ambient.settings.preview-hint': 'Start de sfeermodus meteen. Druk op een toets of beweeg de muis om terug te gaan.',
+};

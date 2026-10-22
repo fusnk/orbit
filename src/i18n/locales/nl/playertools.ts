@@ -1,0 +1,28 @@
+import type { playertools as source } from '../en/playertools';
+
+export const playertools: Record<keyof typeof source, string> = {
+  'playertools.speed.custom': "Aangepast",
+  'playertools.speed.custom-label': "Aangepaste snelheid",
+  'playertools.speed.slower': "Langzamer (−0,05×)",
+  'playertools.speed.faster': "Sneller (+0,05×)",
+  'playertools.subs.try-another': "Andere ondertiteling proberen",
+  'playertools.subs.try-another-detail': "Volgende beste match in het {language}",
+  'playertools.subs.cycled': "Ondertiteling {position} van {total} · {source}",
+  'playertools.subs.no-other': "Geen andere ondertiteling om te proberen",
+  'playertools.paste.action': "Ondertiteling plakken…",
+  'playertools.paste.detail': "SRT- of WebVTT-tekst",
+  'playertools.paste.title': "Ondertiteling plakken",
+  'playertools.paste.hint': "Plak de tekst van een SRT- of WebVTT-bestand. Hij wordt alleen aan deze video toegevoegd.",
+  'playertools.paste.field': "Ondertitelingstekst",
+  'playertools.paste.placeholder': "1\n00:00:01,000 --> 00:00:03,000\nHallo!",
+  'playertools.paste.add': "Ondertiteling toevoegen",
+  'playertools.paste.cancel': "Annuleren",
+  'playertools.paste.empty': "Plak eerst wat ondertitelingstekst.",
+  'playertools.paste.too-big': "Dat is meer dan 2 MB tekst.",
+  'playertools.paste.bad': "Dat lijkt geen SRT- of WebVTT-ondertiteling.",
+  'playertools.paste.added': "Geplakte ondertiteling toegevoegd",
+  'playertools.paste.name': "Geplakte ondertiteling",
+  'playertools.caps.setting': "Ondertiteling in HOOFDLETTERS herstellen",
+  'playertools.caps.hint': "Regels die helemaal in hoofdletters staan, krijgen gewone schrijfwijze. Werkt voor ondertiteling van add-ons, bestanden die je toevoegt en geplakte tekst, niet voor ondertiteling in het videobestand zelf. Ook namen verliezen hun hoofdletters.",
+  'playertools.caps.error': "Kon je HOOFDLETTER-instelling niet toepassen",
+};

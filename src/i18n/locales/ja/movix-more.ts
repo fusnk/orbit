@@ -1,0 +1,68 @@
+import type { movixMore as source } from '../en/movix-more';
+import type { Catalog } from '../types';
+
+/** Japanese strings for the Movix-inspired additions. */
+export const movixMore: Catalog<typeof source> = {
+  // Settings → Playback → Next episode: when Next Up appears and its style (rooms/settings/next-up-rows.ts)
+  'movix.next-up.when': '「次に再生」を表示するタイミング',
+  'movix.next-up.when-hint': 'エンドクレジットの位置が分からないエピソードの場合です。分かる場合は、クレジットと同時に表示されます。',
+  'movix.next-up.when-percent': 'エピソードの途中で',
+  'movix.next-up.when-before-end': '終了前に',
+  'movix.next-up.amount': '表示する時点',
+  'movix.next-up.amount-hint': 'エピソードのどこまで進んだときか、または終了の何分前か。終了前の分数は、半分より前にはなりません。',
+  'movix.next-up.style': '「次に再生」のスタイル',
+  'movix.next-up.style-hint': '隅の小さなカード、または映像の横に沿ったパネルです。',
+  'movix.next-up.style-card': 'カード',
+  'movix.next-up.style-panel': 'パネル',
+  // Exact air times from TVmaze: the setting and "Out today at 21:00" (catalog/air-times.ts, rooms/settings/general.ts)
+  'movix.air.setting': '正確な放送時刻を調べる',
+  'movix.air.setting-hint': '無料の番組ガイド TVmaze に新しいエピソードの放送時刻を問い合わせます。リリースレーダーに「今日 21:00 公開」と表示し、通知は放送時刻に届き、自動再生は公開まで待ちます。送信するのは番組の IMDb または TheTVDB の ID だけです。',
+  'movix.air.today': '今日 {time} 公開',
+  'movix.air.tomorrow': '明日 {time} 公開',
+  'movix.air.date': '{date} {time} 公開',
+  // Episode reminders: "Remind me" on an upcoming episode, and the notification (rooms/detail/reminder-button.ts, library/reminders.ts)
+  'movix.remind.set': 'リマインド',
+  'movix.remind.current': 'リマインド：{when}',
+  'movix.remind.on-day': '公開当日',
+  'movix.remind.days-before.one': '{count}日前',
+  'movix.remind.days-before.other': '{count}日前',
+  'movix.remind.none': 'リマインドしない',
+  'movix.remind.saved': '{name}の新しいエピソードをお知らせします：{when}。',
+  'movix.remind.removed': '{name}のリマインドをやめました。',
+  'movix.remind.full': 'リマインドできる番組は{count}件までです。{name}を追加するには、どれかを外してください。',
+  'movix.remind.today': '{code} は今日公開です。',
+  'movix.remind.today-at': '{code} は今日 {time} に公開です。',
+  'movix.remind.tomorrow': '{code} は明日公開です。',
+  'movix.remind.tomorrow-at': '{code} は明日 {time} に公開です。',
+  'movix.remind.in-days.one': '{code} は{count}日後に公開です。',
+  'movix.remind.in-days.other': '{code} は{count}日後に公開です。',
+  // A film’s end screen: the next film in its franchise, offered first (rooms/player/end-screen.ts)
+  'movix.end.next-in': '{name}の次の作品',
+  // Lists: description, sort, export and import of one list (rooms/lists/lists.ts)
+  'movix.lists.sort': '並べ替え',
+  'movix.lists.sort-added': '追加日',
+  'movix.lists.sort-title': 'タイトル',
+  'movix.lists.sort-year': '年',
+  'movix.lists.sort-rating': '評価',
+  'movix.lists.description': '説明',
+  'movix.lists.add-description': '説明を追加',
+  'movix.lists.edit-description': '説明を編集',
+  'movix.lists.export': 'リストを書き出す',
+  'movix.lists.import': 'リストを読み込む',
+  'movix.lists.imported.one': '「{name}」を{count}作品で読み込みました。',
+  'movix.lists.imported.other': '「{name}」を{count}作品で読み込みました。',
+  'movix.lists.skipped.one': 'ファイル内の{count}作品は読み取れなかったため除外しました。',
+  'movix.lists.skipped.other': 'ファイル内の{count}作品は読み取れなかったため除外しました。',
+  'movix.lists.file-too-large': 'このファイルはリストとしては大きすぎます。',
+  'movix.lists.file-not-list': 'このファイルは Orbit から書き出したリストではありません。',
+  'movix.lists.file-empty': 'このリストファイルには Orbit が読み取れる作品がありません。',
+  'errors.lists.description': 'リストの説明は1行で{max}文字までです。',
+  // Settings → General → Comfort → Reduce visual effects → Auto: what it decided and why (rooms/settings/appearance.ts)
+  'movix.effects.auto-off': '自動でオフ：このデバイスは効果を問題なく処理できます。',
+  'movix.effects.auto-tv': '自動でオン：テレビで実行中です。',
+  'movix.effects.auto-cores.one': '自動でオン：このデバイスのプロセッサーは{count}コアです。',
+  'movix.effects.auto-cores.other': '自動でオン：このデバイスのプロセッサーは{count}コアです。',
+  'movix.effects.auto-memory': '自動でオン：このデバイスのメモリは{memory}です。',
+  'movix.effects.auto-frames.one': '自動でオン：この環境では画面が毎秒{count}フレームで動作しました。',
+  'movix.effects.auto-frames.other': '自動でオン：この環境では画面が毎秒{count}フレームで動作しました。',
+};

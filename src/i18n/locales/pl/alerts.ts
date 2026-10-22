@@ -1,0 +1,30 @@
+import type { alerts as source } from '../en/alerts';
+import type { Catalog } from '../types';
+
+export const alerts: Catalog<typeof source> = {
+  'alerts.bell.label': 'Nowe odcinki',
+  'alerts.bell.unread.one': 'Nowe odcinki: {count} nieprzeczytany',
+  'alerts.bell.unread.few': 'Nowe odcinki: {count} nieprzeczytane',
+  'alerts.bell.unread.many': 'Nowe odcinki: {count} nieprzeczytanych',
+  'alerts.bell.unread.other': 'Nowe odcinki: {count} nieprzeczytanego',
+  'alerts.panel.heading': 'Nowe odcinki',
+  'alerts.panel.mark-read': 'Oznacz wszystkie jako przeczytane',
+  'alerts.panel.empty': 'Na razie nic nowego. Nowe odcinki seriali, które śledzisz, pojawią się tutaj.',
+  'alerts.panel.play': 'Odtwórz',
+  'alerts.panel.play-label': 'Odtwórz {show} S{season}O{episode}',
+  'alerts.panel.aired': 'Wyemitowano {date}',
+  'alerts.toast.episode': 'S{season}O{episode} „{title}” już jest',
+  'alerts.toast.grouped-title': 'Nowe odcinki',
+  'alerts.toast.grouped.one': '{count} nowy odcinek seriali, które śledzisz: {shows}',
+  'alerts.toast.grouped.few': '{count} nowe odcinki seriali, które śledzisz: {shows}',
+  'alerts.toast.grouped.many': '{count} nowych odcinków seriali, które śledzisz: {shows}',
+  'alerts.toast.grouped.other': '{count} nowego odcinka seriali, które śledzisz: {shows}',
+  'alerts.settings.enabled': 'Powiadomienia o nowych odcinkach',
+  'alerts.settings.enabled-hint': 'Dzwonek na pasku tytułu pokazuje odcinki wyemitowane od ostatniego zajrzenia. Sprawdzane przy starcie i co kilka godzin.',
+  'alerts.settings.toasts': 'Pokazuj powiadomienia systemowe',
+  'alerts.settings.toasts-hint': 'Powiadomienie systemowe o każdym nowym odcinku (jedno zbiorcze, gdy przychodzi kilka naraz), nawet gdy Orbit działa w tle.',
+  'alerts.settings.scope': 'Powiadamiaj o',
+  'alerts.settings.scope-hint': 'Seriale, które oglądasz, to te z historii; biblioteka dodaje wszystkie zapisane seriale.',
+  'alerts.settings.scope-watching': 'Serialach, które oglądam',
+  'alerts.settings.scope-library': 'Wszystkim w mojej bibliotece',
+};

@@ -1,0 +1,36 @@
+import type { showcase as source } from '../en/showcase';
+import type { Catalog } from '../types';
+
+/** Spanish strings for the Showcase title page layout. */
+export const showcase: Catalog<typeof source> = {
+  'showcase.setting.label': 'Página del título',
+  'showcase.setting.hint': 'Clásica deja la imagen en una tarjeta. Escaparate la extiende por toda la ventana, con los detalles en secciones debajo.',
+  'showcase.setting.classic': 'Clásica',
+  'showcase.setting.showcase': 'Escaparate',
+  'showcase.start-episode': 'Empezar T{season} · E{episode}',
+  'showcase.ends-at': 'Termina a las {time}',
+  'showcase.ends-at-hint': 'Cuándo terminaría si empezaras ahora',
+  'showcase.age-rating': 'Clasificación {rating}',
+  'showcase.streaming-on': 'Disponible en streaming en {provider}',
+  'showcase.choose-season': 'Temporada',
+  'showcase.choose-arc': 'Arco argumental',
+  'showcase.episode-count.one': '{count} episodio',
+  'showcase.episode-count.other': '{count} episodios',
+  'showcase.episode-length': '{number} · {minutes} min',
+  'showcase.season-actions': 'Acciones de la temporada',
+  'showcase.download-season.one': 'Descargar temporada ({count} episodio)',
+  'showcase.download-season.other': 'Descargar temporada ({count} episodios)',
+  'showcase.extras': 'Tráileres y extras',
+  'showcase.cast-crew': 'Reparto y equipo',
+  'showcase.photos': 'Fotos',
+  'showcase.stills': 'Fotogramas',
+  'showcase.topics': 'Temas',
+  'showcase.topic-intro': 'Películas y series que TMDB etiqueta con «{topic}».',
+  'showcase.where-to-watch': 'Dónde ver',
+  'showcase.stream': 'Streaming',
+  'showcase.rent': 'Alquilar',
+  'showcase.buy': 'Comprar',
+  'showcase.justwatch': 'Datos de JustWatch',
+  'showcase.releases': 'Fechas de estreno',
+  'showcase.cinemas-only': 'De momento solo en cines: las primeras copias suelen ser grabaciones hechas en el cine.',
+};

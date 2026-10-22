@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'Hodnocení na plakátech',
+  'posters.ratings-hint': 'Skóre z IMDb, TMDB a Letterboxd přímo na obrázku, podle toho, co už Orbit o každém titulu ví. Minimální ukazuje jedno skóre; Úplné ukazuje všechna.',
+  'posters.ratings-minimal': 'Minimální',
+  'posters.ratings-full': 'Úplné',
+  'posters.provider': 'Poskytovatel plakátů',
+  'posters.provider-hint': 'Odkud plakáty pocházejí. RPDB kreslí hodnocení přímo do svých plakátů a potřebuje váš vlastní klíč RPDB (ratingposterdb.com). Když RPDB pro titul plakát nemá, Orbit ukáže obvyklý s vlastním hodnocením. Platí pro plakáty vykreslené od teď.',
+  'posters.provider-orbit': 'Orbit (vestavěný)',
+  'posters.rpdb.key': 'Klíč RPDB',
+  'posters.rpdb.key-hint': 'Váš klíč z ratingposterdb.com. Je uložený v zabezpečeném úložišti systému a posílá se jen do RPDB.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'Ověřování u RPDB…',
+  'posters.rpdb.connected': 'Klíč RPDB uložen. Plakáty budou z RPDB.',
+  'posters.rpdb.saved': 'Uloženo',
+  'posters.rpdb.removed': 'Klíč RPDB byl odebrán.',
+  'posters.rpdb.key-format': 'Tohle nevypadá jako klíč RPDB. Klíče začínají t0-, t1-, t2- a tak dále.',
+  'posters.rpdb.refused': 'RPDB tento klíč nepřijalo.',
+  'posters.rpdb.busy': 'RPDB teď odpovídá na příliš mnoho požadavků. Zkuste to za chvíli znovu.',
+  'posters.rpdb.unreachable': 'RPDB není dostupné, klíč nešlo ověřit.',
+  'posters.rpdb.style': 'Styl plakátů RPDB',
+  'posters.rpdb.style-hint': 'Jaká hodnocení RPDB kreslí. Bezplatné klíče zahrnují jen Výchozí; ostatní styly vyžadují placený tarif RPDB.',
+  'posters.rpdb.style-default': 'Výchozí',
+  'posters.rpdb.style-certs': 'Věková přístupnost',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'Bez textu názvu',
+  'posters.description': 'Hodnocení: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} z 5',
+};

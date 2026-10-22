@@ -1,0 +1,68 @@
+import type { movixMore as source } from '../en/movix-more';
+import type { Catalog } from '../types';
+
+/** Chinese strings for the Movix-inspired additions. */
+export const movixMore: Catalog<typeof source> = {
+  // Settings → Playback → Next episode: when Next Up appears and its style (rooms/settings/next-up-rows.ts)
+  'movix.next-up.when': '何时显示“即将播放”',
+  'movix.next-up.when-hint': '适用于不知道片尾字幕位置的剧集。如果知道，“即将播放”会随片尾字幕出现。',
+  'movix.next-up.when-percent': '播放到一定比例时',
+  'movix.next-up.when-before-end': '结束前',
+  'movix.next-up.amount': '显示时间',
+  'movix.next-up.amount-hint': '剧集播放到多少进度时，或结束前几分钟。“结束前几分钟”不会早于剧集的一半。',
+  'movix.next-up.style': '“即将播放”样式',
+  'movix.next-up.style-hint': '角落里的小卡片，或沿画面一侧的面板。',
+  'movix.next-up.style-card': '卡片',
+  'movix.next-up.style-panel': '面板',
+  // Exact air times from TVmaze: the setting and "Out today at 21:00" (catalog/air-times.ts, rooms/settings/general.ts)
+  'movix.air.setting': '查询确切播出时间',
+  'movix.air.setting-hint': '向免费电视指南 TVmaze 查询新剧集的播出时间：上线雷达会显示“今天 21:00 上线”，提醒会在播出时送达，自动播放会等到剧集上线。只发送该剧的 IMDb 或 TheTVDB ID。',
+  'movix.air.today': '今天 {time} 上线',
+  'movix.air.tomorrow': '明天 {time} 上线',
+  'movix.air.date': '{date} {time} 上线',
+  // Episode reminders: "Remind me" on an upcoming episode, and the notification (rooms/detail/reminder-button.ts, library/reminders.ts)
+  'movix.remind.set': '提醒我',
+  'movix.remind.current': '提醒：{when}',
+  'movix.remind.on-day': '上线当天',
+  'movix.remind.days-before.one': '提前 {count} 天',
+  'movix.remind.days-before.other': '提前 {count} 天',
+  'movix.remind.none': '不提醒',
+  'movix.remind.saved': '会提醒你 {name} 的新剧集：{when}。',
+  'movix.remind.removed': '不再提醒 {name}。',
+  'movix.remind.full': '最多只能为 {count} 部剧设置提醒。请先移除一个，再添加 {name}。',
+  'movix.remind.today': '{code} 今天上线。',
+  'movix.remind.today-at': '{code} 今天 {time} 上线。',
+  'movix.remind.tomorrow': '{code} 明天上线。',
+  'movix.remind.tomorrow-at': '{code} 明天 {time} 上线。',
+  'movix.remind.in-days.one': '{code} {count} 天后上线。',
+  'movix.remind.in-days.other': '{code} {count} 天后上线。',
+  // A film’s end screen: the next film in its franchise, offered first (rooms/player/end-screen.ts)
+  'movix.end.next-in': '{name}的下一部',
+  // Lists: description, sort, export and import of one list (rooms/lists/lists.ts)
+  'movix.lists.sort': '排序方式',
+  'movix.lists.sort-added': '添加日期',
+  'movix.lists.sort-title': '标题',
+  'movix.lists.sort-year': '年份',
+  'movix.lists.sort-rating': '评分',
+  'movix.lists.description': '描述',
+  'movix.lists.add-description': '添加描述',
+  'movix.lists.edit-description': '编辑描述',
+  'movix.lists.export': '导出列表',
+  'movix.lists.import': '导入列表',
+  'movix.lists.imported.one': '已导入“{name}”，共 {count} 部作品。',
+  'movix.lists.imported.other': '已导入“{name}”，共 {count} 部作品。',
+  'movix.lists.skipped.one': '文件中有 {count} 部作品无法读取，已略过。',
+  'movix.lists.skipped.other': '文件中有 {count} 部作品无法读取，已略过。',
+  'movix.lists.file-too-large': '这个文件太大，不像是列表。',
+  'movix.lists.file-not-list': '这个文件不是从 Orbit 导出的列表。',
+  'movix.lists.file-empty': '这个列表文件里没有 Orbit 能读取的作品。',
+  'errors.lists.description': '列表描述最多 {max} 个字符，且只能一行。',
+  // Settings → General → Comfort → Reduce visual effects → Auto: what it decided and why (rooms/settings/appearance.ts)
+  'movix.effects.auto-off': '已自动关闭：此设备能流畅处理这些效果。',
+  'movix.effects.auto-tv': '已自动开启：这是一台电视。',
+  'movix.effects.auto-cores.one': '已自动开启：此设备只有 {count} 个处理器核心。',
+  'movix.effects.auto-cores.other': '已自动开启：此设备只有 {count} 个处理器核心。',
+  'movix.effects.auto-memory': '已自动开启：此设备的内存为 {memory}。',
+  'movix.effects.auto-frames.one': '已自动开启：界面在这里只有每秒 {count} 帧。',
+  'movix.effects.auto-frames.other': '已自动开启：界面在这里只有每秒 {count} 帧。',
+};

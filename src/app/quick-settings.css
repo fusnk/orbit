@@ -1,0 +1,252 @@
+/* ── Quick settings (title bar's sliders button) and the paused-history chip ── */
+
+/* The page behind is dimmed and softly blurred: no glow, no colour wash.
+   Reduce visual effects drops the blur (styles.css). */
+.quick-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 69;
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(3px);
+  animation: page-in var(--duration-popover) var(--ease);
+}
+
+.quick-panel {
+  position: fixed;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: min(340px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
+  padding: 8px;
+  /* A control scrolled to the edge keeps its focus ring in sight. */
+  scroll-padding-block: 8px;
+  border-radius: 14px;
+  background: var(--color-glass);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border-strong),
+    0 12px 32px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(28px);
+  animation: page-in var(--duration-popover) var(--ease);
+}
+
+.quick-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 48px;
+  padding: 6px 8px 8px;
+  border-block-end: 1px solid var(--color-border);
+}
+
+.quick-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.quick-link,
+.quick-all {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.quick-link .icon,
+.quick-all .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.quick-link:hover,
+.quick-link:focus-visible,
+.quick-all:hover,
+.quick-all:focus-visible {
+  background: var(--color-surface-overlay);
+  color: var(--color-text);
+}
+
+.quick-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+}
+
+.quick-history,
+.quick-toggles {
+  gap: 0;
+  padding-block: 4px;
+}
+
+.quick-history {
+  border-block-end: 1px solid var(--color-border);
+}
+
+.quick-toggles {
+  border-block-start: 1px solid var(--color-border);
+}
+
+.quick-panel .quick-switch {
+  min-height: 38px;
+  padding-inline: 0;
+  color: var(--color-text);
+  text-align: start;
+}
+
+.quick-hint {
+  margin: 0 0 6px;
+  color: var(--color-text-faint);
+  font-size: var(--font-size-xs);
+  line-height: 1.45;
+}
+
+/* Under a switch it explains (e.g. trailers that are only partly on). */
+.quick-sub-hint {
+  margin-block-start: -4px;
+}
+
+.quick-hint[hidden] {
+  display: none;
+}
+
+.quick-label {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.quick-caption {
+  color: var(--color-text-muted);
+  font-weight: 700;
+}
+
+.quick-looks {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.quick-look {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 6px 2px 5px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+/* The Look's own miniature (Settings → Appearance → Looks), drawn at its
+   size and zoomed down, so Looks sharing a theme still differ by their menu
+   and banner. Zoom (not a transform) keeps it in place in both directions. */
+.quick-look-swatch {
+  display: block;
+  width: 64px;
+  overflow: hidden;
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+}
+
+.quick-look-swatch > .look-mini {
+  width: 160px;
+  zoom: 0.4;
+}
+
+.quick-look-name {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.quick-look:hover,
+.quick-look:focus-visible {
+  background: var(--color-surface-overlay);
+  color: var(--color-text);
+}
+
+/* A plain ring marks the Look on screen: no glow. */
+.quick-look[aria-pressed='true'] {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.quick-look[aria-pressed='true'] .quick-look-swatch {
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 4px var(--color-text);
+}
+
+.quick-segments {
+  align-self: stretch;
+  display: flex;
+}
+
+.quick-segments .segment {
+  flex: 1;
+  padding-inline: 8px;
+}
+
+/* The Addons page at the start, all of Settings at the end. */
+.quick-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 6px 4px 2px;
+  border-block-start: 1px solid var(--color-border);
+}
+
+/* Shown beside the avatar while watch history is paused. */
+.history-chip {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  gap: 5px;
+  height: 26px;
+  margin-inline-end: var(--space-2);
+  padding-inline: 8px 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.history-chip[hidden] {
+  display: none;
+}
+
+.history-chip .icon {
+  width: 12px;
+  height: 12px;
+}
+
+.history-chip:hover,
+.history-chip:focus-visible {
+  background: var(--color-surface-overlay);
+  color: var(--color-text);
+}

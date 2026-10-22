@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'Rating di poster',
+  'posters.ratings-hint': 'Skor IMDb, TMDB, dan Letterboxd di gambar, dari yang sudah diketahui Orbit tentang tiap judul. Minimal menampilkan satu skor; Lengkap menampilkan semuanya.',
+  'posters.ratings-minimal': 'Minimal',
+  'posters.ratings-full': 'Lengkap',
+  'posters.provider': 'Penyedia poster',
+  'posters.provider-hint': 'Asal poster. RPDB menampilkan rating di posternya dan memerlukan kunci RPDB Anda sendiri (ratingposterdb.com). Jika RPDB tidak punya poster untuk suatu judul, Orbit menampilkan poster biasa dengan ratingnya sendiri. Berlaku untuk poster yang dimuat berikutnya.',
+  'posters.provider-orbit': 'Orbit (bawaan)',
+  'posters.rpdb.key': 'Kunci RPDB',
+  'posters.rpdb.key-hint': 'Kunci Anda dari ratingposterdb.com. Disimpan di keychain sistem Anda dan hanya dikirim ke RPDB.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'Memeriksa dengan RPDB…',
+  'posters.rpdb.connected': 'Kunci RPDB disimpan. Poster akan diambil dari RPDB.',
+  'posters.rpdb.saved': 'Tersimpan',
+  'posters.rpdb.removed': 'Kunci RPDB dihapus.',
+  'posters.rpdb.key-format': 'Itu tidak terlihat seperti kunci RPDB. Kunci diawali dengan t0-, t1-, t2-, dan seterusnya.',
+  'posters.rpdb.refused': 'RPDB tidak menerima kunci itu.',
+  'posters.rpdb.busy': 'RPDB sedang menerima terlalu banyak permintaan. Coba lagi sebentar lagi.',
+  'posters.rpdb.unreachable': 'Tidak dapat menghubungi RPDB untuk memeriksa kunci.',
+  'posters.rpdb.style': 'Gaya poster RPDB',
+  'posters.rpdb.style-hint': 'Rating mana yang ditampilkan RPDB. Kunci gratis hanya mencakup Default; gaya lain memerlukan paket RPDB berbayar.',
+  'posters.rpdb.style-default': 'Bawaan',
+  'posters.rpdb.style-certs': 'Rating usia',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'Tanpa teks judul',
+  'posters.description': 'Rating: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} dari 5',
+};

@@ -1,0 +1,88 @@
+/* "What this addon can do" (install review, details page, bundles). */
+
+.addon-review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-block-start: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.addon-review[hidden] {
+  display: none;
+}
+
+.addon-review h3 {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+.addon-review-source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  overflow-wrap: anywhere;
+}
+
+.addon-review-list {
+  margin: 0;
+  padding-inline-start: var(--space-5);
+}
+
+.addon-review-list li + li {
+  margin-block-start: var(--space-1);
+}
+
+.addon-review-note {
+  padding-inline-start: var(--space-3);
+  border-inline-start: 3px solid var(--color-border);
+}
+
+.addon-review-note.warn {
+  border-inline-start-color: var(--color-accent);
+}
+
+.addon-review.compact {
+  margin-block-start: var(--space-2);
+}
+
+.addon-bundle .install-row {
+  flex-wrap: wrap;
+  max-inline-size: 760px;
+}
+
+.addon-bundle .install-row .text-field {
+  flex: 1 1 280px;
+}
+
+.addon-bundle .addon-list {
+  margin-block-start: var(--space-3);
+}
+
+/* "Didn't answer" beside an addon's name (index.ts, from addons/health.ts). */
+.addon-health {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-inline-start: var(--space-2);
+  color: var(--color-danger-text);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.addon-health[hidden] {
+  display: none;
+}
+
+.addon-health-dot {
+  inline-size: 8px;
+  block-size: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-danger);
+}
+
+.addons-count {
+  margin-inline-start: var(--space-2);
+}

@@ -1,0 +1,155 @@
+/* "Add to a list" drawer. */
+.list-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-6);
+}
+
+.list-picker-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+.list-picker .muted {
+  margin: 0;
+}
+
+.list-picker-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.list-picker-new {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.list-picker-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-4);
+}
+
+/* My Library → My Lists: a tile per list with a 2×2 poster collage. */
+.list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-6);
+}
+
+.list-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  text-align: start;
+}
+
+.list-collage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+}
+
+/* Artwork is normally absolutely positioned to fill its frame; here it sits in the grid. */
+.list-collage .art {
+  position: static;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.list-tile-name {
+  font-weight: 700;
+}
+
+/* Lifts like a poster card (styles.css .frame); focus keeps its ring. */
+.list-collage {
+  transition:
+    transform var(--duration-hover) var(--ease),
+    box-shadow var(--duration-hover) var(--ease);
+}
+
+.list-tile:is(:hover, :focus-visible) .list-collage {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 32px -14px rgba(0, 0, 0, 0.8);
+}
+
+:root[data-effects='reduced'] .list-tile:hover:not(:focus-visible) .list-collage {
+  box-shadow: none;
+}
+
+.list-tile:focus-visible .list-collage {
+  box-shadow: var(--focus-ring);
+}
+
+/* A list's own page. */
+.list-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-2) var(--page-gutter) 72px;
+}
+
+.list-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.list-page-title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.list-page-title .page-title {
+  margin: 0;
+}
+
+/* My Lists' heading with "Import a list" beside it. */
+.list-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+/* A list page: its description under the name, and the sort above the titles. */
+.list-description {
+  max-width: 70ch;
+  margin: var(--space-2) 0 0;
+  overflow-wrap: anywhere;
+}
+
+.list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.list-toolbar[hidden] {
+  display: none;
+}
+
+.list-toolbar-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}

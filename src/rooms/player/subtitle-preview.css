@@ -1,0 +1,56 @@
+/*
+ * The subtitle preview: a 16:9 dark "scene" with sample lines styled like
+ * mpv will draw them, in Settings → Subtitles and the player's Subtitle style
+ * view. subtitle-css.ts (which loads this file) sets the custom properties and
+ * data attributes; the frame is a size container, so every measure scales
+ * from its height the way mpv scales from a 720-line picture.
+ */
+.subtitle-preview {
+  position: relative;
+  container-type: size;
+  aspect-ratio: 16 / 9;
+  inline-size: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 30%, rgba(255, 210, 150, 0.35), transparent 70%),
+    linear-gradient(160deg, #2a3a4d 0%, #6b5a45 55%, #1d1a17 100%);
+}
+
+.subtitle-sample {
+  position: absolute;
+  /* Centred with auto margins (not a translate) so it holds in right-to-left layouts too. */
+  inset-inline: 0;
+  /* sub-margin-y is 22 at 720 lines; sub-pos lifts the text by a share of the height. */
+  inset-block-end: calc(22 / 720 * 100cqh + var(--sub-lift) * 1cqh);
+  inline-size: fit-content;
+  max-inline-size: 90%;
+  margin-inline: auto;
+  color: var(--sub-color);
+  font-family: var(--sub-font);
+  /* sub-font-size is in pixels at 720 lines. */
+  font-size: calc(var(--sub-size) / 720 * 100cqh);
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: center;
+  white-space: pre-line;
+  /* mpv's border sits outside the glyph; a centred text stroke shows half its width, hence ×2. */
+  -webkit-text-stroke: calc(var(--sub-outline) * 2 / 720 * 100cqh) var(--sub-outline-color, #000);
+  paint-order: stroke fill;
+}
+
+.subtitle-preview[data-bold='true'] .subtitle-sample {
+  font-weight: 700;
+}
+
+/* sub-shadow-offset 2 (at 720 lines), sub-shadow-color #99000000. */
+.subtitle-preview[data-background='shadow'] .subtitle-sample {
+  text-shadow: calc(2 / 720 * 100cqh) calc(2 / 720 * 100cqh) 0 rgba(0, 0, 0, 0.6);
+}
+
+/* sub-border-style background-box, sub-back-color (the chosen colour and opacity; black at 70% by default). */
+.subtitle-preview[data-background='box'] .subtitle-sample {
+  padding: calc(2 / 720 * 100cqh) calc(8 / 720 * 100cqh);
+  background: var(--sub-back, rgba(0, 0, 0, 0.7));
+  -webkit-text-stroke: 0;
+}

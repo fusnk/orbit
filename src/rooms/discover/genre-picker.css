@@ -1,0 +1,214 @@
+/* The genre filter on Movies / TV Shows (genre-picker.ts). */
+
+.genre-picker {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.genre-picker[hidden] {
+  display: none;
+}
+
+/* A hairline between "which catalog" and "which genre". */
+.genre-picker::before {
+  content: '';
+  flex: none;
+  width: 1px;
+  height: 20px;
+  background: var(--color-border-strong);
+}
+
+/* At the start of a line (genre-picker.ts), there's nothing before it to divide from: the hairline
+   hides and the picker slides back over its room. Drawn, not laid out again: taking the room away would
+   let the picker fit back on the line before, show the hairline, and wrap again, back and forth. */
+.genre-picker.leads::before {
+  visibility: hidden;
+}
+
+.genre-picker.leads {
+  translate: calc(-1px - var(--space-3)) 0;
+}
+
+:root[dir='rtl'] .genre-picker.leads {
+  translate: calc(1px + var(--space-3)) 0;
+}
+
+.genre-pick {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: var(--control-chip);
+  padding-inline: 14px 10px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.genre-pick:hover,
+.genre-pick[aria-expanded='true'] {
+  background: var(--color-surface-overlay);
+}
+
+.genre-pick .icon {
+  width: 14px;
+  height: 14px;
+  transition: rotate var(--duration-hover) var(--ease);
+}
+
+.genre-pick[aria-expanded='true'] .icon {
+  rotate: 180deg;
+}
+
+/* Recent genres: text-weight, with an accent underline on the chosen one. They take the room the picker
+   has (none of it asked for: contain), and those that don't fit whole are hidden (genre-picker.ts). */
+.genre-shortcuts {
+  display: flex;
+  flex: 1 1 0;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+  contain: inline-size;
+  /* Room for the focus ring inside the clip. */
+  margin-block: -4px;
+  padding: 4px;
+}
+
+.genre-shortcut {
+  position: relative;
+  flex: none;
+  height: var(--control-chip);
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    color var(--duration-fast) var(--ease),
+    background var(--duration-fast) var(--ease);
+}
+
+.genre-shortcut:hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.genre-shortcut::after {
+  content: '';
+  position: absolute;
+  inset-inline: 10px;
+  bottom: 3px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-accent);
+  scale: 0 1;
+  transition: scale var(--duration-hover) var(--ease);
+}
+
+.genre-shortcut[aria-pressed='true'] {
+  color: var(--color-text);
+}
+
+.genre-shortcut[aria-pressed='true']::after {
+  scale: 1 1;
+}
+
+/* ── The panel ── */
+
+.genre-panel {
+  position: fixed;
+  z-index: 70;
+  width: min(600px, calc(100vw - 32px));
+  max-height: min(480px, calc(100vh - 16px));
+  overflow-y: auto;
+  padding: 8px;
+  border-radius: var(--radius-lg);
+  background: var(--color-glass);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border-strong),
+    var(--shadow-overlay);
+  backdrop-filter: blur(28px);
+  animation: page-in var(--duration-popover) var(--ease);
+}
+
+.genre-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.genre-panel-grid.years {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+@media (max-width: 760px) {
+  .genre-panel-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.genre-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: 56px;
+  padding-inline: 14px 12px;
+  border: 0;
+  border-radius: 12px;
+  /* The genre's own hue (set by withHue) as a wash from the start edge. */
+  background:
+    linear-gradient(to right, oklch(0.6 0.13 var(--hue, 0) / 0.26), transparent 80%),
+    var(--color-surface);
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: start;
+  transition: background-color var(--duration-fast) var(--ease);
+}
+
+[dir='rtl'] .genre-option {
+  background:
+    linear-gradient(to left, oklch(0.6 0.13 var(--hue, 0) / 0.26), transparent 80%),
+    var(--color-surface);
+}
+
+.genre-panel-grid.years .genre-option,
+.genre-option.all {
+  background: var(--color-surface);
+}
+
+.genre-option:hover {
+  background-color: var(--color-surface-raised);
+}
+
+.genre-panel-grid.years .genre-option:hover,
+.genre-option.all:hover {
+  background: var(--color-surface-raised);
+}
+
+.genre-option[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.genre-option-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.genre-option .icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--color-accent);
+}

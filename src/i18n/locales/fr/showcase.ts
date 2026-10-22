@@ -1,0 +1,36 @@
+import type { showcase as source } from '../en/showcase';
+import type { Catalog } from '../types';
+
+/** French strings for the Showcase title page layout. */
+export const showcase: Catalog<typeof source> = {
+  'showcase.setting.label': 'Page du titre',
+  'showcase.setting.hint': 'Classique garde l’image dans une carte. Vitrine l’étend sur toute la fenêtre, avec les détails en sections en dessous.',
+  'showcase.setting.classic': 'Classique',
+  'showcase.setting.showcase': 'Vitrine',
+  'showcase.start-episode': 'Commencer S{season} · É{episode}',
+  'showcase.ends-at': 'Se termine à {time}',
+  'showcase.ends-at-hint': 'L’heure de fin si vous commencez maintenant',
+  'showcase.age-rating': 'Classé {rating}',
+  'showcase.streaming-on': 'En streaming sur {provider}',
+  'showcase.choose-season': 'Saison',
+  'showcase.choose-arc': 'Arc narratif',
+  'showcase.episode-count.one': '{count} épisode',
+  'showcase.episode-count.other': '{count} épisodes',
+  'showcase.episode-length': '{number} · {minutes} min',
+  'showcase.season-actions': 'Actions de la saison',
+  'showcase.download-season.one': 'Télécharger la saison ({count} épisode)',
+  'showcase.download-season.other': 'Télécharger la saison ({count} épisodes)',
+  'showcase.extras': 'Bandes-annonces et bonus',
+  'showcase.cast-crew': 'Distribution et équipe',
+  'showcase.photos': 'Photos',
+  'showcase.stills': 'Images',
+  'showcase.topics': 'Thèmes',
+  'showcase.topic-intro': 'Films et séries que TMDB associe à « {topic} ».',
+  'showcase.where-to-watch': 'Où regarder',
+  'showcase.stream': 'Streaming',
+  'showcase.rent': 'Location',
+  'showcase.buy': 'Achat',
+  'showcase.justwatch': 'Données fournies par JustWatch',
+  'showcase.releases': 'Dates de sortie',
+  'showcase.cinemas-only': 'Seulement au cinéma pour l’instant : les premières copies sont en général filmées en salle.',
+};

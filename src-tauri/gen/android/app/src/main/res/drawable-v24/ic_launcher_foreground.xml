@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Orbit's mark (app-icon.svg): a white ring with a coral moon at about half past one,
+     scaled to keep the moon inside the adaptive icon's 66dp safe circle. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M32.56,56.48a17.6,17.6 0,1 0,35.2 0a17.6,17.6 0,1 0,-35.2 0"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="7.84" />
+    <path
+        android:fillColor="#FFE5484D"
+        android:pathData="M66.72,36.32a6.32,6.32 0,1 0,12.64 0a6.32,6.32 0,1 0,-12.64 0" />
+</vector>

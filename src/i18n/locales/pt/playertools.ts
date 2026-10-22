@@ -1,0 +1,28 @@
+import type { playertools as source } from '../en/playertools';
+
+export const playertools: Record<keyof typeof source, string> = {
+  'playertools.speed.custom': "Personalizada",
+  'playertools.speed.custom-label': "Velocidade personalizada",
+  'playertools.speed.slower': "Mais lenta (−0,05×)",
+  'playertools.speed.faster': "Mais rápida (+0,05×)",
+  'playertools.subs.try-another': "Tentar outras legendas",
+  'playertools.subs.try-another-detail': "Próxima melhor correspondência em {language}",
+  'playertools.subs.cycled': "Legenda {position} de {total} · {source}",
+  'playertools.subs.no-other': "Não há outras legendas para tentar",
+  'playertools.paste.action': "Colar legendas…",
+  'playertools.paste.detail': "Texto SRT ou WebVTT",
+  'playertools.paste.title': "Colar legendas",
+  'playertools.paste.hint': "Cole o texto de um arquivo SRT ou WebVTT. Ele é adicionado só a este vídeo.",
+  'playertools.paste.field': "Texto das legendas",
+  'playertools.paste.placeholder': "1\n00:00:01,000 --> 00:00:03,000\nOlá!",
+  'playertools.paste.add': "Adicionar legendas",
+  'playertools.paste.cancel': "Cancelar",
+  'playertools.paste.empty': "Cole primeiro o texto de uma legenda.",
+  'playertools.paste.too-big': "São mais de 2 MB de texto.",
+  'playertools.paste.bad': "Isso não parece uma legenda SRT ou WebVTT.",
+  'playertools.paste.added': "Legendas coladas adicionadas",
+  'playertools.paste.name': "Legendas coladas",
+  'playertools.caps.setting': "Corrigir legendas em MAIÚSCULAS",
+  'playertools.caps.hint': "Linhas escritas todas em maiúsculas passam a ter só a primeira letra maiúscula. Vale para legendas de complementos, arquivos que você adiciona e texto colado, não para legendas dentro do arquivo de vídeo. Nomes também perdem as maiúsculas.",
+  'playertools.caps.error': "Não foi possível aplicar a configuração de MAIÚSCULAS",
+};

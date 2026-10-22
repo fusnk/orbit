@@ -1,0 +1,128 @@
+[package]
+name = "orbit"
+version = "0.1.0"
+description = "Movies, shows, anime and live TV in one app"
+edition = "2024"
+license = "GPL-3.0-or-later"
+rust-version = "1.88"
+
+[lib]
+# `_lib` suffix avoids a Windows name clash between the lib and bin artifacts.
+name = "orbit_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+pkg-config = "0.3"
+
+[dependencies]
+tauri = { version = "2", features = [] }
+# System notifications for new episodes (Settings → Library & Metadata → New episode alerts); shown from Rust only.
+tauri-plugin-notification = "2"
+# Native folder and save dialogs (download folder, exports), opened from Rust only: the WebView gets no dialog or file-system permission, just the chosen path back.
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# Native-fetched AniList avatars become data URLs without expanding the WebView CSP.
+base64 = "0.23"
+# `bundled` compiles SQLite from source so every platform gets the same version.
+rusqlite = { version = "0.40", features = ["bundled"] }
+keyring = "4"
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "http2", "system-proxy"] }
+aes-gcm = { version = "0.11", features = ["zeroize"] }
+getrandom = "0.4"
+zeroize = "1"
+# Loads libmpv at runtime by full path (no import library, no DLL search-order lookup).
+libloading = "0.9.0"
+# Torrent streams (off by default). `disable-upload` lets Orbit keep uploading off unless the person turns it on.
+librqbit = { version = "9", default-features = false, features = ["rust-tls", "disable-upload"] }
+# Already in the tree through librqbit: its storage hooks (torrent.rs `SafeNames`) return anyhow errors.
+anyhow = "1"
+# Async runtime pieces the torrent server, yt-dlp and Stremio's browser sign-in need (Tauri already ships tokio).
+# `fs` writes downloads without blocking the runtime. `macros` (`select!`): the phone remote's
+# server waits on a connection and on being turned off at once.
+# rt-multi-thread: Tauri's runtime already builds it; named for `block_in_place` (profiles.rs PIN checks).
+tokio = { version = "1", features = ["net", "io-util", "sync", "time", "rt", "rt-multi-thread", "process", "fs", "macros"] }
+# Phone remote (remote/): a small HTTP/1 server on the home network. hyper, hyper-util and
+# http-body-util are already in the tree (reqwest, librqbit); `channel` streams the live state
+# to the phone (server-sent events) and needs only tokio.
+hyper = { version = "1", default-features = false, features = ["server", "http1"] }
+hyper-util = { version = "0.1", default-features = false, features = ["tokio"] }
+http-body-util = { version = "0.1", features = ["channel"] }
+# Lists this PC's network addresses, so the remote listens only on a private home-network one
+# (already in the tree through librqbit).
+network-interface = "2"
+# The pairing QR code: the one new crate. MIT OR Apache-2.0 and widely used; without its default
+# features (the `image` crate) it has no dependencies at all, and Orbit draws the modules itself.
+qrcode = { version = "0.14", default-features = false }
+# Gzipped TV guides (XMLTV), and deflate for the zip reader.
+flate2 = "1"
+# Streaming XML parser for TV guides and Letterboxd's RSS feeds (no DOM, so large guides stay small in memory).
+quick-xml = "0.41"
+# Opens Letterboxd and Trakt data exports (.zip); deflate only, via flate2.
+zip = { version = "9", default-features = false, features = ["deflate-flate2"] }
+# Subtitle sync: aligns a subtitle's timing to a reference (an embedded track's, or speech found in the audio).
+# GPL-3.0, like Orbit; no dependencies of its own.
+alass-core = "2.0"
+# Time zone rules (daylight saving) for an Xtream panel's catch-up clock. Bundles the tz database only where the system has none (Windows).
+jiff = { version = "0.2.37", default-features = false, features = ["std", "tzdb-bundle-platform", "tzdb-zoneinfo", "tzdb-concatenated"] }
+# Orbit Connect (connect/): finds other Orbits on the home network with mDNS/DNS-SD. MIT OR Apache-2.0,
+# no async runtime of its own (one thread); 0.21.5 is the current release and builds on Rust 1.71+.
+# Without default features: no `log` and no async channel API, which Connect doesn't use. It brings
+# flume, if-addrs, socket-pktinfo and spin (all MIT or MIT/Apache).
+mdns-sd = { version = "0.21.5", default-features = false }
+# Orbit Connect's pairing (X25519, HKDF) and request signatures (HMAC-SHA256). Not new: the same
+# version rustls and the torrent engine already build on every platform; only named here to call it.
+aws-lc-rs = { version = "1.18", default-features = false, features = ["aws-lc-sys"] }
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true
+
+[target."cfg(windows)".dependencies]
+# Places mpv's video window beneath the WebView.
+# Also asks how much space is free before a download starts, and lets full screen cover the whole screen and leave it for the
+# maximized window it came from (main_window.rs; HiDpi for the frame's size at the screen's scale).
+windows-sys = { version = "0.61.2", features = ["Win32_Foundation", "Win32_Graphics_Gdi", "Win32_UI_WindowsAndMessaging", "Win32_Storage_FileSystem", "Win32_UI_Shell", "Win32_UI_HiDpi"] }
+# Windows' media controls (media_controls.rs): the flyout by the volume and the keyboard's media
+# keys while Orbit is in the background. Not a new crate: the same `windows` version Tauri's
+# WebView2 layer already builds (webview2-com); only these API features are added. WinRT APIs
+# (SystemMediaTransportControls) aren't in windows-sys.
+windows = { version = "0.61", features = ["Media", "Storage_Streams", "Win32_Foundation", "Win32_System_WinRT"] }
+
+[target."cfg(unix)".dependencies]
+# Free disk space (statvfs) before a download starts; already built as part of tokio and others.
+libc = "0.2"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# Reuse Tauri's GTK3/GLib versions to composite libmpv under WebKitGTK in one window.
+gtk = "0.18"
+glib = "0.18"
+# D-Bus on the session bus: keeping the screen awake during a video (idle_inhibit.rs). Already built for
+# the keychain (keyring's Secret Service store, same version and features), so nothing new is compiled.
+zbus = { version = "5.19", default-features = false, features = ["async-io"] }
+
+[dev-dependencies]
+# Bounded generated inputs exercise production parsers on stable Rust/Windows.
+proptest = "1"
+
+[target.'cfg(target_os = "android")'.dependencies]
+# HTTPS on Android checks certificates through Android's own trust store (reqwest's rustls
+# platform verifier), which must be handed the app's context once at start (android/tls.rs).
+# Both are already in the tree through reqwest; same versions.
+jni = "0.22"
+rustls-platform-verifier = "0.7"
+
+[target.'cfg(not(target_os = "android"))'.dependencies]
+# Desktop integrations have no Android TV equivalent.
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-single-instance = "2"
+discord-rich-presence = "1.1"
+# Orbit's own updates (Settings → General → About Orbit): checks GitHub Releases and verifies each download's
+# minisign signature against the public key in tauri.conf.json before installing. Driven from Rust only (updater.rs);
+# the page gets none of its commands. 2.12 is the last release for Rust 1.88. No `zip`: Windows updates are the
+# installers themselves, and macOS isn't built yet.
+tauri-plugin-updater = { version = "2.12.0", default-features = false, features = ["rustls-tls", "system-proxy"] }

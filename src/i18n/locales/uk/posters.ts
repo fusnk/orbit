@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'Рейтинги на постерах',
+  'posters.ratings-hint': 'Оцінки IMDb, TMDB і Letterboxd просто на обкладинці, з того, що Orbit уже знає про фільм. «Мінімум» показує одну оцінку, «Усі» — усі одразу.',
+  'posters.ratings-minimal': 'Мінімум',
+  'posters.ratings-full': 'Усі',
+  'posters.provider': 'Джерело постерів',
+  'posters.provider-hint': 'Звідки беруться постери. RPDB малює рейтинги на своїх постерах і потребує вашого власного ключа RPDB (ratingposterdb.com). Якщо в RPDB немає постера, Orbit покаже звичайний зі своїми рейтингами. Застосовується до постерів, відмальованих після зміни.',
+  'posters.provider-orbit': 'Orbit (вбудований)',
+  'posters.rpdb.key': 'Ключ RPDB',
+  'posters.rpdb.key-hint': 'Ваш ключ з ratingposterdb.com. Зберігається в системному сховищі ключів і надсилається лише до RPDB.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'Перевірка в RPDB…',
+  'posters.rpdb.connected': 'Ключ RPDB збережено. Постери завантажуватимуться з RPDB.',
+  'posters.rpdb.saved': 'Збережено',
+  'posters.rpdb.removed': 'Ключ RPDB видалено.',
+  'posters.rpdb.key-format': 'Це не схоже на ключ RPDB. Ключі починаються з t0-, t1-, t2- і так далі.',
+  'posters.rpdb.refused': 'RPDB не прийняв цей ключ.',
+  'posters.rpdb.busy': 'RPDB зараз перевантажений запитами. Спробуйте ще раз трохи згодом.',
+  'posters.rpdb.unreachable': 'Не вдалося зв’язатися з RPDB для перевірки ключа.',
+  'posters.rpdb.style': 'Стиль постерів RPDB',
+  'posters.rpdb.style-hint': 'Які рейтинги малює RPDB. Безплатним ключам доступний лише стиль «За замовчуванням», іншим потрібен платний тариф RPDB.',
+  'posters.rpdb.style-default': 'За замовчуванням',
+  'posters.rpdb.style-certs': 'Вікові рейтинги',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'Без назви',
+  'posters.description': 'Рейтинги: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} з 5',
+};

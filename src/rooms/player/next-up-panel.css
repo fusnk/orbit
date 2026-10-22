@@ -1,0 +1,32 @@
+/* Next Up as a panel (Settings → Playback → Next Up style): docked along the
+   right edge between the top bar and the controls, like the episode list,
+   with a larger still. At the credits it takes over the screen as the card does. */
+.player .next-up.docked:not(.takeover) {
+  top: calc(64px * var(--ps));
+  right: 0;
+  bottom: var(--player-clear);
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  gap: var(--space-4);
+  width: min(420px, 42%);
+  padding: 24px 24px 24px 56px;
+  border-radius: 0;
+  /* Over the picture, fading in from the edge so its text stays readable on bright scenes. */
+  background: linear-gradient(to left, rgba(8, 7, 6, 0.94) 0%, rgba(8, 7, 6, 0.86) 62%, rgba(8, 7, 6, 0) 100%);
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.player .next-up.docked:not(.takeover) .next-up-art {
+  border-radius: var(--radius-lg);
+}
+
+.player .next-up.docked:not(.takeover) .next-up-title {
+  font-size: var(--font-size-lg);
+}
+
+.player .next-up.docked:not(.takeover) .button.small {
+  height: 36px;
+  padding: 0 16px;
+  font-size: var(--font-size-sm);
+}

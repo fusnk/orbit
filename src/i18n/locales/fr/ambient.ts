@@ -1,0 +1,26 @@
+import type { ambient as source } from '../en/ambient';
+
+export const ambient: Record<keyof typeof source, string> = {
+  'ambient.label': 'Mode ambiance',
+  'ambient.hint.details': 'Entrée pour les détails',
+  'ambient.slide.resume': 'Reprendre',
+  'ambient.slide.resume-episode': 'Reprendre {episode}',
+  'ambient.slide.library': 'Dans Ma bibliothèque',
+  'ambient.slide.recent': 'Vu récemment',
+  'ambient.slide.trending': 'Populaire en ce moment',
+  'ambient.settings.heading': 'Mode ambiance',
+  'ambient.settings.after': 'Démarrer après',
+  'ambient.settings.after-hint': 'Si rien n’est pressé pendant ce temps, Orbit passe à un lent diaporama d’illustrations. Jamais pendant une lecture.',
+  'ambient.settings.source': 'Ce qu’il affiche',
+  'ambient.settings.source-hint': 'Ce que vous regardez et avez enregistré, ce qui est populaire, ou les deux en alternance.',
+  'ambient.settings.source-for-you': 'Pour vous',
+  'ambient.settings.source-trending': 'Tendances',
+  'ambient.settings.source-both': 'Les deux',
+  'ambient.settings.clock': 'Afficher l’heure',
+  'ambient.settings.clock-hint': 'L’heure et la date dans un coin.',
+  'ambient.settings.paused': 'Aussi en pause',
+  'ambient.settings.paused-hint': 'Démarre par-dessus le lecteur après une pause de cette durée. La lecture reste telle quelle.',
+  'ambient.settings.preview': 'Aperçu',
+  'ambient.settings.preview-label': 'Le voir maintenant',
+  'ambient.settings.preview-hint': 'Démarre le mode ambiance tout de suite. Appuyez sur une touche ou bougez la souris pour revenir.',
+};

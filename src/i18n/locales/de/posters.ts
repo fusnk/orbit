@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'Bewertungen auf Postern',
+  'posters.ratings-hint': 'IMDb-, TMDB- und Letterboxd-Wertungen auf dem Bild, aus dem, was Orbit schon über jeden Titel weiß. Minimal zeigt eine Wertung, Vollständig alle.',
+  'posters.ratings-minimal': 'Minimal',
+  'posters.ratings-full': 'Vollständig',
+  'posters.provider': 'Poster-Anbieter',
+  'posters.provider-hint': 'Woher die Poster kommen. RPDB zeichnet Bewertungen auf seine Poster und braucht deinen eigenen RPDB-Schlüssel (ratingposterdb.com). Hat RPDB kein Poster für einen Titel, zeigt Orbit das übliche mit eigenen Bewertungen. Gilt für Poster, die danach gezeichnet werden.',
+  'posters.provider-orbit': 'Orbit (eingebaut)',
+  'posters.rpdb.key': 'RPDB-Schlüssel',
+  'posters.rpdb.key-hint': 'Dein Schlüssel von ratingposterdb.com. Er liegt im Schlüsselbund des Systems und wird nur an RPDB gesendet.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'Wird bei RPDB geprüft …',
+  'posters.rpdb.connected': 'RPDB-Schlüssel gespeichert. Poster kommen jetzt von RPDB.',
+  'posters.rpdb.saved': 'Gespeichert',
+  'posters.rpdb.removed': 'RPDB-Schlüssel entfernt.',
+  'posters.rpdb.key-format': 'Das sieht nicht nach einem RPDB-Schlüssel aus. Schlüssel beginnen mit t0-, t1-, t2- usw.',
+  'posters.rpdb.refused': 'RPDB hat diesen Schlüssel nicht akzeptiert.',
+  'posters.rpdb.busy': 'RPDB bekommt gerade zu viele Anfragen. Versuch es gleich noch einmal.',
+  'posters.rpdb.unreachable': 'RPDB war nicht erreichbar, um den Schlüssel zu prüfen.',
+  'posters.rpdb.style': 'RPDB-Posterstil',
+  'posters.rpdb.style-hint': 'Welche Bewertungen RPDB zeichnet. Kostenlose Schlüssel enthalten nur Standard; andere Stile brauchen eine bezahlte RPDB-Stufe.',
+  'posters.rpdb.style-default': 'Standard',
+  'posters.rpdb.style-certs': 'Altersfreigaben',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'Ohne Titeltext',
+  'posters.description': 'Bewertungen: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} von 5',
+};

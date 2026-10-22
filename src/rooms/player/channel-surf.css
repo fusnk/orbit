@@ -1,0 +1,215 @@
+/* ── Live TV channel surfing: the channel card and the side list ─────── */
+
+.surf-button {
+  display: none;
+}
+
+.player.live .surf-button {
+  display: grid;
+}
+
+/* What's on the channel just stepped to, above the bar on the left. */
+.surf-card {
+  position: absolute;
+  left: var(--space-6);
+  bottom: 124px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: min(520px, calc(100% - 48px));
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: rgba(16, 15, 14, 0.9);
+  backdrop-filter: blur(28px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 24px 60px -20px rgba(0, 0, 0, 0.9);
+  animation: panel-in 160ms var(--ease);
+  pointer-events: none;
+}
+
+.surf-card[hidden],
+.surf-panel[hidden],
+.player:not(.live) .surf-card,
+.player:not(.live) .surf-panel,
+.player.pip .surf-card,
+.player.pip .surf-panel {
+  display: none;
+}
+
+.surf-logo,
+.surf-row-logo {
+  flex: none;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.surf-logo {
+  width: 72px;
+  height: 52px;
+}
+
+.surf-row-logo {
+  width: 44px;
+  height: 32px;
+}
+
+.surf-logo.live-initial,
+.surf-row-logo.live-initial {
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  color: #cdc7c0;
+  font-weight: 700;
+}
+
+.surf-card-text,
+.surf-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.surf-card-top {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.surf-number,
+.surf-row-number {
+  flex: none;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: #958e87;
+  font-variant-numeric: tabular-nums;
+}
+
+.surf-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.surf-card-now,
+.surf-card-next,
+.surf-now,
+.surf-row-name {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+}
+
+.surf-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+}
+
+.surf-until {
+  flex: none;
+}
+
+.surf-label {
+  flex: none;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-accent-hi, var(--color-accent));
+}
+
+.surf-card .muted,
+.surf-panel .muted {
+  color: #a8a29c;
+}
+
+/* The channel list: a card down the left, clear of the bar and the right-hand panel. */
+.surf-panel {
+  position: absolute;
+  left: var(--space-6);
+  top: 72px;
+  bottom: 124px;
+  display: flex;
+  flex-direction: column;
+  width: min(380px, calc(100% - 48px));
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(16, 15, 14, 0.9);
+  backdrop-filter: blur(28px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 24px 60px -20px rgba(0, 0, 0, 0.9);
+  animation: panel-in 160ms var(--ease);
+}
+
+.surf-rows {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  padding: 0 10px 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.surf-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 56px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.surf-row:hover,
+.surf-row:focus-visible {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.surf-row[aria-current='true'] {
+  background: color-mix(in srgb, var(--color-accent) 24%, transparent);
+}
+
+.surf-row-number {
+  width: 3ch;
+  text-align: end;
+}
+
+.surf-row-name {
+  font-weight: 700;
+}
+
+.surf-row .live-progress,
+.surf-card .live-progress {
+  width: min(220px, 100%);
+}
+
+.surf-empty {
+  padding: 8px 10px;
+  font-size: var(--font-size-sm);
+}
+
+/* The controls stay hidden until the first frame, but surfing happens while
+   the next channel loads: the card (and the list, to keep choosing) show
+   over the loading screen too. */
+.player.live .surf-card:not([hidden]),
+.player.live .surf-panel:not([hidden]) {
+  visibility: visible;
+}

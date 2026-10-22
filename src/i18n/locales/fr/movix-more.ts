@@ -1,0 +1,68 @@
+import type { movixMore as source } from '../en/movix-more';
+import type { Catalog } from '../types';
+
+/** French strings for the Movix-inspired additions. */
+export const movixMore: Catalog<typeof source> = {
+  // Settings → Playback → Next episode: when Next Up appears and its style (rooms/settings/next-up-rows.ts)
+  'movix.next-up.when': 'Quand « À suivre » apparaît',
+  'movix.next-up.when-hint': 'Pour les épisodes dont le générique de fin n’est pas connu. S’il l’est, « À suivre » arrive avec lui.',
+  'movix.next-up.when-percent': 'En cours d’épisode',
+  'movix.next-up.when-before-end': 'Avant la fin',
+  'movix.next-up.amount': 'Apparaît à',
+  'movix.next-up.amount-hint': 'Jusqu’où dans l’épisode, ou combien de minutes avant sa fin. Les minutes avant la fin ne tombent jamais avant la moitié.',
+  'movix.next-up.style': 'Style de « À suivre »',
+  'movix.next-up.style-hint': 'Une petite carte dans le coin, ou un panneau le long de l’image.',
+  'movix.next-up.style-card': 'Carte',
+  'movix.next-up.style-panel': 'Panneau',
+  // Exact air times from TVmaze: the setting and "Out today at 21:00" (catalog/air-times.ts, rooms/settings/general.ts)
+  'movix.air.setting': 'Rechercher les heures de diffusion exactes',
+  'movix.air.setting-hint': 'Demande à TVmaze, un guide TV gratuit, quand sortent les nouveaux épisodes : le Radar des sorties indique « Sort aujourd’hui à 21:00 », les alertes arrivent à la diffusion et la lecture automatique attend la sortie. N’envoie que l’identifiant IMDb ou TheTVDB de la série.',
+  'movix.air.today': 'Sort aujourd’hui à {time}',
+  'movix.air.tomorrow': 'Sort demain à {time}',
+  'movix.air.date': 'Sort le {date} à {time}',
+  // Episode reminders: "Remind me" on an upcoming episode, and the notification (rooms/detail/reminder-button.ts, library/reminders.ts)
+  'movix.remind.set': 'Me le rappeler',
+  'movix.remind.current': 'Rappel : {when}',
+  'movix.remind.on-day': 'Le jour de la sortie',
+  'movix.remind.days-before.one': '{count} jour avant',
+  'movix.remind.days-before.other': '{count} jours avant',
+  'movix.remind.none': 'Pas de rappel',
+  'movix.remind.saved': 'Vous serez prévenu des nouveaux épisodes de {name} : {when}.',
+  'movix.remind.removed': 'Plus de rappels pour {name}.',
+  'movix.remind.full': 'Les rappels sont limités à {count} séries. Retirez-en un pour ajouter {name}.',
+  'movix.remind.today': '{code} sort aujourd’hui.',
+  'movix.remind.today-at': '{code} sort aujourd’hui à {time}.',
+  'movix.remind.tomorrow': '{code} sort demain.',
+  'movix.remind.tomorrow-at': '{code} sort demain à {time}.',
+  'movix.remind.in-days.one': '{code} sort dans {count} jour.',
+  'movix.remind.in-days.other': '{code} sort dans {count} jours.',
+  // A film’s end screen: the next film in its franchise, offered first (rooms/player/end-screen.ts)
+  'movix.end.next-in': 'La suite de {name}',
+  // Lists: description, sort, export and import of one list (rooms/lists/lists.ts)
+  'movix.lists.sort': 'Trier par',
+  'movix.lists.sort-added': 'Date d’ajout',
+  'movix.lists.sort-title': 'Titre',
+  'movix.lists.sort-year': 'Année',
+  'movix.lists.sort-rating': 'Note',
+  'movix.lists.description': 'Description',
+  'movix.lists.add-description': 'Ajouter une description',
+  'movix.lists.edit-description': 'Modifier la description',
+  'movix.lists.export': 'Exporter la liste',
+  'movix.lists.import': 'Importer une liste',
+  'movix.lists.imported.one': '« {name} » importée avec {count} titre.',
+  'movix.lists.imported.other': '« {name} » importée avec {count} titres.',
+  'movix.lists.skipped.one': '{count} titre du fichier était illisible et a été ignoré.',
+  'movix.lists.skipped.other': '{count} titres du fichier étaient illisibles et ont été ignorés.',
+  'movix.lists.file-too-large': 'Ce fichier est trop volumineux pour être une liste.',
+  'movix.lists.file-not-list': 'Ce fichier n’est pas une liste exportée depuis Orbit.',
+  'movix.lists.file-empty': 'Ce fichier de liste ne contient aucun titre lisible par Orbit.',
+  'errors.lists.description': 'La description d’une liste fait au plus {max} caractères, sur une ligne.',
+  // Settings → General → Comfort → Reduce visual effects → Auto: what it decided and why (rooms/settings/appearance.ts)
+  'movix.effects.auto-off': 'Désactivé automatiquement : cet appareil gère bien les effets.',
+  'movix.effects.auto-tv': 'Activé automatiquement : c’est un téléviseur.',
+  'movix.effects.auto-cores.one': 'Activé automatiquement : cet appareil a {count} cœur de processeur.',
+  'movix.effects.auto-cores.other': 'Activé automatiquement : cet appareil a {count} cœurs de processeur.',
+  'movix.effects.auto-memory': 'Activé automatiquement : cet appareil a {memory} de mémoire.',
+  'movix.effects.auto-frames.one': 'Activé automatiquement : l’interface tournait ici à {count} image par seconde.',
+  'movix.effects.auto-frames.other': 'Activé automatiquement : l’interface tournait ici à {count} images par seconde.',
+};

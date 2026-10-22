@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'Beoordelingen op posters',
+  'posters.ratings-hint': 'Scores van IMDb, TMDB en Letterboxd op de afbeelding, uit wat Orbit al over elke titel weet. Minimaal toont één score; Volledig toont ze allemaal.',
+  'posters.ratings-minimal': 'Minimaal',
+  'posters.ratings-full': 'Volledig',
+  'posters.provider': 'Posterbron',
+  'posters.provider-hint': 'Waar posters vandaan komen. RPDB tekent beoordelingen op zijn posters en heeft je eigen RPDB-sleutel nodig (ratingposterdb.com). Heeft RPDB geen poster voor een titel, dan toont Orbit de gewone met zijn eigen beoordelingen. Geldt voor posters die daarna getekend worden.',
+  'posters.provider-orbit': 'Orbit (ingebouwd)',
+  'posters.rpdb.key': 'RPDB-sleutel',
+  'posters.rpdb.key-hint': 'Je sleutel van ratingposterdb.com. Hij staat in de sleutelhanger van je systeem en gaat alleen naar RPDB.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'Controleren bij RPDB…',
+  'posters.rpdb.connected': 'RPDB-sleutel opgeslagen. Posters komen nu van RPDB.',
+  'posters.rpdb.saved': 'Opgeslagen',
+  'posters.rpdb.removed': 'RPDB-sleutel verwijderd.',
+  'posters.rpdb.key-format': 'Dat lijkt geen RPDB-sleutel. Sleutels beginnen met t0-, t1-, t2- enzovoort.',
+  'posters.rpdb.refused': 'RPDB heeft die sleutel niet geaccepteerd.',
+  'posters.rpdb.busy': 'RPDB krijgt nu te veel verzoeken. Probeer het zo opnieuw.',
+  'posters.rpdb.unreachable': 'Kon RPDB niet bereiken om de sleutel te controleren.',
+  'posters.rpdb.style': 'RPDB-posterstijl',
+  'posters.rpdb.style-hint': 'Welke beoordelingen RPDB tekent. Gratis sleutels hebben alleen Standaard; andere stijlen vragen een betaald RPDB-niveau.',
+  'posters.rpdb.style-default': 'Standaard',
+  'posters.rpdb.style-certs': 'Leeftijdsclassificaties',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'Zonder titeltekst',
+  'posters.description': 'Beoordelingen: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} van 5',
+};

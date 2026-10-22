@@ -1,0 +1,171 @@
+/* Shorts: one trailer per screen, snapping as the feed pages (index.ts). It
+   fills the page area every Look leaves (inside the outlet's room for a
+   floating menu), so nothing is hidden under a pill or a bar. */
+
+.shorts {
+  position: relative;
+  height: 100%;
+  outline: none;
+}
+
+.shorts-feed {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+}
+
+.shorts-slide {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  overflow: clip;
+  isolation: isolate;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  background: var(--color-panel);
+}
+
+.shorts-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.shorts-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 25%;
+}
+
+/* The whole picture shows, letterboxed in black, whatever the window's shape. */
+.shorts-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  opacity: 0;
+  transition: opacity var(--duration-hero) var(--ease);
+  pointer-events: none;
+}
+
+.shorts-video.playing {
+  opacity: 1;
+}
+
+/* Text sits on the artwork or the video, so it keeps light on a dark shade in every theme. */
+.shorts-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.35) 40%, transparent 65%);
+  pointer-events: none;
+}
+
+.shorts-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: min(720px, 100% - var(--control-primary) * 2);
+  padding: var(--space-8) var(--page-gutter);
+  color: #fff;
+}
+
+.shorts-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-hero);
+  font-weight: var(--font-hero-weight);
+  letter-spacing: var(--font-display-tracking);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.shorts-status {
+  margin: 0;
+  color: #d8d2cb;
+}
+
+.shorts-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.shorts-side {
+  position: absolute;
+  inset-inline-end: var(--page-gutter);
+  bottom: var(--space-8);
+}
+
+.shorts-side .button.trailer-sound {
+  position: static;
+}
+
+.shorts-top {
+  position: absolute;
+  top: var(--space-4);
+  inset-inline-start: var(--page-gutter);
+  display: flex;
+  gap: var(--space-3);
+  align-items: baseline;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.shorts-top .eyebrow {
+  color: inherit;
+}
+
+.shorts-position {
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+
+.shorts-arrows {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: var(--page-gutter);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  translate: 0 -50%;
+}
+
+/* The end card and the loading, empty and failed messages. */
+.shorts-end {
+  align-items: center;
+  justify-content: center;
+}
+
+.shorts-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 420px;
+  padding: var(--space-8) var(--page-gutter);
+  text-align: center;
+}
+
+.shorts-message p:empty {
+  display: none;
+}
+
+.shorts-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

@@ -1,0 +1,30 @@
+import type { plex as source } from '../en/plex';
+import type { Catalog } from '../types';
+
+export const plex: Catalog<typeof source> = {
+  'plex.settings.intro': 'Дивіться з Plex Media Server з вашого облікового запису Plex. У фільмів і серій, які на ньому є, з’явиться джерело Plex, а його рядки можна додати на Головну. Ви входите на сторінці самого Plex, тому Orbit ніколи не бачить ваш пароль.',
+  'plex.settings.connect': 'Підключити Plex',
+  'plex.settings.connect-hint': 'Відкриває сторінку входу Plex у браузері. Дозвольте там доступ Orbit і поверніться сюди.',
+  'plex.settings.opening': 'Відкриваємо Plex у браузері…',
+  'plex.settings.waiting': 'Увійдіть у Plex у браузері й дозвольте доступ Orbit. Очікування…',
+  'plex.settings.open-again': 'Відкрити сторінку входу знову',
+  'plex.settings.cancel': 'Скасувати',
+  'plex.settings.choose': 'Виберіть сервер:',
+  'plex.settings.shared': '{server} (доступ надано вам)',
+  'plex.settings.reaching': 'Підключення до {server}…',
+  'plex.settings.server-label': 'Сервер',
+  'plex.settings.connected-as': 'Підключено як {user} на {server}',
+  'plex.settings.connected': 'Підключено до {server}.',
+  'plex.settings.connected-first': 'Підключено до {server}. Рядок «Нещодавно додані» вже на Головній; інші рядки Plex можна додати в Налаштування → Головна й бібліотека → Рядки Головної.',
+  'plex.settings.disconnect': 'Відключити',
+  'plex.settings.disconnected': 'Відключено, Orbit забув дані входу в Plex. Щоб відкликати доступ і в Plex, видаліть Orbit у розділі Authorized Devices на plex.tv.',
+  'plex.settings.insecure': 'Не захищено',
+  'plex.settings.insecure-title': 'Orbit підключається до цього сервера через звичайний http, тому дані входу й відео передаються без шифрування. Удома це прийнятно; для доступу через інтернет увімкніть у Plex захищені підключення.',
+  'plex.rows.kind': 'Plex',
+  'plex.rows.resume': 'Продовжити перегляд',
+  'plex.rows.latest': 'Нещодавно додані',
+  'plex.rows.label': 'Plex: {row}',
+  'plex.rows.not-connected': 'Спершу підключіть сервер Plex у Налаштування → Облікові записи й сервіси.',
+  'plex.rows.libraries-failed': 'Не вдалося завантажити медіатеки сервера.',
+  'plex.source.origin': 'Plex · {server}',
+};

@@ -1,0 +1,28 @@
+import type { playertools as source } from '../en/playertools';
+
+export const playertools: Record<keyof typeof source, string> = {
+  'playertools.speed.custom': "Eigene",
+  'playertools.speed.custom-label': "Eigene Geschwindigkeit",
+  'playertools.speed.slower': "Langsamer (−0,05×)",
+  'playertools.speed.faster': "Schneller (+0,05×)",
+  'playertools.subs.try-another': "Andere Untertitel versuchen",
+  'playertools.subs.try-another-detail': "Nächstbeste Übereinstimmung auf {language}",
+  'playertools.subs.cycled': "Untertitel {position} von {total} · {source}",
+  'playertools.subs.no-other': "Keine anderen Untertitel zum Ausprobieren",
+  'playertools.paste.action': "Untertitel einfügen…",
+  'playertools.paste.detail': "SRT- oder WebVTT-Text",
+  'playertools.paste.title': "Untertitel einfügen",
+  'playertools.paste.hint': "Füge den Text einer SRT- oder WebVTT-Datei ein. Er wird nur zu diesem Video hinzugefügt.",
+  'playertools.paste.field': "Untertiteltext",
+  'playertools.paste.placeholder': "1\n00:00:01,000 --> 00:00:03,000\nHallo!",
+  'playertools.paste.add': "Untertitel hinzufügen",
+  'playertools.paste.cancel': "Abbrechen",
+  'playertools.paste.empty': "Füge zuerst Untertiteltext ein.",
+  'playertools.paste.too-big': "Das sind mehr als 2 MB Text.",
+  'playertools.paste.bad': "Das sieht nicht nach SRT- oder WebVTT-Untertiteln aus.",
+  'playertools.paste.added': "Eingefügte Untertitel hinzugefügt",
+  'playertools.paste.name': "Eingefügte Untertitel",
+  'playertools.caps.setting': "GROSSBUCHSTABEN-Untertitel korrigieren",
+  'playertools.caps.hint': "Zeilen ganz in Großbuchstaben werden in normale Schreibung umgewandelt. Gilt für Untertitel von Add-ons, hinzugefügte Dateien und eingefügten Text, nicht für Untertitel in der Videodatei. Auch Namen verlieren ihre Großbuchstaben.",
+  'playertools.caps.error': "Die GROSSBUCHSTABEN-Einstellung konnte nicht angewendet werden",
+};

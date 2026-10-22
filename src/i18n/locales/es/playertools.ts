@@ -1,0 +1,28 @@
+import type { playertools as source } from '../en/playertools';
+
+export const playertools: Record<keyof typeof source, string> = {
+  'playertools.speed.custom': "Personalizada",
+  'playertools.speed.custom-label': "Velocidad personalizada",
+  'playertools.speed.slower': "Más lenta (−0,05×)",
+  'playertools.speed.faster': "Más rápida (+0,05×)",
+  'playertools.subs.try-another': "Probar otros subtítulos",
+  'playertools.subs.try-another-detail': "Siguiente mejor coincidencia en {language}",
+  'playertools.subs.cycled': "Subtítulos {position} de {total} · {source}",
+  'playertools.subs.no-other': "No hay otros subtítulos para probar",
+  'playertools.paste.action': "Pegar subtítulos…",
+  'playertools.paste.detail': "Texto SRT o WebVTT",
+  'playertools.paste.title': "Pegar subtítulos",
+  'playertools.paste.hint': "Pega el texto de un archivo SRT o WebVTT. Solo se añade a este vídeo.",
+  'playertools.paste.field': "Texto de los subtítulos",
+  'playertools.paste.placeholder': "1\n00:00:01,000 --> 00:00:03,000\n¡Hola!",
+  'playertools.paste.add': "Añadir subtítulos",
+  'playertools.paste.cancel': "Cancelar",
+  'playertools.paste.empty': "Primero pega el texto de unos subtítulos.",
+  'playertools.paste.too-big': "Son más de 2 MB de texto.",
+  'playertools.paste.bad': "No parecen subtítulos SRT ni WebVTT.",
+  'playertools.paste.added': "Subtítulos pegados añadidos",
+  'playertools.paste.name': "Subtítulos pegados",
+  'playertools.caps.setting': "Corregir subtítulos en MAYÚSCULAS",
+  'playertools.caps.hint': "Las líneas escritas todo en mayúsculas pasan a escribirse con normalidad. Funciona con subtítulos de complementos, archivos que añadas y texto pegado, no con los subtítulos incluidos en el archivo de vídeo. Los nombres también pierden las mayúsculas.",
+  'playertools.caps.error': "No se pudo aplicar el ajuste de MAYÚSCULAS",
+};

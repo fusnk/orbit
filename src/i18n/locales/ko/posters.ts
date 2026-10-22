@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': '포스터에 평점 표시',
+  'posters.ratings-hint': 'Orbit이 이미 알고 있는 작품 정보를 바탕으로 IMDb, TMDB, Letterboxd 점수를 포스터 위에 표시해요. 간단히는 점수 하나만, 전체는 모든 점수를 보여 줘요.',
+  'posters.ratings-minimal': '간단히',
+  'posters.ratings-full': '전체',
+  'posters.provider': '포스터 제공자',
+  'posters.provider-hint': '포스터를 가져올 곳이에요. RPDB는 포스터에 평점을 그려 넣으며, 본인의 RPDB 키(ratingposterdb.com)가 필요해요. RPDB에 작품의 포스터가 없으면 Orbit이 평소 포스터에 자체 평점을 표시해요. 다음에 그려지는 포스터부터 적용돼요.',
+  'posters.provider-orbit': 'Orbit (기본 제공)',
+  'posters.rpdb.key': 'RPDB 키',
+  'posters.rpdb.key-hint': 'ratingposterdb.com에서 받은 키예요. 시스템 키체인에 보관되며 RPDB에만 전송돼요.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'RPDB에서 확인하는 중…',
+  'posters.rpdb.connected': 'RPDB 키를 저장했어요. 이제 RPDB에서 포스터를 가져와요.',
+  'posters.rpdb.saved': '저장됨',
+  'posters.rpdb.removed': 'RPDB 키를 제거했어요.',
+  'posters.rpdb.key-format': 'RPDB 키가 아닌 것 같아요. 키는 t0-, t1-, t2- 등으로 시작해요.',
+  'posters.rpdb.refused': 'RPDB에서 이 키를 받아들이지 않았어요.',
+  'posters.rpdb.busy': '지금 RPDB에 요청이 너무 많아요. 잠시 후 다시 시도해 주세요.',
+  'posters.rpdb.unreachable': '키를 확인하기 위해 RPDB에 연결하지 못했어요.',
+  'posters.rpdb.style': 'RPDB 포스터 스타일',
+  'posters.rpdb.style-hint': 'RPDB가 그려 넣을 평점이에요. 무료 키는 기본만 사용할 수 있고, 다른 스타일은 유료 RPDB 등급이 필요해요.',
+  'posters.rpdb.style-default': '기본',
+  'posters.rpdb.style-certs': '연령 등급',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': '제목 텍스트 없음',
+  'posters.description': '평점: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value}/5',
+};

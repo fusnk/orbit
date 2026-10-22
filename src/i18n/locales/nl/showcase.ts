@@ -1,0 +1,36 @@
+import type { showcase as source } from '../en/showcase';
+import type { Catalog } from '../types';
+
+/** Dutch strings for the Showcase title page layout. */
+export const showcase: Catalog<typeof source> = {
+  'showcase.setting.label': 'Titelpagina',
+  'showcase.setting.hint': 'Klassiek houdt de afbeelding in een kaart. Showcase spreidt die over het hele venster, met de details in secties eronder.',
+  'showcase.setting.classic': 'Klassiek',
+  'showcase.setting.showcase': 'Showcase',
+  'showcase.start-episode': 'Begin S{season} · A{episode}',
+  'showcase.ends-at': 'Eindigt om {time}',
+  'showcase.ends-at-hint': 'Wanneer het afloopt als je nu begint',
+  'showcase.age-rating': 'Leeftijd {rating}',
+  'showcase.streaming-on': 'Te streamen op {provider}',
+  'showcase.choose-season': 'Seizoen',
+  'showcase.choose-arc': 'Verhaallijn',
+  'showcase.episode-count.one': '{count} aflevering',
+  'showcase.episode-count.other': '{count} afleveringen',
+  'showcase.episode-length': '{number} · {minutes} min',
+  'showcase.season-actions': 'Acties voor het seizoen',
+  'showcase.download-season.one': 'Seizoen downloaden ({count} aflevering)',
+  'showcase.download-season.other': 'Seizoen downloaden ({count} afleveringen)',
+  'showcase.extras': 'Trailers en extra’s',
+  'showcase.cast-crew': 'Cast en crew',
+  'showcase.photos': 'Foto’s',
+  'showcase.stills': 'Stills',
+  'showcase.topics': 'Onderwerpen',
+  'showcase.topic-intro': 'Films en series die TMDB met ‘{topic}’ labelt.',
+  'showcase.where-to-watch': 'Waar te zien',
+  'showcase.stream': 'Streamen',
+  'showcase.rent': 'Huren',
+  'showcase.buy': 'Kopen',
+  'showcase.justwatch': 'Gegevens van JustWatch',
+  'showcase.releases': 'Releasedata',
+  'showcase.cinemas-only': 'Tot nu toe alleen in de bioscoop: vroege kopieën zijn meestal in de zaal opgenomen.',
+};

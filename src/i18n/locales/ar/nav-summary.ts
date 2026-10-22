@@ -1,0 +1,36 @@
+import type { navSummary as source } from '../en/nav-summary';
+import type { Catalog } from '../types';
+
+/** Arabic strings for the line under each Settings category saying what it's set to. */
+export const navSummary: Catalog<typeof source> = {
+  'navsummary.more': '{name} و{count} غيرها',
+  'navsummary.scale': 'المقياس {percent}',
+  'navsummary.size': 'الحجم {percent}',
+  'navsummary.banner': 'اللافتة: {style}',
+  'navsummary.watched-at': 'مُشاهَد عند {percent}',
+  'navsummary.spoilers-hidden': 'الحرق مخفي',
+  'navsummary.spoilers-shown': 'الحرق ظاهر',
+  'navsummary.autoplay': 'التشغيل التلقائي: {mode}',
+  'navsummary.player-layout': 'التخطيط: {name}',
+  'navsummary.no-addons': 'لا إضافات',
+  'navsummary.not-connected': 'لا شيء متصل بعد',
+  'navsummary.downloads.none': 'لا تنزيلات بعد',
+  'navsummary.downloads.done.zero': 'تم التنزيل: {count}',
+  'navsummary.downloads.done.one': 'تم التنزيل: {count}',
+  'navsummary.downloads.done.two': 'تم التنزيل: {count}',
+  'navsummary.downloads.done.few': 'تم التنزيل: {count}',
+  'navsummary.downloads.done.many': 'تم التنزيل: {count}',
+  'navsummary.downloads.done.other': 'تم التنزيل: {count}',
+  'navsummary.downloads.active.zero': 'قيد التنفيذ: {count}',
+  'navsummary.downloads.active.one': 'قيد التنفيذ: {count}',
+  'navsummary.downloads.active.two': 'قيد التنفيذ: {count}',
+  'navsummary.downloads.active.few': 'قيد التنفيذ: {count}',
+  'navsummary.downloads.active.many': 'قيد التنفيذ: {count}',
+  'navsummary.downloads.active.other': 'قيد التنفيذ: {count}',
+  'navsummary.shortcuts.zero': 'لا اختصارات ({count})',
+  'navsummary.shortcuts.one': 'اختصار واحد ({count})',
+  'navsummary.shortcuts.two': 'اختصاران ({count})',
+  'navsummary.shortcuts.few': '{count} اختصارات',
+  'navsummary.shortcuts.many': '{count} اختصارًا',
+  'navsummary.shortcuts.other': '{count} اختصار',
+};

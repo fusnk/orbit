@@ -1,0 +1,1486 @@
+/* While the player is open the page turns see-through, so the video (drawn
+   natively beneath the WebView) shows. Every layer above it must be clear. */
+html.player-open,
+html.player-open body {
+  background: transparent;
+}
+
+html.player-open .ambient,
+html.player-open .wallpaper,
+html.player-open .titlebar,
+html.player-open .offline-banner {
+  display: none;
+}
+
+html.player-open .outlet {
+  overflow: hidden;
+}
+
+.player {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  color: #fff;
+}
+
+/* ── Loading screen: opaque until mpv shows its first frame ───────────── */
+
+.player-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #000;
+  isolation: isolate;
+  transition: opacity 300ms var(--ease), visibility 300ms;
+}
+
+/* Coming back (another episode or source) it's visible at once, not at the end of
+   a transition from hidden: until then the resume prompt's buttons can't take focus. */
+.player:not(.started) .player-loading {
+  transition: opacity 300ms var(--ease), visibility 0s;
+}
+
+/* Hidden once faded, not just transparent: its Cancel button would otherwise
+   stay first in the Tab order, invisible, and Enter on it leaves the player. */
+.player.started .player-loading:not(.failed) {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.player-loading-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player-loading-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.62);
+}
+
+.player-loading-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 640px;
+  padding: 0 var(--space-6);
+  text-align: center;
+}
+
+.player-loading-text .eyebrow {
+  color: #cdc7c0;
+}
+
+.player-loading-title {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+/* The title's logo in place of its name (title-logo.ts), centred like the text. */
+.player-loading-text .title-logo {
+  max-width: min(420px, 100%);
+  max-height: clamp(72px, 11vh, 132px);
+  margin-inline: auto;
+  object-position: 50% 100%;
+}
+
+/* Above an episode's title, the show's logo is smaller. */
+.player-loading-show .title-logo {
+  max-height: clamp(44px, 7vh, 80px);
+}
+
+.player-loading-episode {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-accent-hi, var(--color-accent));
+}
+
+.player-loading-note {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: #cdc7c0;
+}
+
+.player-loading-cancel {
+  margin-block-start: var(--space-3);
+}
+
+.player-loading.failed .player-loading-text,
+.player-loading.failed .spinner,
+.player-loading.failed .player-loading-note,
+.player-loading.failed .player-loading-cancel,
+.player-loading.asking .player-loading-cancel {
+  display: none;
+}
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  margin: var(--space-3) 0 var(--space-1);
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Buffering after the start: a spinner over the video. */
+.player.buffering::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  pointer-events: none;
+}
+
+/* ── Controls ─────────────────────────────────────────────────────────── */
+
+.player-ui {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+}
+
+.player.started .player-ui {
+  visibility: visible;
+}
+
+/* The empty middle: clicks here pause/play, double-clicks toggle full screen. */
+.player-stage {
+  flex: 1;
+}
+
+.player-top,
+.player-bottom {
+  transition: opacity 300ms var(--ease);
+}
+
+/* Idle while playing: controls fade out and the cursor hides (spec: 2.8 s). */
+.player.idle .player-top,
+.player.idle .player-bottom {
+  opacity: 0;
+}
+
+.player.idle {
+  cursor: none;
+}
+
+.player-top {
+  display: flex;
+  align-items: center;
+  height: 88px;
+  padding: 0 var(--space-5);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent);
+}
+
+.player-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 72px var(--space-6) var(--space-4);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4) 55%, transparent);
+}
+
+.player-seek-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.player-time {
+  flex: none;
+  min-width: 64px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: #e6e1db;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Three columns: transport · title · extras, with the title truly centred. */
+.player-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.player-bar-start,
+.player-bar-end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.player-bar-end {
+  justify-content: flex-end;
+}
+
+.player-name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+  max-width: 44vw;
+  white-space: nowrap;
+}
+
+.player-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.player-episode {
+  flex: none;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: #cdc7c0;
+}
+
+.player-button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+}
+
+.player-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* A press dips the button a touch, so a click is felt. */
+.player-button {
+  transition:
+    background var(--duration-fast) var(--ease),
+    transform var(--duration-press) var(--ease);
+}
+
+.player-button:active {
+  transform: scale(0.94);
+}
+
+/* ── Orbit layout: a little more character ──────────────────────────────
+   Play/pause is a light disc that anchors the bar (as the light Play pill
+   does on title pages), and the title reads in the display face with the
+   episode as a tag. Only the default Orbit preset: the others draw their
+   own play button (layout.css). Sizes follow --ps, like layout.css's. */
+
+.player[data-layout='orbit'] .player-bar-start > .player-button.large {
+  width: calc(52px * var(--ps));
+  height: calc(52px * var(--ps));
+  margin-inline-end: var(--space-2);
+  background: rgba(255, 255, 255, 0.94);
+  color: #0b0a09;
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.7);
+}
+
+.player[data-layout='orbit'] .player-bar-start > .player-button.large:hover {
+  background: #fff;
+}
+
+.player[data-layout='orbit'] .player-bar-start > .player-button.large .icon {
+  width: calc(22px * var(--ps));
+  height: calc(22px * var(--ps));
+}
+
+:root[data-effects='reduced'] .player[data-layout='orbit'] .player-bar-start > .player-button.large {
+  box-shadow: none;
+}
+
+.player[data-layout='orbit'] .player-name .player-title {
+  font-family: var(--font-display);
+  font-size: calc((16px + 6px * var(--font-display-tracking)) * var(--ps));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(0.05em * var(--font-display-tracking));
+}
+
+.player[data-layout='orbit'] .player-name .player-episode {
+  align-self: center;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.player-button .icon {
+  width: 24px;
+  height: 24px;
+}
+
+.player-button.large .icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* ±10 s: the number sits inside the circular arrow. */
+.skip-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-top: 1px;
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+}
+
+.player-volume {
+  display: flex;
+  align-items: center;
+}
+
+/* The slider opens when the volume area is hovered or focused. */
+.volume-slider {
+  width: 0;
+  height: 20px;
+  margin: 0;
+  opacity: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  transition:
+    width var(--duration-fast) var(--ease),
+    opacity var(--duration-fast) var(--ease);
+}
+
+.player-volume:hover .volume-slider,
+.player-volume:focus-within .volume-slider {
+  width: 96px;
+  margin: 0 var(--space-2) 0 var(--space-1);
+  opacity: 1;
+}
+
+.volume-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #fff calc(var(--fraction, 1) * 100%), rgba(255, 255, 255, 0.25) 0);
+}
+
+/* Above 100% allowed: a mark where 100% is (the player is always left to right). */
+.volume-slider.boost::-webkit-slider-runnable-track {
+  background:
+    linear-gradient(90deg, transparent calc(var(--tick) * 100% - 1px), var(--color-accent) 0 calc(var(--tick) * 100% + 1px), transparent 0),
+    linear-gradient(90deg, #fff calc(var(--fraction, 1) * 100%), rgba(255, 255, 255, 0.25) 0);
+}
+
+/* Audio passthrough: the receiver sets the volume. */
+.volume-slider:disabled {
+  cursor: not-allowed;
+}
+
+.player-volume:hover .volume-slider:disabled,
+.player-volume:focus-within .volume-slider:disabled {
+  opacity: 0.4;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: #fff;
+  appearance: none;
+}
+
+.quality-badge {
+  padding: 3px 7px;
+  margin-right: var(--space-2);
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.85);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.quality-badge[hidden] {
+  display: none;
+}
+
+/* The seek bar: a tall hit area around a thin track. */
+.seek {
+  position: relative;
+  flex: 1;
+  height: 20px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.seek-track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  margin-top: -2px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.22);
+  transition:
+    height var(--duration-fast) var(--ease),
+    margin var(--duration-fast) var(--ease);
+}
+
+.seek:is(:hover, .dragging) .seek-track {
+  height: 6px;
+  margin-top: -3px;
+}
+
+.seek-buffered,
+.seek-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--fraction, 0) * 100%);
+  border-radius: 2px;
+}
+
+.seek-buffered {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.seek-fill {
+  background: var(--color-accent);
+}
+
+/* Chapter starts: small gaps cut into the bar, above the fill. */
+.seek-marks {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.seek-mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--fraction, 0) * 100%);
+  width: 3px;
+  margin-left: -1.5px;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.seek-knob {
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: calc(var(--fraction, 0) * 100%);
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  transform: scale(0);
+  transition: transform var(--duration-fast) var(--ease);
+}
+
+.seek:is(:hover, .dragging) .seek-knob,
+.seek:focus-visible .seek-knob {
+  transform: scale(1);
+}
+
+/* The time under the pointer. */
+.seek-hover {
+  position: absolute;
+  bottom: 22px;
+  left: calc(var(--fraction, 0) * 100%);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(11, 10, 9, 0.9);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 8px 20px -8px rgba(0, 0, 0, 0.7);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  /* Centred over the pointer, slid in from the window's edges (--shift, see seek-hover.ts). */
+  transform: translateX(calc(-50% + var(--shift, 0px)));
+  pointer-events: none;
+}
+
+.seek:is(:hover, .dragging) .seek-hover.shown {
+  opacity: 1;
+}
+
+/* The hover box grows a picture above the time when previews are on. */
+.seek-hover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.seek-preview {
+  display: block;
+  width: 192px;
+  height: auto;
+  border-radius: 6px;
+}
+
+.seek-preview[hidden] {
+  display: none;
+}
+
+/* ── Top-right: source and info ───────────────────────────────────────── */
+
+.player-top {
+  justify-content: space-between;
+}
+
+.player-top-end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 10px 0 14px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: rgba(20, 19, 18, 0.6);
+  backdrop-filter: blur(16px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.source-chip-label {
+  font-weight: 600;
+  color: #cdc7c0;
+}
+
+.source-chip .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.source-chip:hover,
+.source-chip.open {
+  background: rgba(40, 38, 36, 0.8);
+}
+
+.player-button.open,
+.player-button.active {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ── The floating panel (design: 420px card above the bar, right side) ── */
+
+.player-panel {
+  position: absolute;
+  right: var(--space-6);
+  bottom: 124px;
+  display: flex;
+  flex-direction: column;
+  width: min(420px, calc(100% - 48px));
+  max-height: calc(100% - 220px);
+  overflow: hidden;
+  border-radius: 18px;
+  /* Opaque, without a blur: the video is drawn natively under the page, so a backdrop blur has nothing to sample. */
+  background: rgba(16, 15, 14, 0.96);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 16px 48px rgba(0, 0, 0, 0.45);
+  animation: panel-rise 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.player-panel[hidden] {
+  display: none;
+}
+
+/* The controls stay hidden until the first frame, but a source that failed before it
+   ("Try another source" on the error) is chosen from the Source panel over the loading screen. */
+.player:not(.started) .player-panel:not([hidden]) {
+  visibility: visible;
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes panel-rise {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+/* Panels opened from the top-right (source, info) drop down from there. */
+.player-panel.from-top {
+  top: 72px;
+  bottom: auto;
+}
+
+.player-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 14px 10px;
+  padding-inline: 18px 12px;
+  border-block-end: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.player-panel-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.player-panel-close {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #a8a29c;
+}
+
+.player-panel-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.player-panel-close .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.player-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 0;
+  /* Room under the header for views that start with chips or a highlighted row rather than a heading. */
+  padding: 6px 10px 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.panel-heading {
+  padding: 4px 8px 6px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: #958e87;
+}
+
+.panel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.panel-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: #fff;
+  text-align: start;
+}
+
+.panel-row:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.panel-row:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Queue panel: the item (plays it), then move earlier, later and remove. */
+.queue-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.queue-row > .panel-row {
+  flex: 1;
+  min-width: 0;
+}
+
+.panel-icon-button {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #a8a29c;
+}
+
+.panel-icon-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.panel-icon-button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.panel-icon-button .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.panel-row.selected {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.panel-row > .icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+.panel-row.selected > .icon:last-child {
+  color: var(--color-accent-hi, var(--color-accent));
+}
+
+.panel-row-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.panel-row-label {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Up to two lines: a sound mode's or a link's description runs longer in German or Russian than in English,
+   and cut at one line it lost the half that says what it's for. */
+.panel-row-detail {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 12px;
+  font-weight: 600;
+  color: #958e87;
+  overflow-wrap: anywhere;
+}
+
+/* A quiet note under a row, e.g. that a source couldn't play earlier. */
+.panel-row-note {
+  font-size: 11px;
+  font-weight: 600;
+  color: #958e87;
+}
+
+/* The source playing, when the addon filter hides its row. */
+.panel-hidden-note {
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #958e87;
+}
+
+.panel-row-trail {
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #958e87;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A language's choices, indented under it. */
+.panel-options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-block: 2px 6px;
+  margin-inline: 14px 0;
+  padding-inline-start: 8px;
+  border-inline-start: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.panel-search {
+  margin: 4px 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.panel-chips {
+  padding: 2px 8px;
+}
+
+/* A slider or switch on its own in a view (Controls size, Stream info), in line with the chips, headings and lists. */
+.player-panel-body > :is(.slider, .switch) {
+  padding-inline: 8px;
+}
+
+.panel-note {
+  padding: 8px 8px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 12px;
+  font-weight: 600;
+  color: #958e87;
+}
+
+.episode-row {
+  align-items: center;
+}
+
+.episode-thumb {
+  position: relative;
+  flex: none;
+  width: 112px;
+  aspect-ratio: 16 / 9;
+  overflow: clip;
+  border-radius: 8px;
+  background: #1c1a18;
+}
+
+.episode-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info-list {
+  display: grid;
+  grid-template-columns: 116px minmax(0, 1fr);
+  margin: 0 8px;
+}
+
+.info-list dt,
+.info-list dd {
+  margin: 0;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+}
+
+.info-list dt {
+  font-weight: 600;
+  color: #958e87;
+}
+
+.info-list dd {
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  user-select: text;
+}
+
+.player-button[hidden] {
+  display: none;
+}
+
+/* ── Next Up (design: 360px card above the bar, right side) ──────────── */
+
+.next-up {
+  position: absolute;
+  right: var(--space-6);
+  bottom: 124px;
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 14px;
+  width: min(360px, calc(100% - 48px));
+  padding: 12px;
+  border-radius: var(--radius-lg);
+  background: rgba(20, 19, 18, 0.88);
+  backdrop-filter: blur(24px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 20px 50px -20px rgba(0, 0, 0, 0.9);
+  animation: panel-in 250ms var(--ease);
+}
+
+.next-up[hidden] {
+  display: none;
+}
+
+/* A panel and the card share the corner; the panel wins while open. */
+.player-panel:not([hidden]) ~ .next-up {
+  display: none;
+}
+
+.next-up-art {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: clip;
+  border-radius: 10px;
+  background: #1c1a18;
+}
+
+.next-up-art .art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.next-up-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.next-up-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: #958e87;
+}
+
+.next-up-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.next-up-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.next-up .button.small {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+/* End credits: mpv shrinks the picture into the top-right corner
+   (player_set_corner) and the card fills the space to its left. */
+.next-up.takeover {
+  --takeover-top: max(10vh, calc(88px * var(--ps, 1) + var(--space-2)));
+  left: 5vw;
+  right: auto;
+  /* In line with the picture's top, unless the top bar reaches lower (large or TV controls, a short window). */
+  top: var(--takeover-top);
+  bottom: auto;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  /* Narrower when the art (16:9) and the text under it (about 150px) wouldn't fit above the bottom bar. */
+  width: min(40vw, 640px, (100vh - var(--takeover-top) - var(--player-clear, 124px) - 150px) * 16 / 9);
+  padding: 0;
+  background: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.next-up.takeover .next-up-art {
+  border-radius: var(--radius-lg);
+}
+
+.next-up.takeover .next-up-label {
+  font-size: var(--font-size-sm);
+}
+
+.next-up.takeover .next-up-title {
+  font-size: clamp(20px, 2.2vw, 30px);
+  font-weight: 700;
+}
+
+.next-up.takeover .button.small {
+  height: 40px;
+  padding: 0 18px;
+  font-size: var(--font-size-sm);
+}
+
+/* ── Resume: Ask (on the loading screen) ──────────────────────────────── */
+
+.player-loading.asking .spinner,
+.player-loading.asking .player-loading-note {
+  display: none;
+}
+
+.resume-prompt {
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+/* ── Failure ──────────────────────────────────────────────────────────── */
+
+.player-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 460px;
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  background: rgba(20, 19, 18, 0.94);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.player-error[hidden] {
+  display: none;
+}
+
+/* Try again, another source, copy details and Back wrap onto two lines, centred. */
+.player-error .hero-actions {
+  justify-content: center;
+}
+
+.player-error-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* ── Shuffle toggle (in the bar while a show is shuffled) ───────────── */
+
+.shuffle-toggle[aria-pressed='true'] {
+  color: var(--color-accent);
+}
+
+/* ── "Still watching?": calm, full screen, over the paused picture ───── */
+
+.still-watching {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  background: rgba(10, 9, 8, 0.82);
+  backdrop-filter: blur(18px);
+  cursor: default;
+  animation: panel-in 400ms var(--ease);
+}
+
+.still-watching[hidden] {
+  display: none;
+}
+
+.still-watching-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 640px;
+  text-align: center;
+}
+
+.still-watching-title {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 40px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.still-watching-next {
+  margin: 0 0 var(--space-4);
+  color: #b5aea7;
+}
+
+
+/* Skip intro / recap / credits: bottom right, and it stays up while the controls hide. */
+.skip-segment {
+  position: absolute;
+  right: var(--space-6);
+  bottom: 124px;
+  height: var(--control-compact);
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: rgba(20, 19, 18, 0.88);
+  backdrop-filter: blur(24px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  animation: panel-in 250ms var(--ease);
+}
+
+.skip-segment:hover {
+  background: var(--color-light);
+  color: var(--color-on-light);
+}
+
+.skip-segment:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.skip-segment[hidden],
+.player-panel:not([hidden]) ~ .skip-segment {
+  display: none;
+}
+
+/* A small tag after a row's name, e.g. "SDH" on subtitles that describe sounds. */
+.panel-row-chip {
+  display: inline-block;
+  margin-inline-start: var(--space-2);
+  padding: 0 6px;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 16px;
+  vertical-align: 1px;
+}
+
+/* A small heading inside a panel (e.g. Speed / Sleep timer). */
+.panel-label {
+  display: block;
+  margin: var(--space-2) 0 var(--space-2);
+  color: var(--color-text-faint);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* ── Timing steppers (Audio & subtitles panel) ────────────────────────── */
+
+.panel-stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+}
+
+.panel-stepper-label {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.panel-stepper-value {
+  min-width: 56px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* The timing value can be typed: a quiet button that becomes a field (see `typedValue`). */
+button.panel-stepper-value {
+  height: var(--control-chip);
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+}
+
+button.panel-stepper-value:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+button.panel-stepper-value:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.panel-stepper-field {
+  width: 72px;
+  min-width: 0;
+  height: var(--control-chip);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ── Subtitle style (Subtitle style view) ─────────────────────────────── */
+
+.subtitle-look {
+  display: grid;
+  gap: var(--space-2);
+  padding-inline: var(--space-2);
+}
+
+.colour-chip {
+  gap: 6px;
+}
+
+.colour-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.panel-hex {
+  width: 9ch;
+  min-width: 0;
+  height: var(--control-chip);
+  font-family: var(--font-mono);
+}
+
+.panel-hex[hidden] {
+  display: none;
+}
+
+/* ── Subtitle position (Audio & subtitles panel) ──────────────────────── */
+
+.subtitle-position {
+  display: grid;
+  gap: var(--space-2);
+  padding-inline: var(--space-2);
+}
+
+/* The value reads "Bottom" or "Up 12%", wider than a number. */
+.subtitle-position .slider {
+  grid-template-columns: minmax(84px, auto) 1fr minmax(7ch, auto);
+}
+
+.subtitle-position .panel-note {
+  padding-inline: 0;
+  border-top: 0;
+}
+
+/* ── Pause screen: what's playing, a few seconds into a pause ─────────── */
+
+.pause-info {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0 8vw;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0.25) 100%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 600ms var(--ease),
+    visibility 0s 600ms;
+}
+
+/* Right to left, a title or track name from an addon is often English: each
+   takes its own direction from its first letters (so brackets and full stops
+   stay put), and is still aligned to the right. */
+.player :is(.panel-row-label, .panel-row-detail, .hub-row-value, .next-up-title, .pause-info-title, .pause-info-episode, .pause-info-summary):dir(rtl) {
+  unicode-bidi: plaintext;
+  text-align: right;
+}
+
+/* Darkest where the text sits: on the right when reading right to left. */
+.pause-info:dir(rtl) {
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.55) 55%, rgba(0, 0, 0, 0.25) 100%);
+}
+
+.player.pause-info-on .pause-info {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 600ms var(--ease);
+}
+
+.player.pause-info-on .player-top,
+.player.pause-info-on .player-bottom,
+.player.pause-info-on .skip-segment {
+  opacity: 0;
+}
+
+.pause-info .eyebrow {
+  color: #cdc7c0;
+}
+
+.pause-info-title {
+  max-width: 820px;
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.pause-info-title .title-logo {
+  max-width: min(520px, 100%);
+  max-height: clamp(80px, 12vh, 160px);
+  object-position: 0 100%;
+}
+
+:root[dir='rtl'] .pause-info-title .title-logo {
+  object-position: 100% 100%;
+}
+
+.pause-info-episode {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.pause-info-summary[hidden] {
+  display: none;
+}
+
+.pause-info-summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  max-width: 640px;
+  margin: 0;
+  overflow: hidden;
+  color: #cdc7c0;
+  line-height: 1.5;
+}
+
+/* The age rating, then the time left; hidden while it has neither. */
+.pause-info-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.pause-info-line:not(:has(.cert, .pause-info-genres, .pause-info-left)) {
+  display: none;
+}
+
+.pause-info-genres,
+.pause-info-ends {
+  font-size: var(--font-size-sm);
+  color: #d6d0ca;
+}
+
+.pause-info-left {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-accent-hi, var(--color-accent));
+}
+
+/* ── Live TV: no seek bar or jumps, a Live badge by the name ──────────── */
+
+.player.live .player-seek-row,
+.player.live .player-button.skip {
+  display: none;
+}
+
+.live-badge {
+  margin-right: 8px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* ── Picture in picture: just the video, with a few controls on hover ── */
+
+.pip-controls {
+  display: none;
+}
+
+.player.pip .player-top,
+.player.pip .player-bottom,
+.player.pip .next-up,
+.player.pip .skip-segment,
+.player.pip .pause-info,
+.player.pip .player-panel {
+  display: none;
+}
+
+.player.pip .pip-controls {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: opacity 200ms var(--ease);
+  pointer-events: none;
+}
+
+.player.pip:hover .pip-controls,
+.player.pip.paused .pip-controls {
+  opacity: 1;
+}
+
+.player.pip .pip-controls button {
+  pointer-events: auto;
+}
+
+.pip-top {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 4px;
+}
+
+.pip-play .icon {
+  width: 36px;
+  height: 36px;
+}

@@ -1,0 +1,215 @@
+/* ── Next Up bridge: last frame → blurred still of the next episode → its video (see next-up-bridge.ts) ──
+   Only opacity and transform move, so every frame is composited; the blur is
+   on the picture itself, which never animates, so it's drawn once. */
+
+.next-up-bridge {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  pointer-events: none;
+  visibility: hidden;
+  color: #fff;
+}
+
+.next-up-bridge.on,
+.next-up-bridge.leaving {
+  visibility: visible;
+}
+
+/* Into the video: 800 ms (BRIDGE_OUT_MS). */
+.next-up-bridge.leaving {
+  opacity: 0;
+  transition: opacity 800ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The loading screen waits behind the still; it shows if the start is slow (MAX_HOLD_MS). */
+.player.bridging .player-loading {
+  opacity: 0;
+  visibility: hidden;
+  transition: none;
+}
+
+/* The controls the new episode brings up wait for the dissolve, rather than landing on the still. */
+.player.bridging .player-ui {
+  opacity: 0;
+}
+
+.player.bridge-leaving .player-ui {
+  transition: opacity 600ms var(--ease) 200ms;
+}
+
+.next-up-bridge-veil {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+}
+
+.next-up-bridge-still {
+  position: absolute;
+  /* Past the edges, so the blur's soft rim stays off screen. */
+  inset: -6%;
+  background: radial-gradient(120% 90% at 50% 40%, #1c1c22, #000);
+  opacity: 0;
+  transform: scale(1.08);
+  will-change: opacity, transform;
+}
+
+.next-up-bridge-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(26px) saturate(1.2) brightness(0.7);
+  opacity: 0;
+  transition: opacity 400ms var(--ease);
+}
+
+.next-up-bridge-art.loaded {
+  opacity: 1;
+}
+
+/* Effects down: no blur, just a darker picture. */
+.next-up-bridge.flat .next-up-bridge-art {
+  filter: brightness(0.5);
+}
+
+.next-up-bridge-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(80% 70% at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.55)),
+    linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 55%);
+  opacity: 0;
+}
+
+.next-up-bridge-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-10);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(14px);
+  will-change: opacity, transform;
+}
+
+.next-up-bridge-eyebrow {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.next-up-bridge-show {
+  max-width: min(640px, 70vw);
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: var(--font-size-title);
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.next-up-bridge-show .title-logo {
+  max-width: min(520px, 60vw);
+  max-height: clamp(64px, 14vh, 150px);
+  margin-inline: auto;
+}
+
+.next-up-bridge-episode {
+  max-width: min(640px, 80vw);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88);
+  text-wrap: balance;
+}
+
+/* A short accent line that fills while the episode starts. */
+.next-up-bridge-line {
+  width: 72px;
+  height: 2px;
+  margin-top: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--color-accent-hi, var(--color-accent));
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+:dir(rtl) .next-up-bridge-line {
+  transform-origin: right;
+}
+
+/* In: the picture eases out to black (450 ms), the still comes up through it
+   and settles (from 200 ms), then its words rise (from 500 ms). */
+.next-up-bridge.on .next-up-bridge-veil,
+.next-up-bridge.leaving .next-up-bridge-veil {
+  opacity: 1;
+}
+
+.next-up-bridge.on .next-up-bridge-veil {
+  transition: opacity 450ms cubic-bezier(0.4, 0, 1, 1);
+}
+
+.next-up-bridge.on .next-up-bridge-still,
+.next-up-bridge.leaving .next-up-bridge-still {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.next-up-bridge.on .next-up-bridge-still {
+  transition:
+    opacity 700ms var(--ease-drawer) 200ms,
+    transform 1800ms var(--ease-drawer) 200ms;
+}
+
+.next-up-bridge.on .next-up-bridge-shade,
+.next-up-bridge.leaving .next-up-bridge-shade {
+  opacity: 1;
+}
+
+.next-up-bridge.on .next-up-bridge-shade {
+  transition: opacity 700ms var(--ease) 200ms;
+}
+
+.next-up-bridge.on .next-up-bridge-text,
+.next-up-bridge.leaving .next-up-bridge-text {
+  opacity: 1;
+  transform: none;
+}
+
+.next-up-bridge.on .next-up-bridge-text {
+  transition:
+    opacity 500ms var(--ease) 500ms,
+    transform 700ms var(--ease-drawer) 500ms;
+}
+
+.next-up-bridge.on .next-up-bridge-line,
+.next-up-bridge.leaving .next-up-bridge-line {
+  transform: scaleX(1);
+}
+
+.next-up-bridge.on .next-up-bridge-line {
+  transition: transform 1100ms var(--ease-drawer) 500ms;
+}
+
+/* Out: the still pushes gently on as it dissolves into the episode. */
+.next-up-bridge.leaving .next-up-bridge-still {
+  transform: scale(1.03);
+  transition: transform 800ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* From the credits' corner: black at once, over the picture growing back to the full window. */
+.next-up-bridge.instant .next-up-bridge-veil {
+  transition: none;
+}
+
+.next-up-bridge.instant .next-up-bridge-still {
+  transition:
+    opacity 450ms var(--ease-drawer),
+    transform 1800ms var(--ease-drawer);
+}

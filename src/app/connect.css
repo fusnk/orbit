@@ -1,0 +1,92 @@
+/* Orbit Connect: the remote-control panel (connect-ui.ts) and its part of Settings → General (settings/connect.ts). */
+.connect-remote {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+}
+
+.connect-remote p {
+  margin: 0;
+}
+
+.connect-remote-device {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.connect-remote-device svg {
+  width: 18px;
+  height: 18px;
+}
+
+.connect-remote-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.connect-remote-detail,
+.connect-remote-time,
+.connect-remote-volume {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.connect-remote-time {
+  text-align: start;
+  unicode-bidi: isolate;
+}
+
+.connect-remote-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.connect-remote-volume {
+  min-width: 4ch;
+  text-align: center;
+}
+
+/* Not disabled (that would drop a remote's or controller's focus), just shown as unavailable. */
+.connect-remote [aria-disabled='true'] {
+  opacity: 0.45;
+}
+
+.connect-devices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.connect-device {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.connect-device-name {
+  flex: 1;
+  min-width: 12ch;
+  margin: 0;
+}
+
+.connect-device-state {
+  color: var(--color-text-faint);
+  font-size: var(--font-size-sm);
+}
+
+.connect-device-state.online {
+  color: var(--color-text-muted);
+}

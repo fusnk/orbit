@@ -1,0 +1,26 @@
+import type { ambient as source } from '../en/ambient';
+
+export const ambient: Record<keyof typeof source, string> = {
+  'ambient.label': 'Modalità ambiente',
+  'ambient.hint.details': 'Invio per i dettagli',
+  'ambient.slide.resume': 'Riprendi',
+  'ambient.slide.resume-episode': 'Riprendi {episode}',
+  'ambient.slide.library': 'Nella Mia libreria',
+  'ambient.slide.recent': 'Visto di recente',
+  'ambient.slide.trending': 'Popolare ora',
+  'ambient.settings.heading': 'Modalità ambiente',
+  'ambient.settings.after': 'Avvia dopo',
+  'ambient.settings.after-hint': 'Se non premi nulla per questo tempo, Orbit passa a una lenta presentazione di immagini. Mai durante la riproduzione.',
+  'ambient.settings.source': 'Cosa mostra',
+  'ambient.settings.source-hint': 'Ciò che stai guardando e hai salvato, ciò che è popolare, o entrambi a turno.',
+  'ambient.settings.source-for-you': 'Per te',
+  'ambient.settings.source-trending': 'Di tendenza',
+  'ambient.settings.source-both': 'Entrambi',
+  'ambient.settings.clock': 'Mostra l’ora',
+  'ambient.settings.clock-hint': 'L’ora e la data in un angolo.',
+  'ambient.settings.paused': 'Anche in pausa',
+  'ambient.settings.paused-hint': 'Si avvia sopra il player dopo che è rimasto in pausa così a lungo. La riproduzione resta com’era.',
+  'ambient.settings.preview': 'Anteprima',
+  'ambient.settings.preview-label': 'Guardala ora',
+  'ambient.settings.preview-hint': 'Avvia subito la modalità ambiente. Premi un tasto qualsiasi o muovi il mouse per tornare.',
+};

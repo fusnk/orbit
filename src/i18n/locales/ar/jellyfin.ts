@@ -1,0 +1,27 @@
+import type { jellyfin as source } from '../en/jellyfin';
+
+export const jellyfin: Record<keyof typeof source, string> = {
+  'jellyfin.settings.intro': 'شغّل من خادم Jellyfin الخاص بك. تحصل الأفلام والحلقات الموجودة عليه على مصدر Jellyfin، ويمكن إضافة صفوفه إلى الرئيسية. يحتفظ Orbit برمز دخول من الخادم، ولا يحتفظ بكلمة مرورك أبدًا.',
+  'jellyfin.settings.server': 'عنوان الخادم',
+  'jellyfin.settings.server-placeholder': 'http://192.168.1.10:8096',
+  'jellyfin.settings.username': 'اسم المستخدم',
+  'jellyfin.settings.password': 'كلمة المرور',
+  'jellyfin.settings.fields-hint': 'العنوان الذي تفتح به Jellyfin في المتصفح. يتطلب Jellyfin 10.9 أو أحدث.',
+  'jellyfin.settings.connect': 'ربط',
+  'jellyfin.settings.connecting': 'جارٍ الربط…',
+  'jellyfin.settings.server-label': 'الخادم',
+  'jellyfin.settings.connected-as': 'متصل باسم {user} على {server}',
+  'jellyfin.settings.connected': 'تم الربط بـ {server}.',
+  'jellyfin.settings.connected-first': 'تم الربط بـ {server}. أصبح صف «أُضيف مؤخرًا» في الرئيسية؛ أضف صفوف Jellyfin أخرى من الإعدادات ← الرئيسية والمكتبة ← صفوف الرئيسية.',
+  'jellyfin.settings.disconnect': 'قطع الاتصال',
+  'jellyfin.settings.disconnected': 'تم قطع الاتصال وتسجيل الخروج من الخادم.',
+  'jellyfin.settings.insecure': 'غير آمن',
+  'jellyfin.settings.insecure-title': 'يستخدم هذا الخادم http غير مشفّر، لذا تنتقل بيانات الدخول والفيديوهات دون تشفير. لا بأس بذلك في المنزل؛ استخدم https عبر الإنترنت.',
+  'jellyfin.rows.kind': 'Jellyfin',
+  'jellyfin.rows.resume': 'متابعة المشاهدة',
+  'jellyfin.rows.latest': 'أُضيف مؤخرًا',
+  'jellyfin.rows.label': 'Jellyfin: {row}',
+  'jellyfin.rows.not-connected': 'اربط خادم Jellyfin أولًا من الإعدادات ← الحسابات والخدمات.',
+  'jellyfin.rows.libraries-failed': 'تعذّر تحميل مكتبات الخادم.',
+  'jellyfin.source.origin': 'Jellyfin · {server}',
+};

@@ -1,0 +1,13 @@
+{
+  "name": "orbit-example-addon",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Public-domain / Creative Commons test addon for Orbit",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

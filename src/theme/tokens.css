@@ -1,0 +1,241 @@
+/* Design tokens, from the Orbit handoff spec (Foundations). Components use
+   these variables only, never raw values, so a theme is just a different set
+   of values for the same names. The accent (--color-accent*), base colours
+   (--base-*) and fonts are set at runtime by theme/; the values here are the
+   defaults. */
+
+:root {
+  /* Chinese, Japanese and Korean: Orbit's own fonts have no hanzi, kana, kanji or hangul, so those come from
+     the system's CJK font. Japanese faces lead (they have no hangul, so Korean still reaches a Korean face);
+     a Korean or Chinese interface puts its own faces first so shared Han characters take that language's
+     shapes (below). Latin text is unaffected. */
+  --font-cjk: 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', 'Noto Sans CJK JP', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Microsoft YaHei UI', 'PingFang SC', 'Noto Sans CJK SC';
+  --font-ui: 'Manrope Variable', 'IBM Plex Sans Arabic', 'Segoe UI Variable', 'Segoe UI', var(--font-cjk), system-ui, sans-serif;
+  --font-display: 'Bebas Neue', 'Manrope Variable', 'IBM Plex Sans Arabic', var(--font-cjk), sans-serif;
+  --font-mono: 'JetBrains Mono Variable', Consolas, monospace;
+  /* Big titles; set with the font pair (theme/fonts.ts). Tracking scales each title's letter spacing
+     (1 for Bebas Neue, which wants room; 0 for the rest, which tighten as they grow). */
+  --font-display-weight: 400;
+  --font-display-tracking: 1;
+  --font-hero-weight: 400;
+
+  /* Type scale: badge 11 (the floor) · eyebrow 12 · metadata 13 · nav and card titles 14 · body 15 ·
+     section 20 · rail heading 22 · page title 34 · title page 44–80 · hero 56–96.
+     Weights: 400 body · 500 metadata · 600 labels and controls · 700 headings · 800 the hero only. */
+  --font-size-2xs: 11px;
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-ui: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 20px;
+  --font-size-heading: 22px;
+  --font-size-xl: 34px;
+  --font-size-title: clamp(44px, 5vw, 80px);
+  --font-size-hero: clamp(56px, 6vw, 96px);
+  /* Small uppercase labels: a touch of room, never more (wide tracking reads as noise at 11–12px). */
+  --tracking-caps: 0.06em;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-11: 44px;
+  --space-12: 48px;
+  --space-14: 56px;
+
+  /* Radii: badges · cards/posters · rows · hero/panels · pill controls */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+  /* Posters and cards (Settings → Appearance → Corners). */
+  --radius-card: var(--radius-md);
+
+  /* Control heights */
+  --control-segment: 30px;
+  --control-chip: 32px;
+  --control-compact: 36px;
+  --control-primary: 44px;
+  --control-play: 48px;
+
+  --header-height: 60px;
+  --caption-width: 46px;
+  --caption-height: 36px;
+  --page-gutter: var(--space-10);
+  --poster-width: 156px;
+  /* Landscape cards (Card shape) follow the poster size: a rail card, and a grid's narrowest column. */
+  --landscape-width: calc(var(--poster-width) * 1.75);
+  --landscape-grid-min: calc(var(--poster-width) * 1.5);
+  --hero-inset: var(--space-14);
+  --section-gap: var(--space-11);
+
+  /* Motion: nothing bounces. Focus lifts cards and gently zooms artwork; reduced motion and reduced effects switch that off. */
+  --ease: ease;
+  --ease-drawer: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --duration-press: 100ms;
+  --duration-fast: 150ms;
+  --duration-hover: 180ms;
+  --duration-popover: 200ms;
+  --duration-drawer: 250ms;
+  --duration-enter: 350ms;
+  --duration-hero: 900ms;
+
+  --color-accent: #e5484d;
+  --color-accent-hi: #ea6a6e;
+  --color-accent-lo: #c03c41;
+  /* The fill under accent-coloured labels (theme/accent.ts): the accent, deepened a touch where white needs it. */
+  --color-accent-strong: #d93b43;
+  --color-accent-contrast: #ffffff;
+  /* An armed Delete's fill and label (theme/engine.ts dangerFill): the danger colour, deepened where white needs it. */
+  --color-danger-strong: #d93b43;
+  --color-danger-contrast: #ffffff;
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  --color-rating: oklch(0.83 0.14 85);
+  --color-success: oklch(0.72 0.17 150);
+  --color-caption-close: #c42b1c;
+
+  /* Keyboard focus only (:focus-visible): 2px accent ring with a 2px background gap. */
+  --focus-ring: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-accent);
+  /* The same ring in the text colour, thicker (3px gap, 3px ring): TV mode's ring, and the
+     one drawn on anything filled with the accent, where an accent ring would vanish. */
+  --focus-ring-contrast: 0 0 0 3px var(--color-bg), 0 0 0 6px var(--color-text);
+
+  /* Hue of the ambient glow; views set it from their artwork. */
+  --ambient-hue: 45;
+  --ambient-strength: 0.7;
+}
+
+:root:lang(ko) {
+  --font-cjk: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans CJK KR', 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', 'Noto Sans CJK JP', 'Microsoft YaHei UI', 'PingFang SC', 'Noto Sans CJK SC';
+}
+
+:root:lang(zh) {
+  --font-cjk: 'Microsoft YaHei UI', 'PingFang SC', 'Noto Sans CJK SC', 'Yu Gothic UI', 'Meiryo UI', 'Hiragino Sans', 'Noto Sans CJK JP', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans CJK KR';
+}
+
+/* A theme is seven base colours (set at runtime by theme/engine.ts; these
+   are Orbit's own) and everything else is derived from them, so presets,
+   people's own themes and the accent tint all reach every surface.
+   data-theme is 'dark' or 'light', from the background's brightness. */
+:root {
+  --base-bg: #0b0a09;
+  --base-panel: #161412;
+  --base-raised: #1c1a18;
+  --base-text: #f4f2ef;
+  --base-muted: #b5aea7;
+  --base-faint: #8b847d;
+  --base-danger: #e5484d;
+}
+
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: var(--base-bg);
+  --color-panel: var(--base-panel);
+  --color-panel-2: var(--base-raised);
+  --color-text: var(--base-text);
+  --color-text-muted: var(--base-muted);
+  --color-text-faint: var(--base-faint);
+  --color-danger: var(--base-danger);
+  /* Error text: the danger colour paled toward the text, so it reads on panels. */
+  --color-danger-text: color-mix(in srgb, var(--base-danger) 50%, var(--base-text));
+  /* Accent-coloured words: the accent moved toward the text, so they read on panels and a toast's action in light and dark themes alike (accent-hi, paler, falls under 3:1 on light ones). */
+  --color-accent-text: color-mix(in srgb, var(--color-accent) 55%, var(--base-text));
+  /* Washes of the text colour, so they suit any background. */
+  --color-surface: color-mix(in srgb, var(--base-text) 4%, transparent);
+  --color-surface-raised: color-mix(in srgb, var(--base-text) 8%, transparent);
+  --color-surface-overlay: color-mix(in srgb, var(--base-text) 14%, transparent);
+  --color-border: color-mix(in srgb, var(--base-text) 7%, transparent);
+  --color-border-strong: color-mix(in srgb, var(--base-text) 12%, transparent);
+  --color-glass: color-mix(in srgb, var(--color-panel) 88%, transparent);
+  --color-scrim: rgba(0, 0, 0, 0.55);
+  --color-on-light: #0b0a09;
+  --color-light: #ffffff;
+  --color-light-hover: #e6e1db;
+  --shadow-overlay: 0 30px 80px -20px #000;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  /* A deep red on light panels (4.5:1 or more). */
+  --color-danger-text: color-mix(in srgb, var(--base-danger) 75%, var(--base-text));
+  --color-surface-raised: color-mix(in srgb, var(--base-text) 7%, transparent);
+  --color-surface-overlay: color-mix(in srgb, var(--base-text) 12%, transparent);
+  --color-border: color-mix(in srgb, var(--base-text) 8%, transparent);
+  --color-border-strong: color-mix(in srgb, var(--base-text) 14%, transparent);
+  --color-glass: color-mix(in srgb, var(--color-panel) 90%, transparent);
+  --color-scrim: color-mix(in srgb, var(--base-text) 35%, transparent);
+  --color-on-light: var(--base-bg);
+  --color-light: var(--base-text);
+  --color-light-hover: color-mix(in srgb, var(--base-text) 85%, var(--base-bg));
+  --shadow-overlay: 0 30px 80px -20px color-mix(in srgb, var(--base-text) 35%, transparent);
+}
+
+/* "Increase contrast" in the system settings: edges that are barely there
+   become visible lines, and the quietest text steps up a level (faint takes
+   muted's colour, muted moves toward the text), keeping the order between them.
+   After the theme blocks above, so it applies to light and dark alike. */
+@media (prefers-contrast: more) {
+  :root {
+    --color-border: color-mix(in srgb, var(--base-text) 24%, transparent);
+    --color-border-strong: color-mix(in srgb, var(--base-text) 40%, transparent);
+    --color-text-muted: color-mix(in srgb, var(--base-muted) 55%, var(--base-text));
+    --color-text-faint: var(--base-muted);
+  }
+}
+
+/* "Tint with my accent": backgrounds lean toward the accent, enough to see
+   even on pure black. */
+:root[data-tint='on'] {
+  --color-bg: color-mix(in oklab, var(--color-accent) 8%, var(--base-bg));
+  --color-panel: color-mix(in oklab, var(--color-accent) 10%, var(--base-panel));
+  --color-panel-2: color-mix(in oklab, var(--color-accent) 11%, var(--base-raised));
+}
+
+/* AMOLED (pure black background and panels): the point is pixels switched
+   off, so the tint leaves them alone (styles.css hides the glow too). */
+:root[data-tint='on'][data-true-black='true'] {
+  --color-bg: var(--base-bg);
+  --color-panel: var(--base-panel);
+}
+
+/* Settings → Appearance → Reduce motion: On, or System when Windows has animations off. */
+:root[data-motion='reduce'] {
+  --duration-press: 0ms;
+  --duration-fast: 0ms;
+  --duration-hover: 0ms;
+  --duration-popover: 0ms;
+  --duration-drawer: 0ms;
+  --duration-enter: 0ms;
+  --duration-hero: 0ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) {
+    --duration-press: 0ms;
+    --duration-fast: 0ms;
+    --duration-hover: 0ms;
+    --duration-popover: 0ms;
+    --duration-drawer: 0ms;
+    --duration-enter: 0ms;
+    --duration-hero: 0ms;
+  }
+}
+
+/* Settings → Appearance → Reduce visual effects (the rest is beside each
+   effect, keyed on the same attribute). Nothing is blurred behind glass any
+   more, so glass turns solid to keep text on it readable; overlay shadows
+   get small, since big soft ones are costly to paint on weak graphics. */
+:root[data-effects='reduced'] {
+  --color-glass: var(--color-panel);
+  --shadow-overlay: 0 8px 20px -8px rgba(0, 0, 0, 0.6);
+}
+
+:root[data-effects='reduced'][data-theme='light'] {
+  --shadow-overlay: 0 8px 20px -8px color-mix(in srgb, var(--base-text) 30%, transparent);
+}

@@ -1,0 +1,18 @@
+/* Picture adjustments (see picture-controls.ts), in Settings → Video and the player's panel. */
+
+.picture-controls {
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: 560px;
+  min-width: 0;
+}
+
+.picture-sliders {
+  display: grid;
+  gap: var(--space-1);
+}
+
+/* In the player's panel, in line with the chips above. */
+.player-panel .picture-sliders {
+  padding-inline: var(--space-2);
+}

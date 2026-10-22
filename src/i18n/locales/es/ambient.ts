@@ -1,0 +1,26 @@
+import type { ambient as source } from '../en/ambient';
+
+export const ambient: Record<keyof typeof source, string> = {
+  'ambient.label': 'Modo ambiente',
+  'ambient.hint.details': 'Intro para ver detalles',
+  'ambient.slide.resume': 'Reanudar',
+  'ambient.slide.resume-episode': 'Reanudar {episode}',
+  'ambient.slide.library': 'En Mi biblioteca',
+  'ambient.slide.recent': 'Visto hace poco',
+  'ambient.slide.trending': 'Popular ahora',
+  'ambient.settings.heading': 'Modo ambiente',
+  'ambient.settings.after': 'Empezar tras',
+  'ambient.settings.after-hint': 'Si no se pulsa nada durante este tiempo, Orbit pasa a un pase lento de imágenes. Nunca mientras algo se reproduce.',
+  'ambient.settings.source': 'Qué muestra',
+  'ambient.settings.source-hint': 'Lo que estás viendo y has guardado, lo popular o ambos por turnos.',
+  'ambient.settings.source-for-you': 'Para ti',
+  'ambient.settings.source-trending': 'Tendencias',
+  'ambient.settings.source-both': 'Ambos',
+  'ambient.settings.clock': 'Mostrar el reloj',
+  'ambient.settings.clock-hint': 'La hora y la fecha en una esquina.',
+  'ambient.settings.paused': 'También en pausa',
+  'ambient.settings.paused-hint': 'Empieza sobre el reproductor cuando lleva este tiempo en pausa. La reproducción no cambia.',
+  'ambient.settings.preview': 'Vista previa',
+  'ambient.settings.preview-label': 'Verlo ahora',
+  'ambient.settings.preview-hint': 'Inicia el modo ambiente de inmediato. Pulsa cualquier tecla o mueve el ratón para volver.',
+};

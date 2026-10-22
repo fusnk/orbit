@@ -1,0 +1,30 @@
+import type { plex as source } from '../en/plex';
+import type { Catalog } from '../types';
+
+export const plex: Catalog<typeof source> = {
+  'plex.settings.intro': 'Přehrávejte z Plex Media Serveru na svém účtu Plex. Filmy a díly, které na něm jsou, dostanou zdroj Plex a jeho řádky mohou být na stránce Domů. Přihlašujete se na vlastní stránce Plex, takže Orbit vaše heslo nikdy nevidí.',
+  'plex.settings.connect': 'Připojit přes Plex',
+  'plex.settings.connect-hint': 'Otevře v prohlížeči přihlašovací stránku Plex. Povolte tam Orbit a pak se vraťte sem.',
+  'plex.settings.opening': 'Otevírání Plex v prohlížeči…',
+  'plex.settings.waiting': 'Přihlaste se k Plex v prohlížeči a povolte Orbit. Čeká se…',
+  'plex.settings.open-again': 'Znovu otevřít přihlašovací stránku',
+  'plex.settings.cancel': 'Zrušit',
+  'plex.settings.choose': 'Vyberte server, který chcete použít:',
+  'plex.settings.shared': '{server} (sdílený s vámi)',
+  'plex.settings.reaching': 'Připojování k {server}…',
+  'plex.settings.server-label': 'Server',
+  'plex.settings.connected-as': 'Připojeno jako {user} k {server}',
+  'plex.settings.connected': 'Připojeno k {server}.',
+  'plex.settings.connected-first': 'Připojeno k {server}. Řádek „Nedávno přidané“ je teď na stránce Domů; další řádky Plex přidáte v Nastavení → Domů a knihovna → Řádky na stránce Domů.',
+  'plex.settings.disconnect': 'Odpojit',
+  'plex.settings.disconnected': 'Odpojeno a Orbit zapomněl své přihlášení k Plex. Chcete-li ho zrušit i na Plex, odeberte Orbit v Authorized Devices na plex.tv.',
+  'plex.settings.insecure': 'Nezabezpečeno',
+  'plex.settings.insecure-title': 'Orbit se k tomuto serveru připojuje přes prosté http, takže přihlášení i videa putují nešifrovaně. Doma to nevadí; pro použití přes internet zapněte v Plex zabezpečená připojení.',
+  'plex.rows.kind': 'Plex',
+  'plex.rows.resume': 'Pokračovat ve sledování',
+  'plex.rows.latest': 'Nedávno přidané',
+  'plex.rows.label': 'Plex: {row}',
+  'plex.rows.not-connected': 'Nejdřív připojte server Plex v Nastavení → Účty a služby.',
+  'plex.rows.libraries-failed': 'Knihovny serveru se nepodařilo načíst.',
+  'plex.source.origin': 'Plex · {server}',
+};

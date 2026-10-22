@@ -1,0 +1,30 @@
+import type { plex as source } from '../en/plex';
+import type { Catalog } from '../types';
+
+export const plex: Catalog<typeof source> = {
+  'plex.settings.intro': 'Plex 계정의 Plex Media Server에서 재생해요. 서버에 있는 영화와 에피소드에는 Plex 소스가 생기고, 서버의 행을 홈에 추가할 수 있어요. 로그인은 Plex 자체 페이지에서 하므로 Orbit은 비밀번호를 볼 수 없어요.',
+  'plex.settings.connect': 'Plex로 연결',
+  'plex.settings.connect-hint': '브라우저에서 Plex 로그인 페이지를 열어요. 그곳에서 Orbit을 허용한 다음 여기로 돌아오세요.',
+  'plex.settings.opening': '브라우저에서 Plex를 여는 중…',
+  'plex.settings.waiting': '브라우저에서 Plex에 로그인하고 Orbit을 허용하세요. 기다리는 중…',
+  'plex.settings.open-again': '로그인 페이지 다시 열기',
+  'plex.settings.cancel': '취소',
+  'plex.settings.choose': '사용할 서버를 선택하세요:',
+  'plex.settings.shared': '{server} (공유받음)',
+  'plex.settings.reaching': '{server}에 연결하는 중…',
+  'plex.settings.server-label': '서버',
+  'plex.settings.connected-as': '{server}에 {user}(으)로 연결됨',
+  'plex.settings.connected': '{server}에 연결됐어요.',
+  'plex.settings.connected-first': '{server}에 연결됐어요. 이제 홈에 “최근 추가됨”이 표시돼요. Plex 행을 더 추가하려면 설정 → 홈 및 라이브러리 → 홈 행으로 가세요.',
+  'plex.settings.disconnect': '연결 해제',
+  'plex.settings.disconnected': '연결을 해제했고 Orbit은 Plex 로그인 정보를 삭제했어요. Plex에서도 폐기하려면 plex.tv의 Authorized Devices에서 Orbit을 제거하세요.',
+  'plex.settings.insecure': '안전하지 않음',
+  'plex.settings.insecure-title': 'Orbit이 일반 http로 이 서버에 연결하므로 로그인 정보와 영상이 암호화되지 않은 채 전송돼요. 집 안에서는 괜찮지만 인터넷을 통해 사용하려면 Plex에서 보안 연결을 켜세요.',
+  'plex.rows.kind': 'Plex',
+  'plex.rows.resume': '이어서 보기',
+  'plex.rows.latest': '최근 추가됨',
+  'plex.rows.label': 'Plex: {row}',
+  'plex.rows.not-connected': '먼저 설정 → 계정 및 서비스에서 Plex 서버를 연결하세요.',
+  'plex.rows.libraries-failed': '서버의 라이브러리를 불러오지 못했어요.',
+  'plex.source.origin': 'Plex · {server}',
+};

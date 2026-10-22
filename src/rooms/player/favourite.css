@@ -1,0 +1,137 @@
+/* The favourite-episode heart in the player (components/favourite-heart.ts):
+   beside each row of the Episodes panel and the docked list, by the
+   episode's name in the bar, and as a mark on the pause screen. */
+
+.episode-panel-item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.episode-panel-item > .panel-row {
+  flex: 1;
+  min-width: 0;
+}
+
+.dock-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 2px;
+}
+
+.dock-item-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Mark watched (episode-marks.ts): beside the heart, a check that fills in once watched. */
+:is(.panel-watched, .dock-watched) {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #a8a29c;
+}
+
+:is(.panel-watched, .dock-watched):hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+:is(.panel-watched, .dock-watched):focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+:is(.panel-watched, .dock-watched)[aria-pressed='true'] {
+  color: var(--color-accent-hi, var(--color-accent));
+}
+
+:is(.panel-watched, .dock-watched) .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Over an episode's picture: how far it got, or a check once watched. */
+.dock-thumb {
+  position: relative;
+}
+
+.ep-progress {
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.ep-progress::after {
+  content: '';
+  display: block;
+  width: calc(var(--fraction, 0) * 100%);
+  height: 100%;
+  background: var(--color-accent);
+}
+
+.ep-watched {
+  position: absolute;
+  top: 4px;
+  inset-inline-end: 4px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(11, 10, 9, 0.8);
+  color: #fff;
+}
+
+.ep-watched .icon {
+  width: 12px;
+  height: 12px;
+}
+
+:is(.panel-fav, .dock-fav, .player-fav) {
+  width: 32px;
+  height: 32px;
+  color: #a8a29c;
+}
+
+.dock-fav {
+  margin-block-start: 8px;
+}
+
+:is(.panel-fav, .dock-fav, .player-fav):hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+:is(.panel-fav, .dock-fav, .player-fav)[aria-pressed='true'] {
+  color: #ff6b5e;
+}
+
+:is(.panel-fav, .dock-fav, .player-fav) .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* In the bar the name sits on a text baseline; the heart centres on it. */
+.player-fav {
+  align-self: center;
+  width: 28px;
+  height: 28px;
+  margin-block: -4px;
+}
+
+.pause-info-episode .icon {
+  width: 0.9em;
+  height: 0.9em;
+  margin-inline-start: 0.4em;
+  vertical-align: -0.08em;
+  color: #ff6b5e;
+}

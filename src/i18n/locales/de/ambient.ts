@@ -1,0 +1,26 @@
+import type { ambient as source } from '../en/ambient';
+
+export const ambient: Record<keyof typeof source, string> = {
+  'ambient.label': 'Ambient-Modus',
+  'ambient.hint.details': 'Eingabe für Details',
+  'ambient.slide.resume': 'Fortsetzen',
+  'ambient.slide.resume-episode': '{episode} fortsetzen',
+  'ambient.slide.library': 'In Meiner Bibliothek',
+  'ambient.slide.recent': 'Kürzlich gesehen',
+  'ambient.slide.trending': 'Gerade beliebt',
+  'ambient.settings.heading': 'Ambient-Modus',
+  'ambient.settings.after': 'Starten nach',
+  'ambient.settings.after-hint': 'Wird so lange nichts gedrückt, blendet Orbit in eine langsame Diashow mit Bildern über. Nie während einer Wiedergabe.',
+  'ambient.settings.source': 'Was er zeigt',
+  'ambient.settings.source-hint': 'Was du schaust und gespeichert hast, was beliebt ist, oder beides im Wechsel.',
+  'ambient.settings.source-for-you': 'Für dich',
+  'ambient.settings.source-trending': 'Im Trend',
+  'ambient.settings.source-both': 'Beides',
+  'ambient.settings.clock': 'Die Uhr anzeigen',
+  'ambient.settings.clock-hint': 'Uhrzeit und Datum in einer Ecke.',
+  'ambient.settings.paused': 'Auch bei Pause',
+  'ambient.settings.paused-hint': 'Startet über dem Player, wenn er so lange pausiert ist. Die Wiedergabe bleibt genau, wie sie war.',
+  'ambient.settings.preview': 'Vorschau',
+  'ambient.settings.preview-label': 'Jetzt ansehen',
+  'ambient.settings.preview-hint': 'Startet den Ambient-Modus sofort. Drücke eine beliebige Taste oder bewege die Maus, um zurückzukehren.',
+};

@@ -1,0 +1,825 @@
+/* The settings hub and the player's extras: segment bands, the jump bubble,
+   the 2× pill, the shortcut list, lock, and the docked Episodes list. The
+   player's bars are always dir=ltr (timelines read left to right); the hub,
+   the shortcut list and lock follow the language (index.ts), so logical
+   properties lay them out either way. */
+
+/* ── Panel header: Back, title, close ─────────────────────────────────── */
+
+.player-panel-header {
+  gap: var(--space-1);
+}
+
+.player-panel-back[hidden] {
+  display: none;
+}
+
+.player-panel-back + .player-panel-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-panel:has(.player-panel-back):not(:has(.player-panel-back[hidden])) .player-panel-header {
+  padding-inline-start: 8px;
+}
+
+/* A view slides in from the side it comes from (the hub on the left of it). */
+.player-panel.slide-forward .player-panel-body {
+  animation: hub-forward 200ms var(--ease);
+}
+
+.player-panel.slide-back .player-panel-body {
+  animation: hub-back 200ms var(--ease);
+}
+
+@keyframes hub-forward {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+}
+
+@keyframes hub-back {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+}
+
+/* Right to left the hub is on the right of a view, and Back points that way. */
+.player-panel:dir(rtl).slide-forward .player-panel-body {
+  animation-name: hub-back;
+}
+
+.player-panel:dir(rtl).slide-back .player-panel-body {
+  animation-name: hub-forward;
+}
+
+.player-panel-back:dir(rtl) .icon {
+  transform: scaleX(-1);
+}
+
+:root[data-motion='reduce'] .player-panel .player-panel-body {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .player-panel .player-panel-body {
+    animation: none;
+  }
+}
+
+/* ── The hub: a 2×2 grid, then rows ───────────────────────────────────── */
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  /* With the body's own top padding, the same 10px under the header as before. */
+  margin-block-start: 4px;
+}
+
+.hub-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  min-height: 92px;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  text-align: start;
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.hub-tile:hover {
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.hub-tile > .icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-accent-hi, var(--color-accent));
+}
+
+.hub-tile-text,
+.hub-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.hub-tile-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #a8a29c;
+}
+
+/* Up to two lines, so "1080p · Сбалансированное" shows its picture mode rather than "1080p · Сбалан…". */
+.hub-tile-value {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 15px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.hub-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 6px;
+}
+
+.hub-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: #fff;
+  text-align: start;
+}
+
+.hub-row:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.hub-row > .icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: #a8a29c;
+}
+
+.hub-row > .icon:last-child {
+  width: 16px;
+  height: 16px;
+  margin-inline-start: auto;
+  color: #6f6964;
+}
+
+.hub-row-text {
+  flex-direction: row;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.hub-row-label {
+  flex: none;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.hub-row-value {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a8a29c;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Subtitle timing by what you noticed ──────────────────────────────── */
+
+.timing-perception {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.timing-side {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.timing-side-heading {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.timing-side-hint {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #958e87;
+}
+
+.timing-side-jumps {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.timing-side-jumps .chip {
+  flex: 1;
+  justify-content: center;
+  padding: 0 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Seek bar: intro, recap, credits and preview bands ────────────────── */
+
+.seek-bands {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.seek-band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--from) * 100%);
+  width: calc((var(--to) - var(--from)) * 100%);
+  border-radius: inherit;
+  opacity: 0.75;
+}
+
+/* --band-*: a colour picked in Settings → Playback → Skipping (skip-tuning.ts), else the theme's. */
+.seek-band.intro {
+  background: var(--band-intro, var(--color-rating));
+}
+
+.seek-band.recap {
+  background: var(--band-recap, color-mix(in srgb, var(--color-rating) 45%, #8fb8ff));
+}
+
+.seek-band.credits {
+  background: var(--band-credits, rgba(255, 255, 255, 0.55));
+}
+
+.seek-band.preview {
+  background: var(--band-preview, color-mix(in srgb, rgba(255, 255, 255, 0.55) 60%, var(--color-accent)));
+}
+
+/* ── Time readout: "Finish at" ────────────────────────────────────────── */
+
+.player-time.finish {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* ── Hold for 2× ──────────────────────────────────────────────────────── */
+
+.speed-pill {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  z-index: 3;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(11, 10, 9, 0.82);
+  backdrop-filter: blur(16px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 8px 20px -8px rgba(0, 0, 0, 0.7);
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: panel-in 160ms var(--ease);
+}
+
+.speed-pill[hidden] {
+  display: none;
+}
+
+/* ── The jump bubble ──────────────────────────────────────────────────── */
+
+.seek-bubble {
+  position: absolute;
+  top: 50%;
+  right: 16%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px 10px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(11, 10, 9, 0.72);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 28px -10px rgba(0, 0, 0, 0.8);
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.seek-bubble.back {
+  right: auto;
+  left: 16%;
+}
+
+.seek-bubble[hidden] {
+  display: none;
+}
+
+.seek-bubble-icon .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.seek-bubble.pop {
+  animation: bubble-pop 220ms var(--ease);
+}
+
+.seek-bubble.pulse .seek-bubble-value {
+  animation: bubble-pulse 180ms var(--ease);
+}
+
+@keyframes bubble-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.85);
+  }
+}
+
+@keyframes bubble-pulse {
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+.seek-bubble-value {
+  display: inline-block;
+}
+
+/* ── Shortcut list ────────────────────────────────────────────────────── */
+
+.cheat-sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  background: rgba(0, 0, 0, 0.55);
+  animation: fade-in 160ms var(--ease);
+}
+
+.cheat-sheet[hidden] {
+  display: none;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.cheat-card {
+  display: flex;
+  flex-direction: column;
+  width: min(860px, 100%);
+  max-height: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(16, 15, 14, 0.94);
+  backdrop-filter: blur(28px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 24px 60px -20px rgba(0, 0, 0, 0.9);
+}
+
+.cheat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 16px 8px;
+  padding-inline: 22px 14px;
+}
+
+.cheat-title {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.cheat-close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #a8a29c;
+}
+
+.cheat-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.cheat-close .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.cheat-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4) var(--space-6);
+  padding: 4px 22px 22px;
+  overflow-y: auto;
+}
+
+.cheat-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cheat-heading {
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-accent-hi, var(--color-accent));
+}
+
+.cheat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 30px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #d9d3cc;
+}
+
+.cheat-label {
+  min-width: 0;
+}
+
+.cheat-keys {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  color: #958e87;
+  font-size: 12px;
+}
+
+.cheat-keys kbd {
+  min-width: 24px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ── Lock ─────────────────────────────────────────────────────────────── */
+
+.player-lock-shield {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: grid;
+  place-items: end center;
+  padding-bottom: 72px;
+  cursor: default;
+}
+
+.player-lock-shield[hidden],
+.lock-panel[hidden] {
+  display: none;
+}
+
+/* Locked: no controls, panels or prompts over the picture, and no cursor once idle. */
+.player.locked :is(.player-top, .player-bottom, .player-panel, .skip-segment, .episode-dock, .dock-tab, .cheat-sheet, .next-up) {
+  visibility: hidden;
+}
+
+.lock-panel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: 8px;
+  padding-inline: 18px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(11, 10, 9, 0.86);
+  backdrop-filter: blur(20px);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 12px 30px -12px rgba(0, 0, 0, 0.8);
+  animation: panel-in 200ms var(--ease);
+}
+
+.lock-hint {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: #d9d3cc;
+}
+
+.lock-unlock .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Docked Episodes list ─────────────────────────────────────────────── */
+
+.episode-dock {
+  position: absolute;
+  /* Between the top bar and the controls, so neither is covered: both grow
+     with the controls' size and each layout's room for them (layout.css). */
+  inset-block: calc(64px * var(--ps, 1)) var(--player-clear, 116px);
+  inset-inline-end: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: min(440px, 46%);
+  padding: 18px 14px 18px 44px;
+  mask-image: linear-gradient(transparent, #000 18px, #000 calc(100% - 18px), transparent);
+  /* Over the picture, fading in from the right edge so its rows stay readable on bright scenes. */
+  background: linear-gradient(to left, rgba(8, 7, 6, 0.94) 0%, rgba(8, 7, 6, 0.86) 62%, rgba(8, 7, 6, 0) 100%);
+  animation: dock-in 220ms var(--ease);
+}
+
+.episode-dock[hidden] {
+  display: none;
+}
+
+@keyframes dock-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+.dock-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.dock-season {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px 0 14px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.dock-season:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.dock-season:disabled .icon {
+  display: none;
+}
+
+.dock-season .icon,
+.dock-collapse .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.dock-collapse {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #a8a29c;
+}
+
+.dock-collapse:hover,
+.dock-season:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.dock-seasons {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 8px;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  background: rgba(20, 19, 18, 0.96);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.dock-seasons[hidden] {
+  display: none;
+}
+
+.dock-season-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: start;
+}
+
+.dock-season-option:hover,
+.dock-season-option[aria-pressed='true'] {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dock-season-count {
+  font-size: 12px;
+  color: #958e87;
+  font-variant-numeric: tabular-nums;
+}
+
+.dock-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  margin-inline-end: -6px;
+  padding-inline-end: 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.dock-row {
+  display: grid;
+  grid-template-columns: 128px 1fr;
+  align-items: start;
+  gap: 12px;
+  padding: 8px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: #fff;
+  text-align: start;
+}
+
+.dock-row:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dock-row.playing {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dock-row:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.dock-thumb {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dock-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dock-row.playing .dock-thumb {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.dock-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dock-row-meta {
+  font-size: 11px;
+  font-weight: 700;
+  color: #958e87;
+  font-variant-numeric: tabular-nums;
+}
+
+.dock-row.playing .dock-row-meta {
+  color: var(--color-accent-hi, var(--color-accent));
+}
+
+.dock-row-title {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dock-row-synopsis {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #b5aea7;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* Folded: a slim tab on the right edge, while the controls show. */
+.dock-tab {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 10px 10px 8px;
+  border: 0;
+  border-start-start-radius: var(--radius-md);
+  border-end-start-radius: var(--radius-md);
+  background: rgba(11, 10, 9, 0.82);
+  backdrop-filter: blur(16px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-50%);
+  transition: opacity var(--duration-popover, 200ms) var(--ease);
+}
+
+.dock-tab[hidden] {
+  display: none;
+}
+
+.dock-tab .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.player.idle .dock-tab {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.player.pip :is(.episode-dock, .dock-tab, .seek-bubble, .speed-pill, .cheat-sheet) {
+  display: none;
+}
+
+:root[data-motion='reduce'] :is(.episode-dock, .seek-bubble, .seek-bubble-value, .speed-pill, .cheat-sheet, .lock-panel) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) :is(.episode-dock, .seek-bubble, .seek-bubble-value, .speed-pill, .cheat-sheet, .lock-panel) {
+    animation: none;
+  }
+}
+
+/* Under the subtitle heading, the fine − / + needs no label of its own. */
+.timing-perception + .panel-stepper {
+  justify-content: flex-end;
+}

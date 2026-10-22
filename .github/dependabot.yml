@@ -1,0 +1,16 @@
+# JSON-compatible YAML, like the workflows.
+# Keeps the SHA-pinned actions in .github/workflows current, with their "# vX.Y.Z" comments.
+# The two dtolnay/rust-toolchain pins follow branches, not tags: move them by hand
+# (git ls-remote https://github.com/dtolnay/rust-toolchain refs/heads/stable).
+{
+  "version": 2,
+  "updates": [
+    {
+      "package-ecosystem": "github-actions",
+      "directory": "/",
+      "schedule": {
+        "interval": "weekly"
+      }
+    }
+  ]
+}

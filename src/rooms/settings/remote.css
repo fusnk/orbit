@@ -1,0 +1,94 @@
+/* Settings → General → Phone remote (remote.ts). */
+.remote-section {
+  margin-top: var(--space-10);
+}
+
+.remote-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5) 0;
+}
+
+/* Off: its padding would otherwise leave a gap under the switch. */
+.remote-body[hidden] {
+  display: none;
+}
+
+.remote-pairing {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.remote-pairing-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  flex: 1;
+}
+
+.remote-pairing-text p {
+  margin: 0;
+}
+
+/* Dark on light whatever the theme, as phone cameras read QR codes best. */
+.remote-qr {
+  width: 176px;
+  height: 176px;
+  flex: none;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.remote-qr svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.remote-qr-light {
+  fill: #fff;
+}
+
+.remote-qr-dark {
+  fill: #000;
+}
+
+.remote-address {
+  font-family: var(--font-mono);
+  color: var(--color-text);
+  unicode-bidi: isolate;
+}
+
+.remote-code-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.remote-code {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+  /* Digits read left to right in every language. */
+  text-align: start;
+  unicode-bidi: isolate;
+}
+
+.remote-actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.remote-note {
+  max-width: 64ch;
+}

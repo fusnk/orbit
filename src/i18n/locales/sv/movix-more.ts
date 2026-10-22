@@ -1,0 +1,68 @@
+import type { movixMore as source } from '../en/movix-more';
+import type { Catalog } from '../types';
+
+/** Swedish strings for the Movix-inspired additions. */
+export const movixMore: Catalog<typeof source> = {
+  // Settings → Playback → Next episode: when Next Up appears and its style (rooms/settings/next-up-rows.ts)
+  'movix.next-up.when': 'När Härnäst visas',
+  'movix.next-up.when-hint': 'För avsnitt där eftertexterna inte är kända. När de är det visas Härnäst med eftertexterna.',
+  'movix.next-up.when-percent': 'En bit in',
+  'movix.next-up.when-before-end': 'Före slutet',
+  'movix.next-up.amount': 'Visas vid',
+  'movix.next-up.amount-hint': 'Hur långt in i avsnittet, eller hur många minuter före slutet. Minuter före slutet kommer aldrig före halvvägs.',
+  'movix.next-up.style': 'Stil för Härnäst',
+  'movix.next-up.style-hint': 'Ett litet kort i hörnet, eller en panel längs bildens kant.',
+  'movix.next-up.style-card': 'Kort',
+  'movix.next-up.style-panel': 'Panel',
+  // Exact air times from TVmaze: the setting and "Out today at 21:00" (catalog/air-times.ts, rooms/settings/general.ts)
+  'movix.air.setting': 'Slå upp exakta sändningstider',
+  'movix.air.setting-hint': 'Frågar TVmaze, en gratis tv-guide, när nya avsnitt sänds: Premiärradar visar då ”Ute i dag 21:00”, aviseringar kommer när avsnittet sänds och automatisk uppspelning väntar tills det är ute. Skickar bara seriens IMDb- eller TheTVDB-id.',
+  'movix.air.today': 'Ute i dag {time}',
+  'movix.air.tomorrow': 'Ute i morgon {time}',
+  'movix.air.date': 'Ute {date} {time}',
+  // Episode reminders: "Remind me" on an upcoming episode, and the notification (rooms/detail/reminder-button.ts, library/reminders.ts)
+  'movix.remind.set': 'Påminn mig',
+  'movix.remind.current': 'Påminnelse: {when}',
+  'movix.remind.on-day': 'Samma dag som det kommer ut',
+  'movix.remind.days-before.one': '{count} dag innan',
+  'movix.remind.days-before.other': '{count} dagar innan',
+  'movix.remind.none': 'Ingen påminnelse',
+  'movix.remind.saved': 'Du påminns om nya avsnitt av {name}: {when}.',
+  'movix.remind.removed': 'Inga fler påminnelser för {name}.',
+  'movix.remind.full': 'Påminnelser kan gälla högst {count} serier. Ta bort en för att lägga till {name}.',
+  'movix.remind.today': '{code} kommer ut i dag.',
+  'movix.remind.today-at': '{code} kommer ut i dag {time}.',
+  'movix.remind.tomorrow': '{code} kommer ut i morgon.',
+  'movix.remind.tomorrow-at': '{code} kommer ut i morgon {time}.',
+  'movix.remind.in-days.one': '{code} kommer ut om {count} dag.',
+  'movix.remind.in-days.other': '{code} kommer ut om {count} dagar.',
+  // A film’s end screen: the next film in its franchise, offered first (rooms/player/end-screen.ts)
+  'movix.end.next-in': 'Nästa i {name}',
+  // Lists: description, sort, export and import of one list (rooms/lists/lists.ts)
+  'movix.lists.sort': 'Sortera efter',
+  'movix.lists.sort-added': 'Datum tillagt',
+  'movix.lists.sort-title': 'Titel',
+  'movix.lists.sort-year': 'År',
+  'movix.lists.sort-rating': 'Betyg',
+  'movix.lists.description': 'Beskrivning',
+  'movix.lists.add-description': 'Lägg till beskrivning',
+  'movix.lists.edit-description': 'Redigera beskrivning',
+  'movix.lists.export': 'Exportera listan',
+  'movix.lists.import': 'Importera en lista',
+  'movix.lists.imported.one': '”{name}” importerades med {count} titel.',
+  'movix.lists.imported.other': '”{name}” importerades med {count} titlar.',
+  'movix.lists.skipped.one': '{count} titel i filen gick inte att läsa och utelämnades.',
+  'movix.lists.skipped.other': '{count} titlar i filen gick inte att läsa och utelämnades.',
+  'movix.lists.file-too-large': 'Filen är för stor för att vara en lista.',
+  'movix.lists.file-not-list': 'Filen är inte en lista som exporterats från Orbit.',
+  'movix.lists.file-empty': 'Listfilen innehåller inga titlar som Orbit kan läsa.',
+  'errors.lists.description': 'En listas beskrivning är högst {max} tecken, på en rad.',
+  // Settings → General → Comfort → Reduce visual effects → Auto: what it decided and why (rooms/settings/appearance.ts)
+  'movix.effects.auto-off': 'Av automatiskt: den här enheten klarar effekterna bra.',
+  'movix.effects.auto-tv': 'På automatiskt: det här är en tv.',
+  'movix.effects.auto-cores.one': 'På automatiskt: den här enheten har {count} processorkärna.',
+  'movix.effects.auto-cores.other': 'På automatiskt: den här enheten har {count} processorkärnor.',
+  'movix.effects.auto-memory': 'På automatiskt: den här enheten har {memory} minne.',
+  'movix.effects.auto-frames.one': 'På automatiskt: gränssnittet gick här i {count} bildruta per sekund.',
+  'movix.effects.auto-frames.other': 'På automatiskt: gränssnittet gick här i {count} bildrutor per sekund.',
+};

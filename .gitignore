@@ -1,0 +1,23 @@
+node_modules/
+dist/
+# Playwright (pnpm test:ui)
+test-results/
+playwright-report/
+*.log
+
+# Rust
+src-tauri/target/
+src-tauri/gen/schemas/
+core/target/
+core/pkg/
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# libmpv and yt-dlp (downloaded by `pnpm run setup:libmpv` and `setup:ytdlp`)
+src-tauri/libs/
+

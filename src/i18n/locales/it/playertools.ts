@@ -1,0 +1,28 @@
+import type { playertools as source } from '../en/playertools';
+
+export const playertools: Record<keyof typeof source, string> = {
+  'playertools.speed.custom': "Personalizzata",
+  'playertools.speed.custom-label': "Velocità personalizzata",
+  'playertools.speed.slower': "Più lenta (−0,05×)",
+  'playertools.speed.faster': "Più veloce (+0,05×)",
+  'playertools.subs.try-another': "Prova altri sottotitoli",
+  'playertools.subs.try-another-detail': "Prossima migliore corrispondenza in {language}",
+  'playertools.subs.cycled': "Sottotitoli {position} di {total} · {source}",
+  'playertools.subs.no-other': "Nessun altro sottotitolo da provare",
+  'playertools.paste.action': "Incolla sottotitoli…",
+  'playertools.paste.detail': "Testo SRT o WebVTT",
+  'playertools.paste.title': "Incolla sottotitoli",
+  'playertools.paste.hint': "Incolla il testo di un file SRT o WebVTT. Viene aggiunto solo a questo video.",
+  'playertools.paste.field': "Testo dei sottotitoli",
+  'playertools.paste.placeholder': "1\n00:00:01,000 --> 00:00:03,000\nCiao!",
+  'playertools.paste.add': "Aggiungi sottotitoli",
+  'playertools.paste.cancel': "Annulla",
+  'playertools.paste.empty': "Incolla prima il testo dei sottotitoli.",
+  'playertools.paste.too-big': "Sono più di 2 MB di testo.",
+  'playertools.paste.bad': "Non sembrano sottotitoli SRT o WebVTT.",
+  'playertools.paste.added': "Sottotitoli incollati aggiunti",
+  'playertools.paste.name': "Sottotitoli incollati",
+  'playertools.caps.setting': "Correggi sottotitoli in MAIUSCOLO",
+  'playertools.caps.hint': "Le righe scritte tutte in maiuscolo passano a una scrittura normale. Vale per i sottotitoli dei componenti aggiuntivi, i file che aggiungi e il testo incollato, non per i sottotitoli dentro il file video. Anche i nomi perdono le maiuscole.",
+  'playertools.caps.error': "Impossibile applicare l’impostazione del MAIUSCOLO",
+};

@@ -1,0 +1,415 @@
+/* ── Ambient mode (rooms/ambient) ─────────────────────────────────────────
+   Photography first: a dark room the backdrops glow in, light type over a
+   scrim, and nothing animated but opacity and transform. The ink is the
+   theme's light end, so it suits every theme; AMOLED keeps true black.
+
+   Sized for a screen seen from across the room: type and margins grow with
+   the window (1080p, 1440p, 4K) between a floor and a ceiling, and on a TV
+   everything stays inside the overscan safe area. */
+
+.ambient-mode {
+  --am-bg: color-mix(in oklab, var(--color-bg) 40%, #000);
+  --am-ink: var(--color-text);
+  /* Margins from the window's edges. */
+  --am-edge-inline: clamp(40px, 5vw, 160px);
+  --am-edge-block: clamp(32px, 7vh, 128px);
+  /* The caption's side (start) and the clock's (end); right to left swaps them. */
+  --am-start: 0%;
+  --am-end: 100%;
+  /* Long crossfades: gentle at both ends, so no moment of the change stands out. */
+  --am-ease: cubic-bezier(0.45, 0, 0.25, 1);
+  /* Small type over any art: a tight shadow for the edges, a wide one around them. */
+  --am-shade: 0 1px 2px rgb(0 0 0 / 0.55), 0 2px 18px rgb(0 0 0 / 0.45);
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  overflow: hidden;
+  background: var(--am-bg);
+  color: var(--am-ink);
+  cursor: none;
+  outline: none;
+  user-select: none;
+  animation: ambient-enter 1600ms var(--ease) both;
+}
+
+/* Over a light theme the room stays dark; the ink takes the light colour. */
+:root[data-theme='light'] .ambient-mode {
+  --am-bg: color-mix(in oklab, var(--color-text) 30%, #000);
+  --am-ink: var(--color-bg);
+}
+
+:root[data-true-black='true'] .ambient-mode {
+  --am-bg: #000;
+}
+
+:root[dir='rtl'] .ambient-mode {
+  --am-start: 100%;
+  --am-end: 0%;
+}
+
+/* TV: many sets crop the picture's edges (tv.css), so the type stays inside the safe area. */
+:root[data-tv='on'] .ambient-mode {
+  --am-edge-inline: max(clamp(40px, 5vw, 160px), calc(var(--tv-safe-inline) + var(--space-8)));
+  --am-edge-block: max(clamp(32px, 7vh, 128px), calc(var(--tv-safe-block) + var(--space-6)));
+}
+
+/* Waking: the room dims away and the picture eases back a touch, rather than
+   blinking out (a scroll or a nudge of the mouse shouldn't feel abrupt). */
+.ambient-mode.leaving {
+  /* An animation, not a transition: swapping out the entrance animation in the
+     same frame would make an opacity transition start from 0 and blink out. */
+  animation: ambient-leave 700ms var(--am-ease) forwards;
+}
+
+@keyframes ambient-leave {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.ambient-mode.leaving .ambient-stage {
+  transform: scale(1.03);
+  transition: transform 700ms var(--am-ease);
+}
+
+.ambient-mode.still.leaving {
+  animation-duration: 300ms;
+}
+
+.ambient-mode.still.leaving .ambient-stage {
+  transform: none;
+}
+
+/* The window is hidden: every animation holds where it is. */
+.ambient-mode.held,
+.ambient-mode.held * {
+  animation-play-state: paused !important;
+}
+
+@keyframes ambient-enter {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ── Slides ── */
+
+.ambient-stage,
+.ambient-slide,
+.ambient-frame {
+  position: absolute;
+  inset: 0;
+}
+
+.ambient-slide {
+  animation: ambient-fade-in var(--ambient-fade) var(--am-ease) both;
+}
+
+@keyframes ambient-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.ambient-frame {
+  will-change: transform;
+  /* Moved on by view.ts in steps, about 30 a second, while it sits paused: it moves
+     a fraction of a pixel per frame, and a running animation would redraw the window
+     on every frame the display shows. */
+  animation: ambient-drift-0 calc(var(--ambient-slide) + var(--ambient-fade) * 2) linear both;
+}
+
+.ambient-slide[data-drift='1'] .ambient-frame {
+  animation-name: ambient-drift-1;
+}
+.ambient-slide[data-drift='2'] .ambient-frame {
+  animation-name: ambient-drift-2;
+}
+.ambient-slide[data-drift='3'] .ambient-frame {
+  animation-name: ambient-drift-3;
+}
+
+/* Slow and small: about 8% over the whole slide, never a zoom you notice. */
+@keyframes ambient-drift-0 {
+  from {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.1) translate3d(-1.5%, -1%, 0);
+  }
+}
+@keyframes ambient-drift-1 {
+  from {
+    transform: scale(1.1) translate3d(1.5%, 0.5%, 0);
+  }
+  to {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+}
+@keyframes ambient-drift-2 {
+  from {
+    transform: scale(1.03) translate3d(-1%, 1%, 0);
+  }
+  to {
+    transform: scale(1.1) translate3d(1%, -0.5%, 0);
+  }
+}
+@keyframes ambient-drift-3 {
+  from {
+    transform: scale(1.09) translate3d(0, -1%, 0);
+  }
+  to {
+    transform: scale(1.02) translate3d(-1%, 0.5%, 0);
+  }
+}
+
+.ambient-backdrop {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Legibility: one scrim per slide, between its picture and its caption (so
+   it shades under the type, never over it). Darker towards the edges, most
+   where the type sits: bottom start for the caption, top end for the clock. */
+.ambient-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    /* Behind the caption: bright artwork there would wash the logo out. */
+    radial-gradient(75% 70% at var(--am-start) 100%, rgb(0 0 0 / 0.62), rgb(0 0 0 / 0.3) 45%, transparent 75%),
+    radial-gradient(130% 110% at 50% 45%, transparent 45%, rgb(0 0 0 / 0.5) 100%),
+    linear-gradient(to top, rgb(0 0 0 / 0.7), rgb(0 0 0 / 0.38) 22%, rgb(0 0 0 / 0.12) 45%, transparent 62%),
+    linear-gradient(to bottom, rgb(0 0 0 / 0.3), transparent 26%);
+}
+
+/* Behind the clock: a white sky there would wash the thin digits out. */
+.ambient-mode.with-clock .ambient-scrim::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(50% 45% at var(--am-end) 0%, rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.22) 50%, transparent 80%);
+}
+
+/* ── Caption: a beat after the picture, gone before the next ── */
+
+.ambient-caption {
+  position: absolute;
+  inset-inline-start: var(--am-edge-inline);
+  inset-block-end: var(--am-edge-block);
+  max-inline-size: min(56vw, 1280px);
+  /* Its share of the slide (picture and fade): hidden for the first tenth, rising
+     over the next, shown until 82%, fading out by 92%. Two short animations with
+     delays rather than one as long as the slide: one running all along would redraw
+     the window on every frame the display shows, to hold the caption still. They
+     sit on two boxes: two opacity animations on one element can't run off the main
+     thread, so each frame of the fades would restyle and repaint the page. */
+  --am-caption: calc(var(--ambient-slide) + var(--ambient-fade));
+  animation: ambient-caption-out calc(var(--am-caption) * 0.1) var(--ease) calc(var(--am-caption) * 0.82) forwards;
+}
+
+.ambient-caption-rise {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(var(--space-3), 0.9vw, var(--space-6));
+  animation: ambient-caption-in calc(var(--am-caption) * 0.1) var(--ease) calc(var(--am-caption) * 0.1) both;
+}
+
+@keyframes ambient-caption-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+}
+
+@keyframes ambient-caption-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.ambient-eyebrow {
+  font-size: clamp(var(--font-size-xs), 0.75vw, 20px);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--am-ink) 78%, transparent);
+  text-shadow: var(--am-shade);
+}
+
+.ambient-logo {
+  display: block;
+  max-inline-size: min(36vw, 760px);
+  max-block-size: 22vh;
+  object-fit: contain;
+  object-position: left bottom;
+  filter: drop-shadow(0 4px 24px rgb(0 0 0 / 0.5));
+}
+
+/* Reduce visual effects: a drop-shadow is a blur; the scrim already darkens behind the logo. */
+:root[data-effects='reduced'] .ambient-logo {
+  filter: none;
+}
+
+:root[dir='rtl'] .ambient-logo {
+  object-position: right bottom;
+}
+
+.ambient-name {
+  font-family: var(--font-display);
+  font-weight: var(--font-display-weight);
+  font-size: clamp(48px, 5.5vw, 160px);
+  line-height: 0.95;
+  letter-spacing: calc(0.01em * var(--font-display-tracking));
+  text-wrap: balance;
+  text-shadow: 0 4px 30px rgb(0 0 0 / 0.45);
+}
+
+.ambient-meta {
+  font-size: clamp(var(--font-size-md), 1vw, 26px);
+  font-weight: 500;
+  color: color-mix(in srgb, var(--am-ink) 88%, transparent);
+  text-shadow: var(--am-shade);
+}
+
+/* ── Clock ── */
+
+.ambient-clock {
+  position: absolute;
+  inset-inline-end: var(--am-edge-inline);
+  inset-block-start: var(--am-edge-block);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: clamp(var(--space-2), 0.6vw, var(--space-4));
+  text-shadow: 0 2px 24px rgb(0 0 0 / 0.4);
+  animation: ambient-enter 2400ms 400ms var(--ease) both;
+}
+
+.ambient-time {
+  font-family: var(--font-ui);
+  font-size: clamp(56px, 6.5vw, 184px);
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.ambient-period {
+  font-size: 0.3em;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  margin-inline-start: 0.25em;
+}
+
+.ambient-date {
+  font-size: clamp(var(--font-size-sm), 0.85vw, 22px);
+  font-weight: 500;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--am-ink) 78%, transparent);
+  text-shadow: var(--am-shade);
+}
+
+/* ── Orbit ring and hint ── */
+
+.ambient-corner {
+  position: absolute;
+  inset-inline-end: var(--am-edge-inline);
+  inset-block-end: var(--am-edge-block);
+  display: flex;
+  align-items: center;
+  gap: clamp(var(--space-4), 1vw, var(--space-6));
+  transition: opacity 1200ms var(--am-ease);
+}
+
+/* Comes in with the first picture rather than sitting over an empty room. */
+.ambient-mode[data-slides='none'] .ambient-corner {
+  opacity: 0;
+}
+
+.ambient-hint {
+  font-size: clamp(var(--font-size-xs), 0.7vw, 18px);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--am-ink) 62%, transparent);
+  text-shadow: var(--am-shade);
+}
+
+.ambient-orbit {
+  inline-size: clamp(36px, 2.2vw, 64px);
+  block-size: clamp(36px, 2.2vw, 64px);
+  overflow: visible;
+}
+
+/* One slide: nothing to count down to. */
+.ambient-mode[data-slides='one'] .ambient-orbit-arc {
+  display: none;
+}
+
+.ambient-orbit-track,
+.ambient-orbit-arc {
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.ambient-orbit-track {
+  stroke: color-mix(in srgb, var(--am-ink) 22%, transparent);
+}
+
+/* Starts at the top and runs clockwise (counter-clockwise right to left); view.ts fills it. */
+.ambient-orbit-arc {
+  stroke: var(--am-ink);
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transform: rotate(-90deg);
+  transform-origin: 24px 24px;
+}
+
+:root[dir='rtl'] .ambient-orbit-arc {
+  transform: rotate(-90deg) scaleY(-1);
+}
+
+.ambient-orbit-moon {
+  fill: var(--color-accent);
+}
+
+/* ── Reduced motion: no drift or rising, plain crossfades ── */
+
+.ambient-mode.still .ambient-frame {
+  animation: none;
+  transform: none;
+}
+
+.ambient-mode.still .ambient-caption {
+  animation-duration: calc(var(--am-caption) * 0.08);
+  animation-delay: calc(var(--am-caption) * 0.88);
+}
+
+.ambient-mode.still .ambient-caption-rise {
+  animation: ambient-caption-still-in calc(var(--am-caption) * 0.06) var(--ease) calc(var(--am-caption) * 0.08) both;
+}
+
+@keyframes ambient-caption-still-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.ambient-mode.still,
+.ambient-mode.still .ambient-clock {
+  animation-duration: 400ms;
+}
+
+.ambient-mode.still .ambient-corner {
+  transition-duration: 400ms;
+}

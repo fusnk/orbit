@@ -1,0 +1,129 @@
+/* The seek bar's style (theme/seekbar.ts), over player.css's own rules for
+   it. Every rule is keyed on :root[data-seek], which seekbar.ts always sets,
+   and is more specific than player.css's, so load order doesn't matter. The
+   defaults draw Orbit's original bar exactly. */
+
+:root {
+  --seek-height: 4px;
+  --seek-dot-size: 14px;
+  --seek-buffered-alpha: 0.3;
+  --seek-bar: var(--seek-color, var(--color-accent));
+}
+
+/* The player's layouts adjust the thickness through --seek-track
+   (player/layout.css), scaled with the controls (--ps). */
+:root[data-seek] .seek .seek-track {
+  height: var(--seek-track, var(--seek-height));
+  margin-top: calc(var(--seek-track, var(--seek-height)) / -2);
+  border-radius: calc(var(--seek-track, var(--seek-height)) / 2);
+}
+
+:root[data-seek] .seek:is(:hover, .dragging) .seek-track {
+  height: calc(var(--seek-track, var(--seek-height)) + 2px * var(--ps, 1));
+  margin-top: calc(var(--seek-track, var(--seek-height)) / -2 - 1px * var(--ps, 1));
+}
+
+:root[data-seek] .seek .seek-buffered,
+:root[data-seek] .seek .seek-fill {
+  border-radius: inherit;
+}
+
+:root[data-seek] .seek .seek-buffered {
+  background: rgb(255 255 255 / var(--seek-buffered-alpha));
+}
+
+:root[data-seek-buffered='off'] .seek .seek-buffered {
+  display: none;
+}
+
+/* ── The played part ── */
+
+:root[data-seek] .seek .seek-fill {
+  background: var(--seek-bar);
+}
+
+/* Glass: a light sheen across the top, and a soft glow. */
+:root[data-seek='glass'] .seek .seek-track {
+  background: rgb(255 255 255 / 0.16);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
+}
+
+:root[data-seek='glass'] .seek .seek-fill {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08) 55%, rgb(0 0 0 / 0.12)),
+    var(--seek-bar);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--seek-bar) 60%, transparent);
+}
+
+/* Reduce visual effects: no glow. */
+:root[data-effects='reduced'][data-seek='glass'] .seek .seek-fill {
+  box-shadow: none;
+}
+
+:root[data-seek='pinstripe'] .seek .seek-fill {
+  background:
+    repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.32) 0 2px, transparent 2px 6px),
+    var(--seek-bar);
+}
+
+/* Rainbow: the whole spectrum spans the bar, uncovered as it plays (the fill
+   is `--fraction` of the bar wide, so its background is 1/fraction of it). */
+:root[data-seek='rainbow'] .seek .seek-fill {
+  background: linear-gradient(90deg, #ff4d4d, #ffa64d, #ffe14d, #4dd77a, #4db8ff, #9b6bff) left center / calc(100% / max(var(--fraction, 0), 0.001)) 100% no-repeat;
+}
+
+/* A picture of the person's own, tiled along the bar at its height. */
+:root[data-seek-image='on'] .seek .seek-fill {
+  background: var(--seek-bar-image) left center / auto 100% repeat-x;
+}
+
+/* ── The dot ── */
+
+:root[data-seek] .seek .seek-knob {
+  width: var(--seek-dot-size);
+  height: var(--seek-dot-size);
+  margin: calc(var(--seek-dot-size) / -2) 0 0 calc(var(--seek-dot-size) / -2);
+  background: var(--seek-bar);
+}
+
+:root[data-seek='rainbow'] .seek .seek-knob {
+  background: #fff;
+}
+
+:root[data-seek-dot='square'] .seek .seek-knob {
+  border-radius: 3px;
+}
+
+:root[data-seek-dot='hidden'] .seek .seek-knob {
+  display: none;
+}
+
+/* A picture dot is always shown: it's the point of having one. */
+:root[data-seek-dot='image'][data-seek-dot-image='on'] .seek .seek-knob {
+  border-radius: 0;
+  background: var(--seek-dot-image) center / contain no-repeat;
+  transform: none;
+}
+
+/* Windows high contrast drops the bar's fills (colours and gradients alike):
+   an outlined track, the played part and dot in the system's Highlight, and
+   what's buffered in GrayText. Important so every style and picture above
+   gives way. */
+@media (forced-colors: active) {
+  .seek .seek-track {
+    outline: 1px solid CanvasText;
+  }
+
+  .seek .seek-buffered {
+    background: GrayText !important;
+  }
+
+  .seek :is(.seek-fill, .seek-knob) {
+    background: Highlight !important;
+  }
+}
+
+/* Previews of the bar (Theme Studio, Settings) show the dot all the time. */
+.seek-sample .seek-knob {
+  transform: none;
+}

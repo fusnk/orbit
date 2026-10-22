@@ -1,0 +1,26 @@
+import type { ambient as source } from '../en/ambient';
+
+export const ambient: Record<keyof typeof source, string> = {
+  'ambient.label': 'Tryb ambient',
+  'ambient.hint.details': 'Enter, aby zobaczyć szczegóły',
+  'ambient.slide.resume': 'Wznów',
+  'ambient.slide.resume-episode': 'Wznów {episode}',
+  'ambient.slide.library': 'W Mojej bibliotece',
+  'ambient.slide.recent': 'Oglądane niedawno',
+  'ambient.slide.trending': 'Teraz popularne',
+  'ambient.settings.heading': 'Tryb ambient',
+  'ambient.settings.after': 'Uruchom po',
+  'ambient.settings.after-hint': 'Gdy przez ten czas nic nie zostanie naciśnięte, Orbit przechodzi w powolny pokaz grafik. Nigdy podczas odtwarzania.',
+  'ambient.settings.source': 'Co pokazuje',
+  'ambient.settings.source-hint': 'To, co oglądasz i masz zapisane, to, co popularne, albo oba na zmianę.',
+  'ambient.settings.source-for-you': 'Dla ciebie',
+  'ambient.settings.source-trending': 'Na czasie',
+  'ambient.settings.source-both': 'Oba',
+  'ambient.settings.clock': 'Pokazuj godzinę',
+  'ambient.settings.clock-hint': 'Godzina i data w rogu.',
+  'ambient.settings.paused': 'Także podczas pauzy',
+  'ambient.settings.paused-hint': 'Uruchamia się nad odtwarzaczem, gdy jest wstrzymany przez ten czas. Odtwarzanie pozostaje bez zmian.',
+  'ambient.settings.preview': 'Podgląd',
+  'ambient.settings.preview-label': 'Zobacz teraz',
+  'ambient.settings.preview-hint': 'Od razu uruchamia tryb ambient. Naciśnij dowolny klawisz lub porusz myszą, aby wrócić.',
+};

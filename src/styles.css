@@ -1,0 +1,2858 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-md);
+  font-weight: 400;
+  line-height: 1.5;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* Chinese, Japanese and Korean: Orbit's letter spacing is tuned for Latin capitals and display faces, and
+   hanzi, kana, kanji or hangul spaced apart (or squeezed) reads as broken type. Many rules set their own spacing, so
+   this has to win over all of them; the phone-remote pairing code keeps its spacing to stay readable. */
+:root:is(:lang(zh), :lang(ja), :lang(ko)) body :not(.remote-code) {
+  letter-spacing: 0 !important;
+}
+
+/* Korean wraps between words, as Korean apps do, not inside them; a word too long for its line still breaks. */
+:root:lang(ko) body {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Focus is drawn for keyboard focus only, the same ring everywhere. */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  box-shadow: var(--focus-ring);
+  /* Invisible normally; Windows high-contrast themes drop box-shadows but draw this outline in their own colour, so focus stays visible there. */
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+/* A pad or the phone remote is driving (gamepad.ts): their keys are synthetic, so the browser may not
+   count focus as visible. Draw the same ring; zero specificity from :where keeps components' own rings. */
+:where(:root[data-input='keys']) :focus:not(:focus-visible) {
+  box-shadow: var(--focus-ring);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+/* Focus on something already filled with the accent (a pressed chip or segment on
+   Crimson, the banner's current dot or item, the active page's pill): the accent
+   ring vanished into it. Those get the text-coloured ring instead, drawn only when
+   the keyboard (:focus-visible) or a pad (data-input='keys') is driving, so the
+   pointer sees nothing new. */
+:is([aria-pressed='true'], [aria-checked='true'], [aria-current='true']):is(:focus-visible, :root[data-input='keys'] :focus) {
+  box-shadow: var(--focus-ring-contrast);
+}
+
+/* The menu keeps its ring inside the item (the bar clips outside it, see .nav-item:focus-visible);
+   TV mode draws its own. */
+:root:not([data-tv='on']) .nav-item.active:is(:focus-visible, :root[data-input='keys'] :focus) {
+  box-shadow: inset 0 0 0 2px var(--color-bg), inset 0 0 0 4px var(--color-text);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-overlay);
+  background-clip: padding-box;
+  border: 4px solid transparent;
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon.filled {
+  fill: currentColor;
+  stroke-width: 1;
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.eyebrow {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ── App frame ────────────────────────────────────────────────────────── */
+
+#app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
+}
+
+/* The colour wash behind every page, tinted by the current artwork. */
+/* The person's wallpaper (Settings → Appearance), dimmed toward the background colour. */
+.wallpaper {
+  position: absolute;
+  inset: 0;
+  display: none;
+  pointer-events: none;
+  background: var(--wallpaper) center / cover no-repeat;
+}
+
+.wallpaper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: var(--wallpaper-dim);
+}
+
+:root[data-wallpaper='on'] .wallpaper {
+  display: block;
+}
+
+/* The one artwork tint in the app: a faint wash of the hero art's hue at the
+   top of the window, behind the banner. Only while a view with artwork is
+   shown (ambient.ts sets data-art; the router clears it on every other page),
+   so Settings, Library or Live TV sit on the plain theme background. Banners
+   shade their text with neutral scrims, not colour; this is the only colour. */
+.ambient {
+  position: absolute;
+  inset: 0;
+  display: none;
+  pointer-events: none;
+  opacity: var(--ambient-strength);
+  background: radial-gradient(60% 40% at 50% 0%, oklch(0.4 0.07 var(--ambient-hue) / 0.32), transparent 70%);
+  transition: background 1s var(--ease);
+}
+
+.ambient[data-art] {
+  display: block;
+}
+
+/* AMOLED theme: nothing lit behind the pages. Reduce visual effects: no glow,
+   a window-sized gradient layer that repaints whenever its hue changes. */
+:root[data-true-black='true'] .ambient,
+:root[data-effects='reduced'] .ambient {
+  display: none;
+}
+
+/* Reduce visual effects: no frosted glass anywhere. A backdrop blur
+   re-renders what's behind it whenever that moves, the costliest effect for
+   weak graphics. One rule (important, so no later or more specific one can
+   bring a blur back) instead of one per surface; tokens.css turns the glass
+   colour solid so text on it stays readable. */
+:root[data-effects='reduced'] * {
+  backdrop-filter: none !important;
+}
+
+.outlet {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  overflow-x: clip;
+  overflow-y: auto;
+  /* Scrolled by the compositor. On a display at 100% scaling Chromium otherwise
+     scrolls a see-through scroller by repainting it every frame (to keep LCD
+     text, which the page doesn't get anyway: it's drawn over the wallpaper),
+     about half the main thread while arrow keys scroll Home at 300 Hz. */
+  will-change: scroll-position;
+}
+
+/* A page's main view kept in the page while another view shows (router.ts `keep`, inert there).
+   `content-visibility: hidden` skips drawing it but keeps its layout, so going back to Home or a
+   long grid only draws it again instead of laying out thousands of cards; out of the flow, it
+   takes no room. Its entrance animation is reset, so it settles in again each time it shows. */
+.outlet > :not(.view-shown) {
+  position: absolute;
+  inset: 0 0 auto;
+  content-visibility: hidden;
+  animation: none;
+}
+
+/* A full-width cinematic banner runs to the window's edge: its scrollbar's
+   lane would otherwise show a strip of the page colour beside the art.
+   (Wheel, keys and touchpad still scroll, as in other streaming apps.) */
+:root[data-hero='cinematic'] .outlet:has(> .home.view-shown .hero) {
+  scrollbar-width: none;
+}
+
+/* ── Title bar & nav ──────────────────────────────────────────────────── */
+
+.titlebar {
+  position: relative;
+  z-index: 6;
+  flex: none;
+  display: grid;
+  /* The sides never shrink below their content, so Back, the wordmark and the
+     window's buttons stay on screen in a narrow window; the menu gives way
+     instead (nav-layouts.css). */
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, auto) minmax(max-content, 1fr);
+  align-items: center;
+  height: var(--header-height);
+  padding-inline-start: var(--space-5);
+}
+
+.titlebar-start {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+/* Back keeps its place while there's nowhere to go back to, so the wordmark
+   and the menu beside it don't jump sideways each time it comes and goes.
+   Hidden this way it can't be clicked or focused either. */
+.titlebar-start > .back-button[hidden] {
+  display: grid;
+  visibility: hidden;
+}
+
+.titlebar-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  height: 100%;
+}
+
+/* Avatar, bell and Quick settings: one box that isn't a drag region, so a click
+   that just misses a button lands on the box, not on the header (a drag there
+   pulled a maximized window down to its normal size). The Arc bar and Glass
+   draw it as a unit (nav-layouts.css). */
+.titlebar-tools {
+  display: flex;
+  align-items: flex-start;
+  height: 100%;
+}
+
+.round-button {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--control-chip);
+  height: var(--control-chip);
+  padding: 0;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.round-button:hover {
+  background: var(--color-surface-overlay);
+}
+
+.round-button[hidden] {
+  display: none;
+}
+
+.settings-button {
+  width: var(--control-compact);
+  height: var(--control-compact);
+  align-self: center;
+  margin-inline-end: 10px;
+  border: 0;
+}
+
+.settings-button.active {
+  background: var(--color-surface-overlay);
+}
+
+.settings-button .icon {
+  width: 17px;
+  height: 17px;
+  stroke-width: 2;
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* The mark: a ring with an accent "moon" (geometry in titlebar.ts, from app-icon.svg). */
+.wordmark-mark {
+  width: 21px;
+  height: 20px;
+  overflow: visible;
+}
+
+.wordmark-ring {
+  fill: none;
+  stroke: var(--color-text);
+  stroke-width: 35;
+}
+
+.wordmark-moon {
+  fill: var(--color-accent);
+}
+
+.caption {
+  display: flex;
+  height: var(--caption-height);
+}
+
+.caption-button {
+  display: grid;
+  place-items: center;
+  width: var(--caption-width);
+  height: var(--caption-height);
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.caption-button:hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.caption-button.close:hover {
+  background: var(--color-caption-close);
+  color: #fff;
+}
+
+/* The close icon's cross fills half its box: 20px draws a 10px cross, matching the other glyphs. */
+.caption-button .icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.2;
+}
+
+.glyph-min {
+  width: 10px;
+  height: 1px;
+  background: currentColor;
+}
+
+.glyph-max {
+  width: 9px;
+  height: 9px;
+  border: 1px solid currentColor;
+  border-radius: 1px;
+}
+
+/* Frosted glass over whatever scrolls or plays behind the bar: a blur of it,
+   a faint lit top edge and a soft shadow, so the pill floats over banners. */
+.nav {
+  --nav-highlight: color-mix(in srgb, var(--base-text) 10%, transparent);
+  --nav-shadow: 0 10px 28px -12px rgb(0 0 0 / 0.6);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-glass) 62%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--nav-highlight),
+    inset 0 0 0 1px var(--color-border-strong),
+    var(--nav-shadow);
+  backdrop-filter: blur(24px) saturate(1.4);
+}
+
+:root[data-theme='light'] .nav {
+  --nav-highlight: rgb(255 255 255 / 0.7);
+  --nav-shadow: 0 10px 28px -14px color-mix(in srgb, var(--base-text) 35%, transparent);
+  /* Denser: dark artwork behind light glass would sink its darker text. */
+  background: color-mix(in srgb, var(--color-glass) 82%, transparent);
+}
+
+/* AMOLED: black glass with no lit shadow around it. */
+:root[data-true-black='true'] .nav {
+  --nav-shadow: 0 0 #0000;
+  background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+}
+
+/* Solid, with a small shadow: no blur to repaint (the rule above drops it everywhere); after AMOLED, so it stays solid there too. */
+:root[data-effects='reduced'] .nav {
+  --nav-shadow: 0 4px 12px -6px rgb(0 0 0 / 0.5);
+  background: var(--color-glass);
+}
+
+.nav-item[hidden] {
+  display: none;
+}
+
+/* Above the indicator, which slides beneath them. */
+.nav-item {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui);
+  font-weight: 600;
+  transition:
+    background var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+
+.nav-item .icon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.4;
+}
+
+.nav-item:not(.active):is(:hover, :focus-visible) {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.nav-item.active {
+  color: var(--color-text);
+}
+
+/* Inside the item: the title bar's nav scrolls when narrow, which clips
+   anything drawn outside it (the Arc and Crimson bars have no padding). */
+.nav-item:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+/* The active page's highlight: one element that nav.ts moves to the active
+   item (size and offset), so it glides between pages. Reduced motion zeroes
+   the durations, so it jumps. A touch of the accent tints and edges it, and
+   a short accent line sits under the name (beside it in the vertical layouts). */
+.nav-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface-overlay));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 28%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--duration-drawer) var(--ease-drawer),
+    width var(--duration-drawer) var(--ease-drawer),
+    height var(--duration-drawer) var(--ease-drawer),
+    opacity var(--duration-fast) var(--ease);
+}
+
+.nav-indicator.shown {
+  opacity: 1;
+}
+
+.nav-indicator.jump {
+  transition: none;
+}
+
+.nav-indicator::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 3px;
+  width: 14px;
+  height: 2px;
+  margin-inline: auto;
+  border-radius: 1px;
+  background: var(--color-accent);
+}
+
+/* ── Controls ─────────────────────────────────────────────────────────── */
+
+/* Pill buttons. Primary is the light "Play" pill; glass sits on artwork. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--control-compact);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background var(--duration-fast) var(--ease),
+    transform var(--duration-press) var(--ease);
+}
+
+.button:hover:not(:disabled) {
+  background: var(--color-surface-overlay);
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.button.large {
+  height: var(--control-primary);
+  padding: 0 var(--space-5);
+  font-size: 14px;
+}
+
+.button.primary {
+  background: var(--color-light);
+  color: var(--color-on-light);
+  font-weight: 700;
+}
+
+.button.primary:hover:not(:disabled) {
+  background: var(--color-light-hover);
+}
+
+.button.large.primary {
+  padding-block: 0;
+  padding-inline: 18px 22px;
+}
+
+.button.glass {
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  color: #fff;
+}
+
+.button.glass:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.button.glass:focus-visible,
+.button:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.button.icon-only {
+  width: var(--control-primary);
+  padding: 0;
+}
+
+/* The speaker button of a trailer playing behind a title page or banner (see hero-trailer.ts); each page places it. */
+.button.trailer-sound {
+  position: absolute;
+  z-index: 1;
+  width: var(--control-chip);
+  height: var(--control-chip);
+}
+
+.button.danger[data-armed] {
+  background: var(--color-danger-strong);
+  color: var(--color-danger-contrast);
+}
+
+.button[aria-pressed='true'] {
+  background: var(--color-surface-overlay);
+}
+
+/* `display: inline-flex` would otherwise win over the hidden attribute. */
+.button[hidden] {
+  display: none;
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: var(--control-chip);
+  height: var(--control-chip);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.icon-button:hover {
+  background: var(--color-surface-overlay);
+}
+
+/* Chips and segments; the selected one is the light pill. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--control-chip);
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.chip:hover:not(:disabled) {
+  background: var(--color-surface-overlay);
+}
+
+.chip:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--color-light);
+  color: var(--color-on-light);
+}
+
+.chip-count {
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A name from an addon can be long: cut it short, the chip's title has it whole. */
+.chip-name {
+  overflow: hidden;
+  max-inline-size: 18ch;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.segments {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+}
+
+.segment {
+  height: var(--control-segment);
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+/* A chosen segment: a pressed choice, or the chosen tab where segments switch views. */
+.segment:is([aria-pressed='true'], [aria-selected='true']) {
+  background: var(--color-surface-overlay);
+  color: var(--color-text);
+}
+
+.text-field {
+  flex: 1;
+  min-width: 0;
+  height: var(--control-compact);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  user-select: text;
+}
+
+.text-field.editing {
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+.selectable {
+  user-select: text;
+  word-break: break-all;
+}
+
+.status:empty {
+  display: none;
+}
+
+.status.error {
+  color: var(--color-danger-text);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.badges:empty {
+  display: none;
+}
+
+.badge {
+  padding: 3px 7px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+}
+
+.badge.accent,
+.badge.warn {
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+}
+
+/* ── Cards & rails ────────────────────────────────────────────────────── */
+
+.card {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  text-align: start;
+}
+
+/* `display: flex` would otherwise win over the hidden attribute, and a profile's content limit
+   hides the cards it blocks (or hasn't rated yet) with it (catalog/parental.ts `guardCard`). */
+.card[hidden] {
+  display: none;
+}
+
+/* Artwork frames lift on hover; keyboard focus rings the whole card. */
+.frame {
+  position: relative;
+  display: block;
+  overflow: clip;
+  border-radius: var(--radius-card);
+  background: var(--color-panel-2);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  /* Only the lift eases; the shadow changes at once. A shadow can't be
+     animated off the main thread: easing it repainted the page every frame,
+     twice per arrow key (the card left and the one reached), which with
+     scrolling was most of the main thread at 300 Hz. */
+  transition: transform var(--duration-hover) var(--ease);
+}
+
+/* Keyboard focus lifts the frame too, so a controller shows the same card
+   the mouse would. The shadow beneath is neutral (a card that sits on the
+   page, not one that lights it). Edge colours come from the text colour, so the
+   rim also shows on light themes. */
+.card:is(:hover, :focus-visible) .frame {
+  transform: translateY(-4px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-text) 38%, transparent),
+    0 20px 32px -14px rgba(0, 0, 0, 0.8);
+}
+
+/* Reduce visual effects: the lift stays, without a big shadow repainted every hover. */
+:root[data-effects='reduced'] .card:is(:hover, :focus-visible) .frame {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-text) 38%, transparent);
+}
+
+.art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition:
+    opacity var(--duration-enter) var(--ease),
+    transform var(--duration-hero) var(--ease-drawer);
+}
+
+/* The artwork leans in a little inside its frame (the frame clips it, so the card keeps its size). */
+.card:is(:hover, :focus-visible) .art:not(.art-blurred, .still-poster) {
+  transform: scale(1.05);
+}
+
+:root[data-motion='reduce'] .card .art:not(.art-blurred) {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .card .art:not(.art-blurred) {
+    transform: none;
+  }
+}
+
+.art.loaded {
+  opacity: 1;
+}
+
+.card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.card-title,
+.card-sub {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card-title {
+  font-size: var(--font-size-ui);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+}
+
+.card-sub {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-faint);
+}
+
+/* Posters (2:3) */
+
+.poster-card {
+  width: var(--poster-width);
+}
+
+.poster-frame {
+  aspect-ratio: 2 / 3;
+}
+
+/* Settings → Appearance → Cards → "Show titles under posters" off: just the
+   posters. The name, year and genre stay for screen readers, and a rating of
+   the person's own still shows. */
+:root[data-card-text='hide'] .poster-card {
+  gap: 0;
+}
+
+:root[data-card-text='hide'] .poster-card :is(.card-title, .card-meta),
+:root[data-card-text='hide'] .poster-card .card-sub:not(:has(.card-rating)) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Missing artwork becomes a title card: the name in the middle, its quiet
+   label under it, both kept clear of the corner badge above and of the
+   ratings strip and progress bar along the bottom (which drew over them). */
+.no-art {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 40px 14px 56px;
+  text-align: center;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--base-text) 5%, var(--base-raised)), var(--base-panel));
+}
+
+.no-art-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  color: var(--color-text);
+}
+
+.no-art-label {
+  font-size: var(--font-size-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  /* A step above faint: the card is a shade darker than the panels faint is made for. */
+  color: color-mix(in srgb, var(--color-text-faint) 60%, var(--color-text-muted));
+}
+
+/* "Watched": a small check in a circle in the artwork's top corner (watched-marks.ts). */
+.watched-mark {
+  position: absolute;
+  z-index: 1;
+  top: var(--space-2);
+  inset-inline-end: var(--space-2);
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(11, 10, 9, 0.72);
+  color: var(--color-accent-hi, var(--color-accent));
+}
+
+.watched-mark .icon {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.8;
+}
+
+/* A watched title's artwork steps back, until the card is pointed at or focused. */
+.card.is-watched .art {
+  filter: saturate(0.45) brightness(0.62);
+  transition:
+    opacity var(--duration-enter) var(--ease),
+    transform var(--duration-hero) var(--ease-drawer),
+    filter var(--duration-enter) var(--ease);
+}
+
+.card.is-watched:is(:hover, :focus-visible) .art {
+  filter: none;
+}
+
+/* Clear of the Top 10 badge Crimson puts in that corner (crimson.css). */
+:root[data-theme-style='crimson'] .ranked-frame .watched-mark {
+  top: 26px;
+}
+
+.poster-progress {
+  position: absolute;
+  inset-inline-start: var(--space-2);
+  inset-inline-end: var(--space-2);
+  bottom: var(--space-2);
+  height: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.progress-fill {
+  display: block;
+  width: calc(var(--progress, 0) * 100%);
+  height: 100%;
+  background: var(--color-accent);
+}
+
+/* "See all" at the end of a rail (cards.ts `seeAllTile`), shaped like the rail's cards. */
+.see-all-tile {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  width: var(--poster-width);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-card);
+  background: none;
+  color: var(--color-text-muted);
+}
+
+.see-all-tile.see-all-landscape {
+  width: var(--landscape-width);
+}
+
+.see-all-tile.see-all-ranked {
+  width: calc(var(--poster-width) * 0.9);
+}
+
+.see-all-tile-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  font-weight: 600;
+}
+
+.see-all-tile.see-all-landscape .see-all-tile-frame {
+  aspect-ratio: 16 / 9;
+}
+
+.see-all-tile-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-text) 10%, transparent);
+}
+
+.see-all-tile:is(:hover, :focus-visible) {
+  color: var(--color-text);
+}
+
+.see-all-tile:is(:hover, :focus-visible) .see-all-tile-frame {
+  background: color-mix(in srgb, var(--color-text) 12%, transparent);
+}
+
+/* Continue Watching stills (16:9) */
+
+.continue-card {
+  width: 320px;
+  gap: 10px;
+}
+
+.still-frame {
+  aspect-ratio: 16 / 9;
+}
+
+.art.still-poster {
+  object-fit: contain;
+  padding: 10px 0;
+}
+
+.still-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(11, 10, 9, 0.75), transparent 55%);
+}
+
+.still-badge {
+  position: absolute;
+  top: 10px;
+  inset-inline-start: 10px;
+  padding: 4px var(--space-2);
+  border-radius: var(--radius-sm);
+  background: rgba(11, 10, 9, 0.72);
+  font-size: var(--font-size-2xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.still-play {
+  position: absolute;
+  inset-inline-start: var(--space-3);
+  bottom: 14px;
+  display: grid;
+  place-items: center;
+  width: var(--control-compact);
+  height: var(--control-compact);
+  border-radius: 50%;
+  color: #0b0a09;
+  /* Its discs and icons stack among themselves, not with the rest of the card. */
+  isolation: isolate;
+}
+
+/* The card about to play says so in the accent: the resting disc and icon
+   crossfade to the accent ones. Opacity, not a colour transition: a colour
+   can't change off the main thread, so each frame of the fade restyled and
+   repainted the card (at 300 Hz, 54 frames a press). */
+.still-play::before,
+.still-play::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.still-play::before {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.still-play::after {
+  background: var(--color-accent-strong);
+  opacity: 0;
+}
+
+.still-play::before,
+.still-play::after,
+.still-play .icon {
+  transition: opacity var(--duration-hover) var(--ease);
+}
+
+.continue-card:is(:hover, :focus-visible) .still-play::after,
+.continue-card:is(:hover, :focus-visible) .still-play .still-play-lit {
+  opacity: 1;
+}
+
+.continue-card:is(:hover, :focus-visible) .still-play::before,
+.continue-card:is(:hover, :focus-visible) .still-play .icon:not(.still-play-lit) {
+  opacity: 0;
+}
+
+.still-play .icon {
+  /* Both icons in one cell, over the discs. */
+  position: relative;
+  z-index: 1;
+  grid-area: 1 / 1;
+  width: 14px;
+  height: 14px;
+}
+
+.still-play .still-play-lit {
+  color: var(--color-accent-contrast);
+  opacity: 0;
+}
+
+.still-left {
+  position: absolute;
+  inset-inline-end: var(--space-3);
+  bottom: 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #e6e1db;
+}
+
+.still-progress {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  bottom: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Logo cards (Settings → Appearance → Card shape: Landscape; cards.ts): the
+   backdrop under a shade that deepens towards the bottom start, where the
+   title's logo sits large, or its name in the display face. Nothing else is
+   written on or under the card: name, year and genre are said only to screen
+   readers (a rating of the person's own and a new episode's line stay). The
+   marks are quieter than on a poster, and a corner badge in the accent is the
+   one label. The "TOP 10" badge shows only where a theme asks for it
+   (crimson.css). */
+.landscape-card {
+  position: relative;
+  width: var(--landscape-width);
+  gap: 0;
+}
+
+.landscape-card :is(.card-title, .card-meta),
+.landscape-card .card-sub:not(:has(.card-rating)) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.landscape-card .card-text:has(.card-rating, .card-episode) {
+  margin-block-start: var(--space-2);
+}
+
+/* Square-ish, as one strip of art: Sharp and Classic as 4px and 8px, Round
+   a step rounder (14px) rather than the posters' full 22px. */
+.landscape-card {
+  --radius-landscape: max(min(var(--radius-card), 8px), calc(var(--radius-card) - 8px));
+}
+
+.landscape-card .frame {
+  border-radius: var(--radius-landscape);
+  /* The logo's fallback name is sized to the card (cqi), so it fits a rail card and a wide grid column alike. */
+  container-type: inline-size;
+}
+
+.landscape-card:is(:hover, :focus-visible) .frame {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-text) 38%, transparent);
+}
+
+/* The lifted card's shadow: drawn once, then only its opacity and position change. */
+.landscape-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-landscape);
+  box-shadow: 0 20px 32px -14px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity var(--duration-hover) var(--ease),
+    transform var(--duration-hover) var(--ease);
+}
+
+.landscape-card:is(:hover, :focus-visible)::before {
+  opacity: 1;
+  transform: translateY(-4px);
+}
+
+:root[data-effects='reduced'] .landscape-card::before {
+  display: none;
+}
+
+.landscape-card .still-shade {
+  background:
+    radial-gradient(ellipse 85% 75% at 0% 100%, rgba(0, 0, 0, 0.55), transparent 70%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.32) 30%, transparent 60%);
+}
+
+[dir='rtl'] .landscape-card .still-shade {
+  background:
+    radial-gradient(ellipse 85% 75% at 100% 100%, rgba(0, 0, 0, 0.55), transparent 70%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.32) 30%, transparent 60%);
+}
+
+/* No backdrop: the sharp poster over its blurred copy moves to the far end, clear of the name. */
+.landscape-card .art.still-poster {
+  padding: 10px 12px;
+  object-position: right center;
+}
+
+[dir='rtl'] .landscape-card .art.still-poster {
+  object-position: left center;
+}
+
+/* The logo's box caps it both ways: a wide wordmark reaches 64% of the
+   card's width, a tall stacked one 46% of its height, whichever comes first. */
+.landscape-logo {
+  position: absolute;
+  z-index: 1;
+  inset-inline-start: var(--space-3);
+  bottom: var(--space-3);
+  display: flex;
+  align-items: flex-end;
+  inline-size: 64%;
+  block-size: 46%;
+  pointer-events: none;
+}
+
+.landscape-logo-img {
+  display: none;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  object-position: left bottom;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.6));
+}
+
+[dir='rtl'] .landscape-logo-img {
+  object-position: right bottom;
+}
+
+:root[data-effects='reduced'] .landscape-logo-img {
+  filter: none;
+}
+
+.landscape-card.has-logo .landscape-logo-img {
+  display: block;
+}
+
+.landscape-logo-name,
+.top-ten-badge {
+  display: none;
+}
+
+/* No logo (or logos off): the name, set like one, in up to two balanced lines. */
+.landscape-card:not(.has-logo) .landscape-logo-name {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(15px, 8.5cqi, 34px);
+  font-weight: var(--font-hero-weight, var(--font-display-weight));
+  line-height: 1.04;
+  letter-spacing: calc(-0.01em + 0.04em * var(--font-display-tracking));
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* A name takes the width the poster leaves it (all of it with a backdrop), and the height it needs. */
+.landscape-card:not(.has-logo) .frame:not(:has(.still-poster)) .landscape-logo {
+  inline-size: calc(100% - 2 * var(--space-3));
+}
+
+.landscape-card:not(.has-logo) .landscape-logo {
+  block-size: auto;
+}
+
+/* Quieter marks: a smaller check, a thinner bar. */
+.landscape-card .watched-mark {
+  width: 20px;
+  height: 20px;
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.landscape-card .watched-mark .icon {
+  width: 11px;
+  height: 11px;
+}
+
+.landscape-card .still-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* The corner badge ("New episode", "New season", "Recently added", or a
+   page's own): flush in the top corner, in the accent, square on the frame's
+   edges and rounded only where it meets the art. */
+.landscape-card :is(.card-tag, .poster-badge) {
+  top: 0;
+  inset-inline-start: 0;
+  max-inline-size: calc(100% - 36px);
+  overflow: hidden;
+  padding: 3px 8px 4px;
+  border-radius: 0;
+  border-end-end-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+/* Landscape placeholders, in rails and grids. */
+.landscape-skeleton {
+  width: var(--landscape-width);
+}
+
+.landscape-skeleton .still-frame {
+  width: 100%;
+}
+
+/* Top 10: outlined numeral with the poster tucked over it */
+
+.ranked-card {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0;
+}
+
+/* In the display face, like Search's ranks; drawn from the text colour so it
+   shows on light themes, and lit in the accent when its card is chosen. */
+.rank {
+  margin-bottom: -6px;
+  font-family: var(--font-display);
+  /* Bebas Neue (tracking 1) is narrow: taller, and tucked less under the poster below. */
+  font-size: calc(150px + 24px * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  line-height: 0.8;
+  letter-spacing: calc(-0.06em + 0.06em * var(--font-display-tracking));
+  /* The numeral itself only holds the space: it's drawn twice over it, at rest
+     (::before) and lit (::after), and choosing the card crossfades the two. A
+     colour transition can't run off the main thread, so it repainted the
+     150px glyph on every frame of the fade (each one a full restyle, repaint
+     and re-layering at 300 Hz); an opacity fade is the compositor's alone. */
+  position: relative;
+  color: transparent;
+  -webkit-text-stroke: 2px transparent;
+}
+
+.rank::before,
+.rank::after {
+  content: attr(data-rank);
+  position: absolute;
+  inset: 0;
+  transition: opacity var(--duration-hover) var(--ease);
+}
+
+.rank::before {
+  -webkit-text-stroke-color: color-mix(in srgb, var(--color-text) 42%, transparent);
+}
+
+.rank::after {
+  color: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  -webkit-text-stroke-color: var(--color-accent);
+  opacity: 0;
+}
+
+.ranked-card:is(:hover, :focus-visible) .rank::before {
+  opacity: 0;
+}
+
+.ranked-card:is(:hover, :focus-visible) .rank::after {
+  opacity: 1;
+}
+
+.ranked-frame {
+  width: 124px;
+  aspect-ratio: 2 / 3;
+  margin-inline-start: calc(-24px + 12px * var(--font-display-tracking));
+}
+
+.ranked-title {
+  position: absolute;
+  inset-inline-start: 10px;
+  inset-inline-end: 10px;
+  bottom: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+/* No poster (or not yet): the name sits on the bare frame, so it takes the page's text colour (light themes too). */
+.ranked-frame:not(:has(.art.loaded)) .ranked-title {
+  color: var(--color-text);
+  text-shadow: none;
+}
+
+/* Genre tiles: artwork (here, the genre's hue) with the name on a fade */
+
+.genre-tile {
+  position: relative;
+  flex: none;
+  width: 208px;
+  height: 104px;
+  overflow: clip;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background:
+    linear-gradient(90deg, rgba(11, 10, 9, 0.7), transparent),
+    radial-gradient(120% 140% at 80% 20%, oklch(0.5 0.1 var(--hue)), oklch(0.25 0.05 var(--hue)));
+  color: #fff;
+  text-align: start;
+  transition: transform var(--duration-hover) var(--ease);
+}
+
+.genre-tile:is(:hover, :focus-visible) {
+  transform: translateY(-3px);
+}
+
+.genre-name {
+  position: absolute;
+  inset-inline-start: var(--space-4);
+  bottom: 14px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* Rails */
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: var(--page-gutter);
+}
+
+.rail-titles {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+/* Row headings speak in the display face (Search's title voice), a step up
+   from the cards' labels. Bebas Neue (tracking 1) is narrow and short for its
+   size, so it gets a little more size and room; the other pairs' bold
+   display faces stay a notch smaller so a page of rows doesn't shout. */
+.rail-heading {
+  font-family: var(--font-display);
+  font-size: calc(var(--font-size-heading) + (6px + 0.2vw) * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.015em + 0.045em * var(--font-display-tracking));
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.rail-source {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-faint);
+}
+
+.rail-controls,
+.rail-arrows {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.see-all {
+  height: var(--control-chip);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.see-all:hover {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+.rail-scroll {
+  display: grid;
+  place-items: center;
+  width: var(--control-chip);
+  height: var(--control-chip);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  transition:
+    opacity var(--duration-hover) var(--ease),
+    background var(--duration-fast) var(--ease);
+}
+
+.rail-scroll:hover {
+  background: var(--color-surface-overlay);
+}
+
+/* The arrows appear with the mouse over a row, only where there's more that
+   way, and not at all on a row that fits (keyboard and controllers move
+   along rows with the arrow keys instead). */
+.rail .rail-arrows {
+  opacity: 0;
+  transition: opacity var(--duration-hover) var(--ease);
+}
+
+.rail:hover .rail-arrows {
+  opacity: 1;
+}
+
+.rail:not(:has(.rail-track.more-before, .rail-track.more-after)) .rail-arrows {
+  display: none;
+}
+
+.rail:not(:has(.rail-track.more-before)) .rail-scroll:first-child,
+.rail:not(:has(.rail-track.more-after)) .rail-scroll:last-child {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Padding leaves room for the hover lift and focus ring. */
+.rail-track {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  /* Horizontal scrolling would otherwise make the row scroll vertically too:
+     the mouse wheel nudged its cards up instead of scrolling the page. */
+  overflow-y: hidden;
+  padding: 6px var(--page-gutter) var(--space-2);
+  scroll-padding-inline: var(--page-gutter);
+  scrollbar-width: none;
+  /* Scrolled by the compositor, as the page is (.outlet). */
+  will-change: scroll-position;
+}
+
+.rail-track::-webkit-scrollbar {
+  display: none;
+}
+
+.rail-track.continue {
+  gap: var(--space-4);
+}
+
+.rail-track.ranked {
+  gap: var(--space-2);
+}
+
+.rail-track.genres {
+  gap: 14px;
+}
+
+/* Logo cards carry no text under them, so they sit closer, as one strip of art. */
+.rail-track:has(> .landscape-card) {
+  gap: var(--space-3);
+}
+
+/* ── Title heroes (Home banner and detail page) ───────────────────────── */
+
+/* A slow drift across a banner's artwork (Home, Discover and title pages):
+   a compositor-only transform on the one image, so it costs no repaints.
+   Pages turn it off for reduced motion and Reduce visual effects.
+   It still redraws the window every frame it moves, which at a 300 Hz display
+   is a third of a core for a motion of a fraction of a pixel per frame. So it
+   moves in steps, about 30 a second: a page's timing function is steps(N) per
+   tenth below, N = its duration in seconds × 3 (28 s → steps(84)). The stops
+   trace ease-in-out (cubic-bezier(0.42, 0, 0.58, 1)) at every tenth, since a
+   stepped timing function can't ease on its own. */
+@keyframes art-drift {
+  0% {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+
+  10% {
+    transform: scale(1.0216) translate3d(-0.03%, -0.02%, 0);
+  }
+
+  20% {
+    transform: scale(1.0265) translate3d(-0.122%, -0.082%, 0);
+  }
+
+  30% {
+    transform: scale(1.035) translate3d(-0.281%, -0.187%, 0);
+  }
+
+  40% {
+    transform: scale(1.0466) translate3d(-0.498%, -0.332%, 0);
+  }
+
+  50% {
+    transform: scale(1.06) translate3d(-0.75%, -0.5%, 0);
+  }
+
+  60% {
+    transform: scale(1.0734) translate3d(-1.002%, -0.668%, 0);
+  }
+
+  70% {
+    transform: scale(1.085) translate3d(-1.219%, -0.813%, 0);
+  }
+
+  80% {
+    transform: scale(1.0935) translate3d(-1.378%, -0.918%, 0);
+  }
+
+  90% {
+    transform: scale(1.0984) translate3d(-1.47%, -0.98%, 0);
+  }
+
+  100% {
+    transform: scale(1.1) translate3d(-1.5%, -1%, 0);
+  }
+}
+
+/* It holds where it is while the page is out of sight (app/window-activity.ts). */
+:root[data-page-unseen] :is(.hero-art, .detail-art) {
+  animation-play-state: paused !important;
+}
+
+/* Readability fades over artwork. */
+.title-shade {
+  background:
+    linear-gradient(90deg, rgba(11, 10, 9, 0.92) 0%, rgba(11, 10, 9, 0.5) 38%, transparent 66%),
+    linear-gradient(0deg, rgba(11, 10, 9, 0.85) 0%, transparent 45%);
+}
+
+/* Titles without landscape art get a heavily blurred poster instead. */
+.art-blurred {
+  filter: blur(48px) saturate(1.3) brightness(0.7);
+  transform: scale(1.25);
+}
+
+/* Reduce visual effects: a 48px blur per card is too costly, so the frame
+   shows its plain background (and the sharp poster on top, where there is one). */
+:root[data-effects='reduced'] .art-blurred {
+  display: none;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ece8e3;
+}
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-rating);
+  font-weight: 700;
+}
+
+.rating .icon {
+  width: 13px;
+  height: 13px;
+}
+
+.meta-dot {
+  color: #6d6660;
+}
+
+/* The age rating (components/age-rating.ts), outlined like a classification
+   mark: a 1px rim in the text's own colour, no fill, no glow. */
+.cert {
+  padding: 1px 6px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 60%, transparent);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* Filled once the rating is known; its badge (and dot) lay out as the row's own items. */
+.cert-slot {
+  display: contents;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ── Overlays ─────────────────────────────────────────────────────────── */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--color-scrim);
+  opacity: 0;
+  transition: opacity var(--duration-drawer) var(--ease);
+}
+
+.scrim.open {
+  opacity: 1;
+}
+
+/* Floating side panel (sources), inset from the window edges. */
+.drawer {
+  position: fixed;
+  top: var(--space-3);
+  inset-inline-end: var(--space-3);
+  bottom: var(--space-3);
+  z-index: 51;
+  width: min(560px, calc(100vw - 24px));
+  overflow-y: auto;
+  border-radius: var(--radius-xl);
+  background: var(--color-glass);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border-strong),
+    var(--shadow-overlay);
+  backdrop-filter: blur(28px);
+  opacity: 0;
+  transform: translateX(16px);
+  transition:
+    opacity var(--duration-drawer) var(--ease-drawer),
+    transform var(--duration-drawer) var(--ease-drawer);
+}
+
+.drawer.open {
+  opacity: 1;
+  transform: none;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-8);
+  z-index: 60;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-full);
+  background: var(--color-glass);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border-strong),
+    var(--shadow-overlay);
+  backdrop-filter: blur(28px);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition:
+    opacity var(--duration-popover) var(--ease),
+    transform var(--duration-popover) var(--ease);
+  pointer-events: none;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* A toast with a button (Undo): the button can be clicked while it shows. */
+.toast.has-action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-inline-end: var(--space-2);
+}
+
+.toast.has-action.show {
+  pointer-events: auto;
+}
+
+.toast-action {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  /* Light enough that the accent's words still read on it in every theme (contrast.test.ts). */
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+  color: var(--color-accent-text);
+  font-weight: 700;
+}
+
+/* Pointed at or focused, the wash deepens and the words take the text colour, which reads on it. */
+.toast-action:is(:hover, :focus-visible) {
+  background: color-mix(in srgb, var(--color-text) 20%, transparent);
+  color: var(--color-text);
+}
+
+/* ── Pages ────────────────────────────────────────────────────────────── */
+
+.room {
+  padding: var(--space-5) var(--page-gutter) var(--space-12);
+  animation: page-in var(--duration-enter) var(--ease);
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* A page's name speaks like Discover's: the display face, large, with the
+   theme's own tracking (Bebas Neue opens up, the bold pairs tighten). */
+.page-title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  font-family: var(--font-display);
+  font-size: calc(var(--font-size-xl) + (clamp(32px, 3.4vw, 50px) - var(--font-size-xl)) * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.02em + 0.06em * var(--font-display-tracking));
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.page-title .count {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-faint);
+}
+
+/* Top-level pages sit on the plain theme background: no accent wash behind
+   the heading (the accent marks actions and selection, not decoration). */
+/* `.live:not(.player)`: a live channel's player carries `live` too; this made it a 0px-tall box in the page.
+   In `:where()`, so it doesn't raise the rule's weight: as `.live:not(.player)` it tied with the hidden page rule
+   (`.outlet > :not(.view-shown)`) and, coming later, put every page kept behind back in the flow above the one shown. */
+:is(.discover, .library, .live:where(:not(.player)), .downloads, .collections-page, .list-page, .person-page, .settings) {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Glass buttons on these pages, and in drawers (Connect's remote, Surprise
+   Me), sit on the page, not on artwork: on light themes their white text
+   would vanish into it (as on Discover, explore.css).
+   A featured banner's (My Library's) does sit on artwork, so it stays glass. */
+:root[data-theme='light'] :is(.library, .downloads, .live, .collections-page, .list-page, .discover-head, .discover-bar, .drawer) .button.glass:not(.featured *) {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+:root[data-theme='light'] :is(.library, .downloads, .live, .collections-page, .list-page, .discover-head, .discover-bar, .drawer) .button.glass:not(.featured *):hover:not(:disabled) {
+  background: var(--color-surface-overlay);
+}
+
+:root[data-theme='light'] :is(.library, .downloads, .live, .collections-page, .list-page, .discover-head, .discover-bar, .drawer) .button.glass:not(.featured *):not(:focus-visible, [aria-pressed='true']) {
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+/* Discover's strips (Can't decide?, the Discovery Queue) as two values that
+   toolbars, empty states and summary panels across the app put on: a wash
+   of the accent from the start edge, and a rim leaning toward the accent. */
+:root {
+  --strip-angle: 105deg;
+  --strip-wash: linear-gradient(var(--strip-angle), color-mix(in srgb, var(--color-accent) 13%, transparent) 0%, transparent 55%);
+  --strip-ring: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
+}
+
+:root[dir='rtl'] {
+  --strip-angle: -105deg;
+}
+
+.room h2 {
+  margin: var(--space-8) 0 var(--space-3);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* ── Addons (Settings → Addons) ───────────────────────────────────────── */
+
+.install {
+  max-width: 760px;
+}
+
+.install-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.install-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.install-preview[hidden] {
+  display: none;
+}
+
+.addon-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.addon-heading > div,
+.catalog-item > div {
+  /* Names an addon picks (any length, maybe one word) wrap here instead of pushing past the page or its buttons. */
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.addon-logo {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  object-fit: contain;
+  background: var(--color-surface-raised);
+}
+
+.addon-logo.fallback {
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.addon-list,
+.catalog-list,
+.meta-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.addon-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.addon-row.off .addon-info {
+  opacity: 0.55;
+}
+
+.addon-info {
+  flex: 1;
+  min-width: 0;
+  /* An addon picks its own name: one long word breaks in its column instead of running under the buttons. */
+  overflow-wrap: anywhere;
+}
+
+.addon-info p {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-sm);
+}
+
+.addon-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.addon-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  max-width: 50%;
+}
+
+.addon-details .back {
+  margin-bottom: var(--space-4);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-1) var(--space-4);
+  margin-top: var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.facts dt {
+  color: var(--color-text-faint);
+}
+
+.facts dd {
+  margin: 0;
+  user-select: text;
+}
+
+.catalog-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.catalog-item p {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-sm);
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.meta-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--font-size-sm);
+}
+
+.poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  background: var(--color-surface-raised);
+}
+
+.meta-name {
+  font-weight: 700;
+}
+
+/* Spoiler protection (Settings → Library & Metadata → Spoilers): a `.spoiler-art`
+   frame's picture stays blurred until its row or card is hovered or focused. */
+.spoiler-art > img {
+  filter: blur(14px);
+  transform: scale(1.12);
+  transition: filter var(--duration-hover) var(--ease);
+}
+
+:is(button, [tabindex]):is(:hover, :focus-visible) .spoiler-art > img,
+.spoiler-art:is(:hover, :focus-visible) > img {
+  filter: none;
+}
+
+/* ── Menus ────────────────────────────────────────────────────────────── */
+
+.menu {
+  position: fixed;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  /* Long menus (e.g. countries) scroll instead of running off the window. */
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--color-glass);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border-strong),
+    var(--shadow-overlay);
+  backdrop-filter: blur(28px);
+  animation: page-in var(--duration-popover) var(--ease);
+}
+
+.menu-item {
+  height: var(--control-compact);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.menu-item:hover,
+.menu-item:focus-visible {
+  background: var(--color-surface-overlay);
+}
+
+.menu-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-group-label {
+  margin-top: 4px;
+  padding: 8px var(--space-3) 4px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-faint);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+/* A choice in a menu (Settings' value rows): a check on the chosen one, maybe a colour dot. */
+.menu-item[aria-checked] {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.menu-item[aria-checked] > .icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-inline-start: auto;
+  padding-inline-start: var(--space-3);
+  box-sizing: content-box;
+  color: var(--color-accent);
+  visibility: hidden;
+}
+
+.menu-item[aria-checked='true'] > .icon {
+  visibility: visible;
+}
+
+.menu-swatch {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+}
+
+/* ── Switch ───────────────────────────────────────────────────────────── */
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: 4px;
+  padding-inline: 6px 2px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: none;
+  /* Text-based (not fixed light) colours, so the switch reads on light themes too. */
+  color: color-mix(in srgb, var(--color-text) 85%, var(--color-bg));
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.switch.wide {
+  justify-content: space-between;
+  width: 100%;
+  padding-inline-start: 0;
+}
+
+.switch-track {
+  position: relative;
+  flex: none;
+  width: 38px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--base-text) 16%, transparent);
+  transition: background 200ms var(--ease);
+}
+
+.switch-knob {
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 200ms var(--ease);
+}
+
+.switch[aria-checked='true'] .switch-track {
+  background: var(--color-accent);
+}
+
+.switch[aria-checked='true'] .switch-knob {
+  inset-inline-start: 19px;
+}
+
+/* ── Loading skeletons & inline errors ────────────────────────────────── */
+
+.skeleton {
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--base-text) 6%, transparent);
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* Reduced motion and Reduce visual effects: placeholders hold still. */
+:root[data-motion='reduce'] :is(.skeleton, .row-skeleton),
+:root[data-effects='reduced'] :is(.skeleton, .row-skeleton) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) :is(.skeleton, .row-skeleton) {
+    animation: none;
+  }
+}
+
+/* Reduced motion, for the panels and cards whose entrances have durations of
+   their own (not the tokens, which it already zeroes): they appear in place.
+   A wrong PIN's shake and a waiting addon's pulse hold still too; spinners
+   keep turning, as the one sign something is still loading. !important
+   because their own rules are as specific or more (the cinema panel's). */
+:root[data-motion='reduce'] :is(.player-panel, .next-up, .still-watching, .skip-segment, .end-screen, .cinema-panel, .surf-card, .surf-panel, .why-panel, .pin-dots, .provider-dot) {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) :is(.player-panel, .next-up, .still-watching, .skip-segment, .end-screen, .cinema-panel, .surf-card, .surf-panel, .why-panel, .pin-dots, .provider-dot) {
+    animation: none !important;
+  }
+}
+
+.poster-skeleton {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: var(--poster-width);
+}
+
+.poster-skeleton .line {
+  width: 80%;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.poster-skeleton .line.short {
+  width: 50%;
+  height: 10px;
+  opacity: 0.7;
+}
+
+.ranked-skeleton {
+  flex: none;
+  width: 210px;
+  height: 186px;
+}
+
+/* A row still loading holds focus while it loads (cards.ts): the ring goes round its first placeholder, where the first card will be. */
+.rail-track[data-nav-stop]:focus {
+  box-shadow: none;
+}
+
+.rail-track[data-nav-stop]:focus > .ranked-skeleton:first-child,
+.rail-track[data-nav-stop]:focus > :first-child > .skeleton:first-child {
+  box-shadow: var(--focus-ring);
+}
+
+.rail-error {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 180px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--base-text) 3%, transparent);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.rail-error-title,
+.home-message-title {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* Poster grids (Movies, TV Shows, Search): cards fill the column. */
+.title-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
+  gap: 28px 20px;
+}
+
+.title-grid > .poster-card,
+.title-grid > .poster-skeleton,
+.title-grid > .landscape-card {
+  width: auto;
+}
+
+/* Landscape cards: wider columns, so fewer, still filling the width; closer, with no text under them. */
+.title-grid:has(> .landscape-card, > .landscape-skeleton) {
+  grid-template-columns: repeat(auto-fill, minmax(var(--landscape-grid-min), 1fr));
+  gap: var(--space-4) var(--space-3);
+}
+
+/* A full-width boxed message (empty or failed grid). */
+.grid-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: var(--space-6);
+  padding: 56px 24px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  text-align: center;
+}
+
+/* Nothing here (as opposed to a failure): Discover's accent-washed strip, an invitation rather than a box. */
+.grid-message.empty {
+  background: var(--strip-wash), var(--color-surface);
+  box-shadow: var(--strip-ring);
+}
+
+/* A search for one long unbroken word wraps inside the box rather than past the window. */
+.grid-message .home-message-title,
+.grid-message .muted {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.grid-message .home-message-title {
+  font-family: var(--font-display);
+  font-size: calc(20px + 6px * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.01em + 0.04em * var(--font-display-tracking));
+}
+
+.grid-message .muted {
+  max-width: 480px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.grid-message .button {
+  margin-top: 6px;
+}
+
+/* The shared empty / error state's icon (components/state-message.ts): quiet, never a glow. */
+.state-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-block-end: 2px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.state-icon .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.home-message,
+.page-error {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 560px;
+  margin: var(--space-10) var(--page-gutter);
+}
+
+/* Startup failed before the app could draw (see app/errors.ts). */
+.startup-error {
+  margin: 20vh auto 0;
+  padding: 0 var(--space-6);
+}
+
+/* "Copied" under an error view's Copy diagnostics; nothing until it's pressed. */
+.page-error-status:empty {
+  display: none;
+}
+
+/* Settings → Advanced, when the clipboard can't be used. */
+.diagnostics-text {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-3);
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+}
+
+/* ── Offline banner ───────────────────────────────────────────────────── */
+
+.offline-banner {
+  position: relative;
+  z-index: 5;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0 var(--page-gutter) var(--space-3);
+  padding-block: 10px;
+  padding-inline: 16px 12px;
+  border-radius: var(--radius-md);
+  /* Calm, not an alarm: being offline isn't something the person did wrong. */
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  font-size: var(--font-size-sm);
+}
+
+/* Where the title bar floats over the page (the cinematic menu, Home's
+   cinematic banner, the showcase title page), the banner floats just under
+   it instead of sliding beneath it. */
+:root[data-nav='cinematic'] #app > .offline-banner,
+:root[data-hero='cinematic'] #app:has(.home.view-shown) > .offline-banner,
+#app:has(> .outlet > .detail.showcase) > .offline-banner,
+:root[data-nav='cinematic'] #app > .update-banner,
+:root[data-hero='cinematic'] #app:has(.home.view-shown) > .update-banner,
+#app:has(> .outlet > .detail.showcase) > .update-banner {
+  position: absolute;
+  inset: var(--header-height) 0 auto;
+  z-index: 6;
+  /* Opaque over the art, so the line stays readable. */
+  background: linear-gradient(var(--color-surface), var(--color-surface)), var(--color-bg);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border),
+    0 8px 24px rgb(0 0 0 / 0.28);
+}
+
+.offline-banner[hidden] {
+  display: none;
+}
+
+.offline-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-text-muted);
+}
+
+.offline-detail {
+  flex: 1;
+  color: var(--color-text-muted);
+}
+
+/* "Orbit x.y.z is ready" and "What's new" share the offline banner's look.
+   Both can't float in the same spot: while offline, the update banner waits. */
+#app:has(> .offline-banner):not(:has(> .offline-banner[hidden])) > .update-banner {
+  display: none;
+}
+
+.update-dot {
+  background: var(--color-accent);
+}
+
+.update-banner strong.offline-detail {
+  color: var(--color-text);
+}
+
+.update-notes p {
+  margin: 2px 0 0;
+  max-height: 9.6em;
+  overflow-y: auto;
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
+/* "2 new" on a series with episodes that aired since it was last watched. */
+.poster-badge {
+  position: absolute;
+  top: 8px;
+  inset-inline-start: 8px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+/* The episode part-way through on a show's card ("S2 · E4", watched-marks.ts): quieter than "New", and a Home tag ("New episode") takes the corner when there is one. */
+.episode-badge {
+  background: rgba(11, 10, 9, 0.72);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.frame:has(.card-tag) .episode-badge {
+  display: none;
+}
+
+/* "New" (released in the last 30 days), in the same place as other poster badges. */
+.new-tag {
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+}
+
+/* The person's own rating under a poster: Letterboxd's stars, in its green. */
+.card-rating {
+  margin-inline-start: 6px;
+  color: #00c030;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+:root[data-theme='light'] .card-rating {
+  color: #00852a;
+}
+
+/* Your own stars in Orbit (My Library), in the rating colour rather than Letterboxd's. */
+.card-rating.mine {
+  color: var(--color-rating);
+}
+
+:root[data-theme='light'] .card-rating.mine {
+  color: color-mix(in srgb, var(--color-rating) 55%, var(--color-text));
+}
+
+/* ── Polish ── */
+
+/* Scrolling rows fade out at an edge with more beyond it (scroll-fade.ts). */
+.scroll-fade {
+  --fade-before: 0px;
+  --fade-after: 0px;
+  mask-image: linear-gradient(90deg, transparent 0, #000 var(--fade-before), #000 calc(100% - var(--fade-after)), transparent 100%);
+}
+
+.scroll-fade.more-before {
+  --fade-before: 72px;
+}
+
+.scroll-fade.more-after {
+  --fade-after: 72px;
+}
+
+/* Scrolled pages fade under the title bar instead of being cut along a hard line. */
+.outlet.scrolled {
+  mask-image: linear-gradient(180deg, transparent 0, #000 28px);
+}
+
+/* Reduce visual effects: masks make scrolling content render offscreen
+   first, so these decorative fades go (edges are cut instead). The
+   cinematic Home banner keeps its fade under the floating menu (home.css):
+   its more specific rule wins, since rows would otherwise run under it. */
+:root[data-effects='reduced'] :is(.scroll-fade, .outlet.scrolled) {
+  mask-image: none;
+}
+
+/* A rating with its site's mark (rating-badge.ts). */
+.rating-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* Over a banner's artwork the shade is dark in every theme, so the number
+   takes the banner's light text (on light themes it was dark on dark). */
+.hero-meta .rating-badge {
+  color: inherit;
+}
+
+.rating-mark {
+  flex: none;
+  display: block;
+}
+
+.meta-rest {
+  display: contents;
+}
+
+/* Details beside a poster the mouse rests on (hover-info.ts). */
+.hover-info {
+  position: fixed;
+  left: var(--x);
+  top: var(--y);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 320px;
+  padding: 16px 18px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-panel, var(--color-bg)) 92%, transparent);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border),
+    0 24px 60px -20px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  pointer-events: none;
+  animation: hover-info-in 160ms var(--ease);
+}
+
+@keyframes hover-info-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.hover-info-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.hover-info-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.hover-info-desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--color-text) 55%, var(--color-text-muted));
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+:root[data-motion='reduce'] .hover-info {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .hover-info {
+    animation: none;
+  }
+}
+
+/* ── Addons panel tabs (Settings → Addons & Sources) ── */
+
+.addons-tabs {
+  margin-bottom: var(--space-4);
+}
+
+/* Right to left (Arabic): arrows that mean back/forward point the other way,
+   and the drawer slides in from its own side. */
+[dir='rtl'] .back-button .icon,
+[dir='rtl'] .rail-scroll .icon,
+.see-all-tile-icon .icon:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+/* The same for Back to the sources (a torrent's files), Next and Open in the
+   Explore queue, and the player hub's "opens a view" chevrons. :dir() so a
+   part kept left to right stays as it is. */
+:is([data-focus-id='files-back'], [data-queue-action='next'], .explore-queue-open) .icon:dir(rtl),
+.hub-row > .icon:last-child:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+[dir='rtl'] .drawer {
+  transform: translateX(-28px);
+}
+
+[dir='rtl'] .drawer.open {
+  transform: none;
+}
+
+/* Arabic letters join up: any letter spacing (titles, badges, eyebrows) would
+   break every word apart, so right-to-left text has none. The one override
+   that has to beat each component's own tracking. */
+:root[dir='rtl'] body * {
+  letter-spacing: normal !important;
+}
+
+/* The shading behind banner and title text is darkest where the text sits:
+   on the right when reading right to left. (Empty overlays, so flipping the
+   element flips only its gradient.) */
+[dir='rtl'] .hero-shade,
+[dir='rtl'] .title-shade,
+[dir='rtl'] .featured-shade,
+[dir='rtl'] .detail-shade {
+  transform: scaleX(-1);
+}
+
+/* Right to left, text from addons is often English: each piece takes its own
+   direction from its first letters (so "49 min" and a sentence's full stop
+   stay put), and is still aligned to the right like the rest of the page. */
+[dir='rtl'] :is(.card-title, .card-sub, .hero-title, .hero-desc, .hero-meta > span, .detail-title, .detail-desc, .detail-meta > span, .featured-title, .episode-title, .episode-desc, .rail-heading, .search-top-desc, .hover-info-title, .hover-info-desc, .surprise-description, .search-name-text, .download-name, .download-group-title, .calendar-show, .explore-tile-name) {
+  unicode-bidi: plaintext;
+  text-align: right;
+}
+
+/* Regional streaming logos: flat artwork, no invented service brand assets. */
+.watch-badge-slot {
+  display: contents;
+}
+.watch-badge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  inline-size: 24px;
+  block-size: 24px;
+  overflow: hidden;
+  border-radius: 5px;
+  vertical-align: middle;
+}
+.watch-badge img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+
+/* ── Windows high contrast (forced colours) ──
+   The system swaps our colours for its own and drops box-shadows and
+   gradients, so a state drawn only as a fill or an inset ring disappears.
+   System colours set here are kept, so selection is drawn in the system's
+   own Highlight/HighlightText. Important because pages restyle these states
+   with more specific rules, whose colours the system would replace. */
+@media (forced-colors: active) {
+  :is(.chip, .segment, .button, .icon-button)[aria-pressed='true'],
+  .segment[aria-selected='true'],
+  .nav-item.active,
+  .settings-nav-item.active {
+    background: Highlight !important;
+    color: HighlightText !important;
+  }
+
+  :is(.chip, .segment, .button, .icon-button)[aria-pressed='true'] .icon,
+  .segment[aria-selected='true'] .icon,
+  :is(.nav-item, .settings-nav-item).active .icon {
+    color: HighlightText !important;
+  }
+
+  /* Any other selected, checked or current item: a Highlight ring inside its
+     edge (not while focused: focus draws its own outline there). */
+  :is([aria-pressed='true'], [aria-checked='true'], [aria-current='true'], [aria-current='page'], [aria-selected='true'], .panel-row.selected):not(.chip, .segment, .button, .icon-button, .nav-item, .settings-nav-item, .switch, :focus-visible) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+
+  /* The switch: an outlined track, filled with Highlight when on; the knob
+     in the text colour so it shows either way. */
+  .switch-track {
+    outline: 1px solid CanvasText;
+  }
+
+  .switch-knob {
+    background: CanvasText;
+  }
+
+  .switch[aria-checked='true'] .switch-track {
+    background: Highlight;
+    outline-color: Highlight;
+  }
+
+  .switch[aria-checked='true'] .switch-knob {
+    background: HighlightText;
+  }
+}
+
+/* "Increase contrast": token edges get stronger (tokens.css), and controls
+   drawn as a fill alone get an edge. Not on keyboard focus or while a field
+   is being edited, whose rings are the same shadow. */
+@media (prefers-contrast: more) {
+  :is(.text-field:not(.editing), .chip, .segments, .switch-track):not(:focus-visible) {
+    box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  }
+}
+
+/* Gentler overlay entrances; the tokens already become zero with Reduce motion. */
+.menu { animation: overlay-polish-in var(--duration-popover) cubic-bezier(0.16, 1, 0.3, 1); }
+.drawer { transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+.drawer:dir(rtl):not(.open) { transform: translateX(-16px); }
+/* :where() adds no weight, so a dialog with an entrance of its own (the resume choice…) keeps it. */
+:where([role='dialog']:not(.drawer, .player-panel, .image-viewer)) { animation: overlay-polish-in var(--duration-drawer) cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes overlay-polish-in { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+:root[data-motion='reduce'] :is(.menu, .drawer, [role='dialog']) { animation: none; transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) :is(.menu, .drawer, [role='dialog']) { animation: none; transition: none; }
+}

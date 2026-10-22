@@ -1,0 +1,458 @@
+/* Collections: tiles, the overview, a collection's page and editor, importing, and "Part of …" on title pages. */
+
+.collections-page,
+.collection-page,
+.collection-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-4) var(--page-gutter) 72px;
+  animation: page-in var(--duration-enter) var(--ease);
+}
+
+.collection-editor {
+  max-width: 980px;
+}
+
+.collection-editor .page-title,
+.collection-editor .eyebrow {
+  margin: 0;
+}
+
+/* The overview's name sits close to its one-line intro. */
+.collections-page .list-page-header .page-title {
+  margin-bottom: var(--space-2);
+}
+
+/* A collection's tile: its cover in its shape, then its name. */
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-6);
+}
+
+.collection-tile {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  text-align: start;
+}
+
+.rail-track .collection-tile {
+  width: 180px;
+}
+
+.rail-track .collection-tile.landscape {
+  width: 300px;
+}
+
+.rail-track .collection-tile.square {
+  width: 200px;
+}
+
+.collection-tile-art,
+.collection-import-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+}
+
+.collection-tile.landscape .collection-tile-art,
+.collection-import-art.landscape,
+.collection-cover-preview.landscape {
+  aspect-ratio: 16 / 9;
+}
+
+.collection-tile.square .collection-tile-art,
+.collection-import-art.square,
+.collection-cover-preview.square {
+  aspect-ratio: 1;
+}
+
+.collection-tile-art .art,
+.collection-import-art .art,
+.collection-cover-preview .art,
+.collection-cover-pick .art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.collection-tile-fallback {
+  padding: var(--space-3);
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.collection-tile-name {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Lifts and leans in like a poster card (styles.css .frame); focus keeps its ring. */
+.collection-tile-art {
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  transition:
+    transform var(--duration-hover) var(--ease),
+    box-shadow var(--duration-hover) var(--ease);
+}
+
+.collection-tile:is(:hover, :focus-visible) .collection-tile-art {
+  transform: translateY(-4px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-text) 38%, transparent),
+    0 20px 32px -14px color-mix(in srgb, var(--color-accent) 45%, rgba(0, 0, 0, 0.85));
+}
+
+:root[data-effects='reduced'] .collection-tile:hover:not(:focus-visible) .collection-tile-art {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-text) 38%, transparent);
+}
+
+.collection-tile:is(:hover, :focus-visible) .collection-tile-art .art {
+  transform: scale(1.05);
+}
+
+:root[data-motion='reduce'] .collection-tile .collection-tile-art .art {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .collection-tile .collection-tile-art .art {
+    transform: none;
+  }
+}
+
+.collection-tile:focus-visible .collection-tile-art {
+  box-shadow: var(--focus-ring);
+}
+
+/* A collection's (or franchise's) page header: backdrop behind its name. */
+.collection-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 240px;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+}
+
+.collection-hero-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.collection-hero-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--color-bg, #000) 0%, color-mix(in srgb, var(--color-bg, #000) 60%, transparent) 55%, transparent 100%);
+}
+
+.collection-hero-text {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  max-width: 820px;
+  padding: var(--space-8) var(--space-6) var(--space-6);
+}
+
+.collection-hero-text .page-title,
+.collection-hero-text .muted {
+  margin: 0;
+}
+
+.collection-overview {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.collection-notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.collection-notes:empty,
+.collection-tabs[hidden] {
+  display: none;
+}
+
+.collection-note {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+/* "Add a TMDB key to see franchise collections". */
+.collections-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-card);
+  background: var(--strip-wash), var(--color-surface);
+  box-shadow: var(--strip-ring);
+}
+
+.collections-hint[hidden] {
+  display: none;
+}
+
+.collections-hint p {
+  margin: 0;
+}
+
+.collections-hint-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.collections-export {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* The editor. */
+.collection-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.collection-cover-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+.collection-cover-preview {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 140px;
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+}
+
+.collection-cover-controls {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 260px;
+}
+
+.collection-cover-picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.collection-cover-picks[hidden] {
+  display: none;
+}
+
+.collection-cover-pick {
+  position: relative;
+  width: 72px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm, 6px);
+  background: var(--color-surface-raised);
+}
+
+.collection-cover-pick:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.collection-sources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-block-start: var(--space-3);
+}
+
+.collection-source-list,
+.collection-import-list,
+.collection-import-sources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.collection-source-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+}
+
+.collection-source-name {
+  flex: 1;
+  font-weight: 600;
+}
+
+.collection-source-adder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-block-start: var(--space-3);
+}
+
+/* Importing. */
+.collection-import-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.collection-import-row {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: var(--space-4);
+  align-items: start;
+  padding: var(--space-3);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-raised);
+}
+
+.collection-import-row.off {
+  opacity: 0.6;
+}
+
+.collection-import-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 4px);
+  min-width: 0;
+}
+
+.collection-import-info p {
+  margin: 0;
+}
+
+.collection-import-source {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.collection-import-mark {
+  width: 1em;
+  font-weight: 700;
+  text-align: center;
+}
+
+.collection-import-source.ok .collection-import-mark {
+  color: var(--color-success);
+}
+
+.collection-import-source.unsupported .collection-import-mark {
+  color: var(--color-danger);
+}
+
+.collection-import-missing {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.collection-import-missing .section-title,
+.collection-import-missing > p {
+  margin: 0;
+}
+
+/* "Part of …" on a movie's page. */
+.detail-franchise {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* The rail pads itself to the page's edges; its header here does the same. */
+.detail-franchise .franchise-header {
+  padding-inline: var(--page-gutter);
+}
+
+.detail-franchise[hidden] {
+  display: none;
+}
+
+.franchise-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.franchise-header .section-title,
+.franchise-header .eyebrow {
+  margin: 0;
+}
+
+/* The franchise's films sit under the header, which names it: the rail's own heading stays empty. */
+.detail-franchise .rail-heading:empty {
+  display: none;
+}
+
+.franchise-current .frame {
+  outline: 2px solid var(--color-accent, currentColor);
+  outline-offset: 2px;
+}
+
+/* A Home row of collection tiles with nothing in it yet. */
+.collections-row-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.collections-row-empty p {
+  margin: 0;
+}
+
+/* Search on the Collections page, and in a long collection (overview.ts, page.ts). */
+.collections-search {
+  /* Not .text-field's flex: 1 — in this column that's a zero height basis, which squashed the field. */
+  flex: none;
+  inline-size: min(100%, 360px);
+}
+
+.collections-search[hidden] {
+  display: none;
+}

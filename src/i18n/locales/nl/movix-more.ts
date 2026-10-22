@@ -1,0 +1,68 @@
+import type { movixMore as source } from '../en/movix-more';
+import type { Catalog } from '../types';
+
+/** Dutch strings for the Movix-inspired additions. */
+export const movixMore: Catalog<typeof source> = {
+  // Settings → Playback → Next episode: when Next Up appears and its style (rooms/settings/next-up-rows.ts)
+  'movix.next-up.when': 'Wanneer Hierna verschijnt',
+  'movix.next-up.when-hint': 'Voor afleveringen waarvan de aftiteling niet bekend is. Is die wel bekend, dan komt Hierna met de aftiteling.',
+  'movix.next-up.when-percent': 'Op een punt in de aflevering',
+  'movix.next-up.when-before-end': 'Voor het einde',
+  'movix.next-up.amount': 'Verschijnt op',
+  'movix.next-up.amount-hint': 'Hoe ver in de aflevering, of hoeveel minuten voor het einde. Minuten voor het einde vallen nooit voor de helft.',
+  'movix.next-up.style': 'Stijl van Hierna',
+  'movix.next-up.style-hint': 'Een kleine kaart in de hoek, of een paneel langs de zijkant van het beeld.',
+  'movix.next-up.style-card': 'Kaart',
+  'movix.next-up.style-panel': 'Paneel',
+  // Exact air times from TVmaze: the setting and "Out today at 21:00" (catalog/air-times.ts, rooms/settings/general.ts)
+  'movix.air.setting': 'Exacte uitzendtijden opzoeken',
+  'movix.air.setting-hint': 'Vraagt TVmaze, een gratis tv-gids, wanneer nieuwe afleveringen uitkomen: Releaseradar toont dan ‘Vandaag om 21:00’, meldingen komen op het moment van uitzenden en automatisch afspelen wacht tot hij uit is. Stuurt alleen de IMDb- of TheTVDB-id van de serie.',
+  'movix.air.today': 'Vandaag om {time}',
+  'movix.air.tomorrow': 'Morgen om {time}',
+  'movix.air.date': '{date} om {time}',
+  // Episode reminders: "Remind me" on an upcoming episode, and the notification (rooms/detail/reminder-button.ts, library/reminders.ts)
+  'movix.remind.set': 'Herinner me',
+  'movix.remind.current': 'Herinnering: {when}',
+  'movix.remind.on-day': 'Op de dag dat hij uitkomt',
+  'movix.remind.days-before.one': '{count} dag van tevoren',
+  'movix.remind.days-before.other': '{count} dagen van tevoren',
+  'movix.remind.none': 'Geen herinnering',
+  'movix.remind.saved': 'Je krijgt een herinnering voor nieuwe afleveringen van {name}: {when}.',
+  'movix.remind.removed': 'Geen herinneringen meer voor {name}.',
+  'movix.remind.full': 'Herinneringen worden voor maximaal {count} series bijgehouden. Verwijder er een om {name} toe te voegen.',
+  'movix.remind.today': '{code} komt vandaag uit.',
+  'movix.remind.today-at': '{code} komt vandaag om {time} uit.',
+  'movix.remind.tomorrow': '{code} komt morgen uit.',
+  'movix.remind.tomorrow-at': '{code} komt morgen om {time} uit.',
+  'movix.remind.in-days.one': '{code} komt over {count} dag uit.',
+  'movix.remind.in-days.other': '{code} komt over {count} dagen uit.',
+  // A film’s end screen: the next film in its franchise, offered first (rooms/player/end-screen.ts)
+  'movix.end.next-in': 'Volgende in {name}',
+  // Lists: description, sort, export and import of one list (rooms/lists/lists.ts)
+  'movix.lists.sort': 'Sorteren op',
+  'movix.lists.sort-added': 'Datum toegevoegd',
+  'movix.lists.sort-title': 'Titel',
+  'movix.lists.sort-year': 'Jaar',
+  'movix.lists.sort-rating': 'Beoordeling',
+  'movix.lists.description': 'Beschrijving',
+  'movix.lists.add-description': 'Beschrijving toevoegen',
+  'movix.lists.edit-description': 'Beschrijving bewerken',
+  'movix.lists.export': 'Lijst exporteren',
+  'movix.lists.import': 'Lijst importeren',
+  'movix.lists.imported.one': '‘{name}’ geïmporteerd met {count} titel.',
+  'movix.lists.imported.other': '‘{name}’ geïmporteerd met {count} titels.',
+  'movix.lists.skipped.one': '{count} titel in het bestand was onleesbaar en is weggelaten.',
+  'movix.lists.skipped.other': '{count} titels in het bestand waren onleesbaar en zijn weggelaten.',
+  'movix.lists.file-too-large': 'Dat bestand is te groot voor een lijst.',
+  'movix.lists.file-not-list': 'Dat bestand is geen lijst die uit Orbit is geëxporteerd.',
+  'movix.lists.file-empty': 'Dat lijstbestand bevat geen titels die Orbit kan lezen.',
+  'errors.lists.description': 'De beschrijving van een lijst is maximaal {max} tekens, op één regel.',
+  // Settings → General → Comfort → Reduce visual effects → Auto: what it decided and why (rooms/settings/appearance.ts)
+  'movix.effects.auto-off': 'Automatisch uit: dit apparaat kan de effecten goed aan.',
+  'movix.effects.auto-tv': 'Automatisch aan: dit is een tv.',
+  'movix.effects.auto-cores.one': 'Automatisch aan: dit apparaat heeft {count} processorkern.',
+  'movix.effects.auto-cores.other': 'Automatisch aan: dit apparaat heeft {count} processorkernen.',
+  'movix.effects.auto-memory': 'Automatisch aan: dit apparaat heeft {memory} geheugen.',
+  'movix.effects.auto-frames.one': 'Automatisch aan: de interface liep hier op {count} beeld per seconde.',
+  'movix.effects.auto-frames.other': 'Automatisch aan: de interface liep hier op {count} beelden per seconde.',
+};

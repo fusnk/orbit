@@ -1,0 +1,550 @@
+/* ── Showcase title page (Settings → Appearance → Title page) ───────────
+   The art runs the full width of the page, under the title bar, like Home's
+   cinematic banner; the text sits over its shaded side and the art fades
+   into the page at the bottom. Below, the sections follow on the page's own
+   colours. Every rule is scoped to .detail.showcase, so Classic is untouched. */
+
+/* The title bar floats over the art. */
+#app:has(> .outlet > .detail.showcase) > .titlebar {
+  position: absolute;
+  inset: 0 0 auto;
+}
+
+:root[data-nav='cinematic'] .outlet:has(> .detail.showcase) {
+  padding-block-start: 0;
+}
+
+/* Full width to the window's edge: no scrollbar lane beside the art (wheel, keys and touchpad still scroll). */
+.outlet:has(> .detail.showcase) {
+  scrollbar-width: none;
+}
+
+/* Sections scrolled up fade out before they reach the floating bar. */
+:root:not([data-nav='cinematic']) .outlet.scrolled:has(> .detail.showcase) {
+  mask-image: linear-gradient(180deg, transparent 0, transparent calc(var(--header-height) - 8px), #000 calc(var(--header-height) + 32px));
+}
+
+/* On light themes the bar's own items are dark, lost on the art behind them:
+   light, with a soft shadow, until the page scrolls (as Home's banner does). */
+:root[data-theme='light']:not([data-nav='cinematic']) #app:has(> .outlet > .detail.showcase):not(:has(> .outlet.scrolled)) > .titlebar :is(.wordmark, .back-button, .settings-button, .caption-button) {
+  --color-text: #f4f2ef;
+  --color-text-muted: color-mix(in srgb, #f4f2ef 85%, transparent);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+}
+
+:root[data-theme='light'][data-effects='reduced'] #app:has(> .outlet > .detail.showcase):not(:has(> .outlet.scrolled)) > .titlebar :is(.wordmark, .back-button, .settings-button, .caption-button) {
+  filter: none;
+}
+
+.detail.showcase {
+  --sc-inset: var(--page-gutter);
+  /* The bottom of the hero, where the art has faded: the text stays above it. */
+  --sc-fade: 160px;
+  padding-top: 0;
+}
+
+/* ── Hero ── */
+
+:root .detail.showcase .detail-hero {
+  /* Toward the page's colour; on light themes toward near-black, as the hero's text is white. */
+  --hero-fade: var(--color-bg);
+  align-items: flex-end;
+  min-height: clamp(560px, 85vh, 1080px);
+  margin: 0;
+  padding-top: calc(var(--header-height) + var(--space-6));
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+:root[data-theme='light'] .detail.showcase .detail-hero {
+  --hero-fade: #0b0a09;
+}
+
+/* Mask a stationary layer: scaling/blurred artwork must not move the fade past the hero edge. */
+.detail.showcase .sc-hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  isolation: isolate;
+  pointer-events: none;
+  mask-image: linear-gradient(0deg, transparent 0, rgba(0, 0, 0, 0.35) calc(var(--sc-fade) * 0.35), rgba(0, 0, 0, 0.8) calc(var(--sc-fade) * 0.7), #000 var(--sc-fade));
+}
+
+.detail.showcase .detail-shade {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.65) 0, rgba(0, 0, 0, 0.2) var(--header-height), transparent calc(var(--header-height) + 72px)),
+    linear-gradient(90deg, color-mix(in srgb, var(--hero-fade) 94%, transparent) 0%, color-mix(in srgb, var(--hero-fade) 74%, transparent) 30%, color-mix(in srgb, var(--hero-fade) 20%, transparent) 60%, transparent 78%),
+    linear-gradient(0deg, color-mix(in srgb, var(--hero-fade) 90%, transparent) 0%, color-mix(in srgb, var(--hero-fade) 45%, transparent) 30%, transparent 55%);
+}
+
+/* Right to left, the text and its shade sit on the right. */
+:root[dir='rtl'] .detail.showcase .detail-shade {
+  transform: scaleX(-1);
+}
+
+.detail.showcase .detail-content {
+  grid-template-columns: minmax(0, 660px) minmax(0, 1fr);
+  padding: 0 var(--sc-inset) var(--space-6);
+}
+
+.detail.showcase .detail-main {
+  gap: 18px;
+}
+
+.detail.showcase .detail-title {
+  font-size: calc(var(--font-size-title) + (clamp(48px, 5.4vw, 92px) - var(--font-size-title)) * var(--font-display-tracking));
+}
+
+.detail.showcase .detail-logo {
+  max-width: min(540px, 100%);
+  max-height: 168px;
+}
+
+:root[dir='rtl'] .detail.showcase .detail-logo {
+  object-position: right bottom;
+}
+
+/* Ratings, year, runtime, when it would end, age rating: one quiet line. */
+.sc-meta {
+  gap: 8px 10px;
+  color: #ece8e3;
+}
+
+.sc-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.sc-meta-item .icon {
+  width: 15px;
+  height: 15px;
+  opacity: 0.75;
+}
+
+.sc-ends {
+  color: rgba(236, 232, 227, 0.78);
+}
+
+.detail.showcase .sc-desc {
+  display: -webkit-box;
+  max-width: 62ch;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  color: #d9d3cc;
+}
+
+.sc-actions {
+  align-items: center;
+  gap: 12px;
+  margin-top: var(--space-2);
+}
+
+/* The one big button: what Play does now, and a quieter line under it. */
+.button.sc-play {
+  gap: 12px;
+  height: 60px;
+  padding-inline: 22px 30px;
+  font-size: 16px;
+}
+
+/* Only "Play" (no second line, e.g. a film already watched): the same height
+   as the buttons beside it, standing out by its colour alone. */
+.button.sc-play:not(:has(.sc-play-sub)) {
+  height: var(--control-primary);
+  font-size: 15px;
+}
+
+.button.sc-play > .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.sc-play-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.15;
+}
+
+.sc-play-label {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.sc-play-sub {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  opacity: 0.68;
+  white-space: nowrap;
+}
+
+.sc-round-group {
+  display: inline-flex;
+  gap: 10px;
+}
+
+/* Your rating, compact, after the buttons. */
+.detail.showcase .my-rating-star .icon {
+  width: 19px;
+  height: 19px;
+}
+
+.detail.showcase .my-rating-label {
+  font-size: 11px;
+}
+
+.detail.showcase .detail-credits {
+  width: min(100%, 320px);
+}
+
+/* The trailer's speaker button: the top end corner, under the title bar. */
+.detail.showcase .detail-hero .trailer-sound {
+  top: calc(var(--header-height) + var(--space-4));
+  bottom: auto;
+  inset-inline-end: var(--sc-inset);
+}
+
+/* A narrow window: one column, the credits under the buttons. */
+@media (max-width: 980px) {
+  .detail.showcase .detail-content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .detail.showcase .detail-credits {
+    justify-self: start;
+  }
+}
+
+/* ── Sections ── */
+
+.sc-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0 var(--page-gutter);
+}
+
+.sc-section[hidden] {
+  display: none;
+}
+
+.sc-section .cast-header {
+  margin-bottom: 0;
+}
+
+.sc-header-end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.sc-header-end .segments {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+/* Cast & Crew fill the width; Details come last. */
+.detail.showcase .detail-lower {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.detail.showcase .sc-facts dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  column-gap: var(--space-12);
+}
+
+.detail.showcase .sc-facts .section-title {
+  margin-bottom: var(--space-2);
+}
+
+/* ── Episodes: a season dropdown over a grid of cards ── */
+
+.detail.showcase :is(.episode-list, .episodes-header) {
+  max-width: none;
+}
+
+.sc-episodes-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.detail.showcase .episodes .episode-view {
+  margin-bottom: 0;
+}
+
+.button.sc-season {
+  gap: 10px;
+  height: var(--control-primary);
+  padding-inline: 20px 16px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.button.sc-season .icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+.button.sc-season-actions {
+  width: var(--control-primary);
+  height: var(--control-primary);
+  background: var(--color-surface-raised);
+  box-shadow: none;
+  color: var(--color-text);
+}
+
+.button.sc-season-actions:hover:not(:disabled) {
+  background: var(--color-surface-overlay);
+}
+
+.sc-episode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
+  gap: var(--space-8) var(--space-5);
+}
+
+.detail.showcase .episode-item {
+  position: relative;
+  display: block;
+}
+
+.detail.showcase .episode-row {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  border-radius: 12px;
+  background: none;
+}
+
+.detail.showcase button.episode-row:hover,
+.detail.showcase .episode-row.current,
+.detail.showcase button.episode-row.current:hover {
+  background: none;
+  box-shadow: none;
+}
+
+.detail.showcase .episode-still {
+  width: 100%;
+  border-radius: 12px;
+}
+
+/* The episode to continue with: an accent rim around its still. */
+.detail.showcase .episode-row.current .episode-still {
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 4px var(--color-accent);
+}
+
+.detail.showcase button.episode-row:focus-visible {
+  box-shadow: none;
+}
+
+.detail.showcase button.episode-row:focus-visible .episode-still {
+  box-shadow: var(--focus-ring);
+}
+
+.detail.showcase .episode-heading {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.detail.showcase .episode-number {
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.detail.showcase .episode-title {
+  max-width: 100%;
+}
+
+/* Watched, in progress, up next: a small label on the still. */
+.detail.showcase .episode-status:not(:empty) {
+  position: absolute;
+  top: 10px;
+  inset-inline-start: 10px;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  background: rgba(11, 10, 9, 0.74);
+  color: #f4f2ef;
+  font-size: 11px;
+}
+
+/* The watched check and download sit on the still's end corner: their own focus stops, never playing it. */
+.detail.showcase :is(.episode-check, .episode-download) {
+  position: absolute;
+  top: 8px;
+  margin: 0;
+  background: rgba(11, 10, 9, 0.66);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.35);
+  color: #f4f2ef;
+}
+
+.detail.showcase .episode-check {
+  inset-inline-end: 8px;
+}
+
+.detail.showcase .episode-download {
+  inset-inline-end: calc(8px + var(--control-chip) + 6px);
+}
+
+.detail.showcase .episode-check.on {
+  background: var(--color-accent-strong);
+  box-shadow: none;
+  color: var(--color-accent-contrast);
+}
+
+.detail.showcase .episode-download.on {
+  box-shadow: inset 0 0 0 1.5px var(--color-success);
+  color: var(--color-success);
+}
+
+.detail.showcase :is(.episode-check, .episode-download):focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* The favourite heart sits on the same corner, after the download. */
+.detail.showcase .episode-fav {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: calc(8px + 2 * (var(--control-chip) + 6px));
+  background: rgba(11, 10, 9, 0.66);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.35);
+  color: #f4f2ef;
+}
+
+.detail.showcase .episode-fav[aria-pressed='true'] {
+  color: #ff6b5e;
+}
+
+.detail.showcase .episode-fav:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* The play mark moves to the still's bottom start, clear of the label. */
+.detail.showcase .episode-play {
+  bottom: 10px;
+}
+
+.detail.showcase .episode-skeleton {
+  height: 220px;
+}
+
+/* ── Where to watch ── */
+
+.sc-watch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5) var(--space-12);
+}
+
+.sc-watch-label {
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.sc-providers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sc-provider-logo {
+  display: block;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  outline: 1px solid var(--color-border);
+  outline-offset: -1px;
+  background: var(--color-surface-raised);
+}
+
+.sc-provider-logo.service-initial {
+  display: grid;
+  place-items: center;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.sc-watch-section .facts-source {
+  padding-top: 0;
+}
+
+/* ── Release dates: a short timeline ── */
+
+.sc-releases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-10);
+  margin: 0;
+}
+
+.sc-release {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+  padding-top: var(--space-3);
+  border-top: 2px solid var(--color-accent);
+}
+
+.sc-release.upcoming {
+  border-top-color: var(--color-border-strong);
+}
+
+.sc-release dt {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-faint);
+}
+
+.sc-release dd {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.sc-release.upcoming dd {
+  color: var(--color-text-muted);
+}
+
+.sc-cinema-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 72ch;
+  padding: var(--space-3) var(--space-4);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-rating) 13%, transparent);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.sc-cinema-note .icon {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  margin-top: 1px;
+  color: color-mix(in srgb, var(--color-rating) 80%, var(--color-text));
+}

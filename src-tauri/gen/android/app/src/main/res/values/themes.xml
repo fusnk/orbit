@@ -1,0 +1,7 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. Orbit is dark whatever the system's setting, and the window is
+         Orbit's near-black from the first frame, so a TV never flashes white while it starts. -->
+    <style name="Theme.orbit" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@color/orbit_background</item>
+    </style>
+</resources>

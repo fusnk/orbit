@@ -1,0 +1,53 @@
+/* Player → Subtitles → Paste subtitles… (a drawer over the player). */
+.paste-subtitles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-6);
+}
+
+.paste-subtitles-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+.paste-subtitles .muted,
+.paste-subtitles-status {
+  margin: 0;
+}
+
+.paste-subtitles-field {
+  inline-size: 100%;
+  min-block-size: 240px;
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-family: ui-monospace, monospace;
+  font-size: var(--font-size-sm);
+  resize: vertical;
+  /* Subtitle text runs in its own direction, whatever the app's language. */
+  unicode-bidi: plaintext;
+}
+
+.paste-subtitles-field:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.paste-subtitles-field.editing {
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+.paste-subtitles-status {
+  min-block-size: 1.4em;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted, inherit);
+}
+
+.paste-subtitles-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}

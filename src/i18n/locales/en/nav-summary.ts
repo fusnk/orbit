@@ -1,0 +1,21 @@
+/** English strings for the line under each Settings category saying what it's set to (rooms/settings/nav-summary.ts): the source every translation follows. */
+export const navSummary = {
+  'navsummary.more': '{name} + {count} more',
+  'navsummary.scale': '{percent} scale',
+  'navsummary.size': '{percent} size',
+  'navsummary.banner': '{style} banner',
+  'navsummary.watched-at': 'Watched at {percent}',
+  'navsummary.spoilers-hidden': 'Spoilers hidden',
+  'navsummary.spoilers-shown': 'Spoilers shown',
+  'navsummary.autoplay': 'Autoplay: {mode}',
+  'navsummary.player-layout': '{name} layout',
+  'navsummary.no-addons': 'No addons',
+  'navsummary.not-connected': 'Nothing connected yet',
+  'navsummary.downloads.none': 'No downloads yet',
+  'navsummary.downloads.done.one': '{count} downloaded',
+  'navsummary.downloads.done.other': '{count} downloaded',
+  'navsummary.downloads.active.one': '{count} in progress',
+  'navsummary.downloads.active.other': '{count} in progress',
+  'navsummary.shortcuts.one': '{count} shortcut',
+  'navsummary.shortcuts.other': '{count} shortcuts',
+};

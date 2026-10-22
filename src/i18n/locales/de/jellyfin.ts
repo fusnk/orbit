@@ -1,0 +1,27 @@
+import type { jellyfin as source } from '../en/jellyfin';
+
+export const jellyfin: Record<keyof typeof source, string> = {
+  'jellyfin.settings.intro': 'Spiele von deinem eigenen Jellyfin-Server ab. Filme und Folgen, die er hat, bekommen eine Jellyfin-Quelle, und seine Reihen können auf die Startseite. Orbit speichert ein Anmeldetoken des Servers, nie dein Passwort.',
+  'jellyfin.settings.server': 'Serveradresse',
+  'jellyfin.settings.server-placeholder': 'http://192.168.1.10:8096',
+  'jellyfin.settings.username': 'Benutzername',
+  'jellyfin.settings.password': 'Passwort',
+  'jellyfin.settings.fields-hint': 'Die Adresse, unter der du Jellyfin im Browser öffnest. Benötigt Jellyfin 10.9 oder neuer.',
+  'jellyfin.settings.connect': 'Verbinden',
+  'jellyfin.settings.connecting': 'Verbinde…',
+  'jellyfin.settings.server-label': 'Server',
+  'jellyfin.settings.connected-as': 'Verbunden als {user} auf {server}',
+  'jellyfin.settings.connected': 'Mit {server} verbunden.',
+  'jellyfin.settings.connected-first': 'Mit {server} verbunden. „Kürzlich hinzugefügt“ ist jetzt auf der Startseite; weitere Jellyfin-Reihen fügst du unter Einstellungen → Startseite & Bibliothek → Reihen der Startseite hinzu.',
+  'jellyfin.settings.disconnect': 'Trennen',
+  'jellyfin.settings.disconnected': 'Getrennt und vom Server abgemeldet.',
+  'jellyfin.settings.insecure': 'Nicht sicher',
+  'jellyfin.settings.insecure-title': 'Dieser Server nutzt unverschlüsseltes http, deine Anmeldung und Videos werden also unverschlüsselt übertragen. Zu Hause in Ordnung; übers Internet besser https.',
+  'jellyfin.rows.kind': 'Jellyfin',
+  'jellyfin.rows.resume': 'Weiterschauen',
+  'jellyfin.rows.latest': 'Kürzlich hinzugefügt',
+  'jellyfin.rows.label': 'Jellyfin: {row}',
+  'jellyfin.rows.not-connected': 'Verbinde zuerst einen Jellyfin-Server unter Einstellungen → Konten & Dienste.',
+  'jellyfin.rows.libraries-failed': 'Die Bibliotheken des Servers konnten nicht geladen werden.',
+  'jellyfin.source.origin': 'Jellyfin · {server}',
+};

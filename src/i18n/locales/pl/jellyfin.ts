@@ -1,0 +1,27 @@
+import type { jellyfin as source } from '../en/jellyfin';
+
+export const jellyfin: Record<keyof typeof source, string> = {
+  'jellyfin.settings.intro': 'Odtwarzaj z własnego serwera Jellyfin. Filmy i odcinki, które na nim są, dostają źródło Jellyfin, a jego rzędy mogą trafić na stronę główną. Orbit przechowuje token logowania z serwera, nigdy Twoje hasło.',
+  'jellyfin.settings.server': 'Adres serwera',
+  'jellyfin.settings.server-placeholder': 'http://192.168.1.10:8096',
+  'jellyfin.settings.username': 'Nazwa użytkownika',
+  'jellyfin.settings.password': 'Hasło',
+  'jellyfin.settings.fields-hint': 'Adres, pod którym otwierasz Jellyfin w przeglądarce. Wymaga Jellyfin 10.9 lub nowszego.',
+  'jellyfin.settings.connect': 'Połącz',
+  'jellyfin.settings.connecting': 'Łączenie…',
+  'jellyfin.settings.server-label': 'Serwer',
+  'jellyfin.settings.connected-as': 'Połączono jako {user} z {server}',
+  'jellyfin.settings.connected': 'Połączono z {server}.',
+  'jellyfin.settings.connected-first': 'Połączono z {server}. „Ostatnio dodane” jest teraz na stronie głównej; więcej rzędów Jellyfin dodasz w Ustawienia → Strona główna i biblioteka → Rzędy strony głównej.',
+  'jellyfin.settings.disconnect': 'Rozłącz',
+  'jellyfin.settings.disconnected': 'Rozłączono i wylogowano z serwera.',
+  'jellyfin.settings.insecure': 'Niezabezpieczone',
+  'jellyfin.settings.insecure-title': 'Ten serwer używa nieszyfrowanego http, więc logowanie i filmy są przesyłane bez szyfrowania. W domu to w porządku; przez internet używaj https.',
+  'jellyfin.rows.kind': 'Jellyfin',
+  'jellyfin.rows.resume': 'Oglądaj dalej',
+  'jellyfin.rows.latest': 'Ostatnio dodane',
+  'jellyfin.rows.label': 'Jellyfin: {row}',
+  'jellyfin.rows.not-connected': 'Najpierw połącz serwer Jellyfin w Ustawienia → Konta i usługi.',
+  'jellyfin.rows.libraries-failed': 'Nie udało się wczytać bibliotek serwera.',
+  'jellyfin.source.origin': 'Jellyfin · {server}',
+};

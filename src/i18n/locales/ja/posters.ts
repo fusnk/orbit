@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'ポスターに評価を表示',
+  'posters.ratings-hint': 'IMDb、TMDB、Letterboxdのスコアを、Orbitが各作品について把握している情報からアートワーク上に表示します。ミニマルは1つのスコア、フルはすべてのスコアを表示します。',
+  'posters.ratings-minimal': 'ミニマル',
+  'posters.ratings-full': 'フル',
+  'posters.provider': 'ポスターの提供元',
+  'posters.provider-hint': 'ポスターの取得元です。RPDBはポスターに評価を描画し、自分のRPDBキー（ratingposterdb.com）が必要です。RPDBに作品のポスターがない場合、Orbitは通常のポスターに独自の評価を付けて表示します。次に表示されるポスターから適用されます。',
+  'posters.provider-orbit': 'Orbit（内蔵）',
+  'posters.rpdb.key': 'RPDBキー',
+  'posters.rpdb.key-hint': 'ratingposterdb.comで取得したキーです。システムのキーチェーンに保存され、RPDBにのみ送信されます。',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'RPDBで確認中…',
+  'posters.rpdb.connected': 'RPDBキーを保存しました。ポスターはRPDBから取得されます。',
+  'posters.rpdb.saved': '保存済み',
+  'posters.rpdb.removed': 'RPDBキーを削除しました。',
+  'posters.rpdb.key-format': 'RPDBキーの形式ではないようです。キーはt0-、t1-、t2-などで始まります。',
+  'posters.rpdb.refused': 'RPDBがこのキーを受け付けませんでした。',
+  'posters.rpdb.busy': 'RPDBは現在リクエストが多すぎます。しばらくしてからもう一度お試しください。',
+  'posters.rpdb.unreachable': 'キーを確認するためにRPDBに接続できませんでした。',
+  'posters.rpdb.style': 'RPDBのポスタースタイル',
+  'posters.rpdb.style-hint': 'RPDBが描画する評価の種類です。無料キーではデフォルトのみ利用できます。その他のスタイルにはRPDBの有料プランが必要です。',
+  'posters.rpdb.style-default': 'デフォルト',
+  'posters.rpdb.style-certs': '年齢制限',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'タイトル文字なし',
+  'posters.description': '評価：{scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value}（5点満点）',
+};

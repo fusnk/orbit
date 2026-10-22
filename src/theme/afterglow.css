@@ -1,0 +1,67 @@
+/* The Afterglow theme's details (palette.ts THEME_STYLES; engine.ts sets
+   data-theme-style). Calm on purpose: no glows or tints here, and the copper
+   stays on the few things that matter (Play, the current page, progress bars,
+   which already take the accent). Drawn from the accent, so a person who
+   changes it keeps the details in their colour, and every rule is keyed on
+   :root[data-theme-style='afterglow'] so no other theme changes. Logical
+   properties only, so right-to-left mirrors it. */
+
+/* ── Play: a copper gradient, slightly squarer than the stock pill ── */
+
+:root[data-theme-style='afterglow'] .button.large.primary {
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-accent-strong), var(--color-accent-lo));
+  color: var(--color-accent-contrast);
+}
+
+:root[data-theme-style='afterglow'] .button.large.primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-accent-hi), var(--color-accent));
+}
+
+/* The banner's "#1 in…" label: ivory, so Play is the only copper there. */
+:root[data-theme-style='afterglow'] .hero-badge {
+  background: rgb(244 240 232 / 0.14);
+  box-shadow: inset 0 0 0 1px rgb(244 240 232 / 0.3);
+  color: #f4f0e8;
+}
+
+/* ── The other big buttons over artwork: outlined, not frosted ──
+   A border rather than an inset shadow, so the focus ring (a box-shadow)
+   still draws around it. */
+
+:root[data-theme-style='afterglow'] .button.large.glass {
+  border: 1.5px solid rgb(255 255 255 / 0.55);
+  background: rgb(0 0 0 / 0.18);
+  box-shadow: none;
+}
+
+:root[data-theme-style='afterglow'] .button.large.glass:not(.icon-only) {
+  border-radius: 8px;
+}
+
+:root[data-theme-style='afterglow'] .button.large.glass:hover:not(:disabled) {
+  border-color: rgb(255 255 255 / 0.8);
+  background: rgb(255 255 255 / 0.1);
+}
+
+:root[data-theme-style='afterglow'] .button.large.glass:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* ── The current page: its name in copper over a line, no pill ── */
+
+:root[data-theme-style='afterglow']:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock'], [data-nav='arc']) .nav-indicator {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* The line spans the name (the round Search button keeps its short one, nav-layouts.css). */
+:root[data-theme-style='afterglow']:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock'], [data-nav='arc']) .nav-indicator::after {
+  inset-inline: var(--space-4);
+  bottom: 2px;
+  width: auto;
+}
+
+:root[data-theme-style='afterglow'][data-theme='dark'] .nav-item.active {
+  color: var(--color-accent);
+}

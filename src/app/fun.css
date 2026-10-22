@@ -1,0 +1,219 @@
+/*
+ * The little extras (Settings → Appearance → Little extras): launch ident,
+ * Surprise Me roulette, loading quips, search hints, seasonal glyph. All
+ * flat: nothing here glows. Motion stops under Reduce motion.
+ */
+
+/* ── Launch ident (app/launch-intro.ts): ~1.45 s, then a short fade ── */
+.launch-intro {
+  position: fixed;
+  z-index: 200;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--color-bg);
+  cursor: default;
+}
+
+.launch-intro.leaving {
+  opacity: 0;
+  transition: opacity 0.22s ease-in;
+}
+
+.launch-intro-ident {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.launch-intro.leaving .launch-intro-ident {
+  transform: scale(1.03);
+  transition: transform 0.26s ease-in;
+}
+
+.launch-intro-mark {
+  width: 78px;
+  height: 74px;
+  overflow: visible;
+}
+
+/* The ring draws from about where the moon sits, clockwise. */
+.launch-intro-mark .wordmark-ring {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transform: rotate(-50deg);
+  animation: intro-ring 0.75s cubic-bezier(0.55, 0, 0.25, 1) forwards;
+}
+
+/* The moon swings a quarter turn along its track into place. */
+.launch-intro-mark .wordmark-orbit {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  transform: rotate(-100deg);
+  opacity: 0;
+  animation: intro-orbit 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s forwards;
+}
+
+.launch-intro-word {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: intro-word 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.55s forwards;
+}
+
+@keyframes intro-ring {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes intro-orbit {
+  to {
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes intro-word {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Seasonal glyph by the wordmark (app/seasonal.ts) ── */
+.seasonal-mark {
+  flex: none;
+  align-self: flex-start;
+  width: 12px;
+  height: 12px;
+  margin-inline-start: -5px;
+  color: var(--color-text-muted);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.seasonal-mark.filled {
+  fill: currentColor;
+  stroke: none;
+}
+
+.seasonal-mark.halloween {
+  width: 18px;
+  height: 9px;
+  margin-block-start: 1px;
+}
+
+:root[data-effects='reduced'] .seasonal-mark {
+  display: none;
+}
+
+/* ── Lines that change (components/fun-lines.ts) ── */
+.loading-quip {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  transition: opacity 0.2s ease;
+}
+
+.loading-quip.fun-swap {
+  opacity: 0;
+}
+
+/* Both loading screens are dark over artwork, whatever the theme. */
+.player-loading .loading-quip,
+.source-search .loading-quip {
+  min-height: 1.4em;
+  color: #a9a29a;
+}
+
+.player-loading.failed .loading-quip,
+.player-loading.asking .loading-quip {
+  display: none;
+}
+
+input.fun-swap::placeholder {
+  opacity: 0;
+}
+
+input::placeholder {
+  transition: opacity 0.2s ease;
+}
+
+/* ── Surprise Me roulette (rooms/discover/roulette.ts) ── */
+.roulette {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+
+.roulette-window {
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--space-2);
+  mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+}
+
+.roulette-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  will-change: transform;
+}
+
+.roulette-card {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  padding: var(--space-2);
+  border-radius: var(--radius-card, 12px);
+  background: oklch(0.35 0.06 var(--hue, 220));
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-align: center;
+}
+
+/* The slot the pick lands in: a plain outline, centred. */
+.roulette-window::after {
+  position: absolute;
+  inset-block: calc(var(--space-2) - 3px);
+  inset-inline-start: calc(50% - 63px);
+  width: 126px;
+  border: 2px solid var(--color-accent);
+  border-radius: calc(var(--radius-card, 12px) + 3px);
+  content: '';
+  pointer-events: none;
+}
+
+.roulette-skip {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  text-align: center;
+}
+
+/* ── Reduce motion: lines change without a fade; the ident and roulette never start (their scripts check). ── */
+:root[data-motion='reduce'] .loading-quip,
+:root[data-motion='reduce'] input::placeholder {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .loading-quip,
+  :root:not([data-motion='full']) input::placeholder {
+    transition: none;
+  }
+}

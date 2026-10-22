@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': "Afişlerde puanlar",
+  'posters.ratings-hint': "Orbit’in her yapım hakkında zaten bildiklerinden IMDb, TMDB ve Letterboxd puanları afişin üzerinde. Sade bir puan gösterir; Tam hepsini gösterir.",
+  'posters.ratings-minimal': "Sade",
+  'posters.ratings-full': "Tam",
+  'posters.provider': "Afiş sağlayıcısı",
+  'posters.provider-hint': "Afişlerin geldiği yer. RPDB puanları kendi afişlerine çizer ve kendi RPDB anahtarını ister (ratingposterdb.com). RPDB’de bir yapımın afişi yoksa Orbit her zamanki afişi kendi puanlarıyla gösterir. Bundan sonra çizilen afişlere uygulanır.",
+  'posters.provider-orbit': "Orbit (yerleşik)",
+  'posters.rpdb.key': "RPDB anahtarı",
+  'posters.rpdb.key-hint': "ratingposterdb.com’dan aldığın anahtar. Sisteminin anahtar zincirinde saklanır ve yalnızca RPDB’ye gönderilir.",
+  'posters.rpdb.key-placeholder': "t1-…",
+  'posters.rpdb.checking': "RPDB ile kontrol ediliyor…",
+  'posters.rpdb.connected': "RPDB anahtarı kaydedildi. Afişler RPDB’den gelecek.",
+  'posters.rpdb.saved': "Kaydedildi",
+  'posters.rpdb.removed': "RPDB anahtarı kaldırıldı.",
+  'posters.rpdb.key-format': "Bu bir RPDB anahtarına benzemiyor. Anahtarlar t0-, t1-, t2- gibi başlar.",
+  'posters.rpdb.refused': "RPDB bu anahtarı kabul etmedi.",
+  'posters.rpdb.busy': "RPDB şu anda çok fazla isteğe yanıt veriyor. Biraz sonra tekrar dene.",
+  'posters.rpdb.unreachable': "Anahtarı kontrol etmek için RPDB’ye ulaşılamadı.",
+  'posters.rpdb.style': "RPDB afiş stili",
+  'posters.rpdb.style-hint': "RPDB’nin hangi puanları çizeceği. Ücretsiz anahtarlar yalnızca Varsayılan’ı içerir; diğer stiller ücretli bir RPDB paketi gerektirir.",
+  'posters.rpdb.style-default': "Varsayılan",
+  'posters.rpdb.style-certs': "Yaş sınırları",
+  'posters.rpdb.style-mc': "Metacritic",
+  'posters.rpdb.style-rt': "Rotten Tomatoes",
+  'posters.rpdb.style-textless': "Başlık yazısı yok",
+  'posters.description': "Puanlar: {scores}",
+  'posters.score': "{site} {value}",
+  'posters.score-of-5': "{site} {value}/5",
+};

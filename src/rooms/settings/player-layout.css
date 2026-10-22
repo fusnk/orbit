@@ -1,0 +1,614 @@
+/* ── Settings → Player: preset cards and the live preview ────────────────
+   A miniature player drawn on a 160 × 90 grid (--u is one grid step, from
+   the miniature's own width), keyed on the same data attributes as the real
+   player (see player/layout.css). */
+
+.pl-grid {
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+}
+
+.pl-card {
+  align-content: start;
+}
+
+.pl-card-hint {
+  padding: 0 var(--space-1) var(--space-1);
+  color: var(--color-text-faint);
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+}
+
+.pl-preview {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+  max-width: 520px;
+  margin: 0 auto var(--space-4);
+}
+
+.pl-preview .pl-mini {
+  width: 100%;
+}
+
+.pl-mini {
+  --u: calc(100cqw / 160);
+  --s: 1;
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  container-type: inline-size;
+  /* A dim scene, the same in every theme: the player is always over video. */
+  background:
+    radial-gradient(circle at 70% 35%, rgba(255, 196, 140, 0.35), transparent 45%),
+    linear-gradient(160deg, #3a4656, #1d1a18 70%);
+  color: #fff;
+}
+
+.pl-mini[data-size='compact'] {
+  --s: 0.85;
+}
+
+.pl-mini[data-size='large'] {
+  --s: 1.2;
+}
+
+.pl-mini[data-layout='tv'] {
+  --s: 1.3;
+}
+
+.pl-mini[data-layout='tv'][data-size='compact'] {
+  --s: 1.1;
+}
+
+.pl-mini[data-layout='tv'][data-size='large'] {
+  --s: 1.55;
+}
+
+/* No specificity, so the rules below can hide parts. */
+:where(.pl-mini span) {
+  display: block;
+  flex: none;
+}
+
+/* Little shapes. */
+.pl-back,
+.pl-skip,
+.pl-vol,
+.pl-btn,
+.pl-c-skip,
+.pl-c-play {
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.pl-back,
+.pl-skip,
+.pl-vol,
+.pl-btn {
+  width: calc(3.2 * var(--u) * var(--s));
+  height: calc(3.2 * var(--u) * var(--s));
+}
+
+.pl-play {
+  width: calc(4.4 * var(--u) * var(--s));
+  height: calc(4.4 * var(--u) * var(--s));
+  background: #fff;
+  clip-path: polygon(15% 5%, 95% 50%, 15% 95%);
+}
+
+.pl-title,
+.pl-name,
+.pl-time,
+.pl-info-title,
+.pl-info-meta,
+.pl-info-line,
+.pl-clock {
+  height: calc(2 * var(--u) * var(--s));
+  border-radius: var(--u);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* ── Top ── */
+
+.pl-top {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: calc(3 * var(--u));
+  height: calc(14 * var(--u) * var(--s));
+  padding: 0 calc(6 * var(--u));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent);
+}
+
+.pl-title {
+  display: none;
+  width: calc(28 * var(--u) * var(--s));
+}
+
+.pl-clock {
+  display: none;
+  width: calc(9 * var(--u) * var(--s));
+  margin-left: auto;
+}
+
+.pl-chip {
+  width: calc(14 * var(--u) * var(--s));
+  height: calc(5 * var(--u) * var(--s));
+  margin-left: auto;
+  border-radius: calc(3 * var(--u));
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.pl-clock + .pl-chip {
+  margin-left: 0;
+}
+
+.pl-mini[data-clock='on'] .pl-clock {
+  display: block;
+}
+
+/* ── Bottom ── */
+
+.pl-bottom {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(2 * var(--u));
+  padding: calc(10 * var(--u)) calc(8 * var(--u)) calc(4 * var(--u));
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.4) 55%, transparent);
+}
+
+.pl-seek {
+  position: relative;
+  height: calc(1.2 * var(--u) * var(--s));
+  border-radius: var(--u);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.pl-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 42%;
+  border-radius: inherit;
+  background: var(--color-accent);
+}
+
+.pl-mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(0.8 * var(--u));
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.pl-mark:nth-child(2) {
+  left: 18%;
+}
+
+.pl-mark:nth-child(3) {
+  left: 55%;
+}
+
+.pl-mark:nth-child(4) {
+  left: 82%;
+}
+
+.pl-row {
+  display: flex;
+  align-items: center;
+  gap: calc(2.4 * var(--u));
+}
+
+.pl-name {
+  width: calc(26 * var(--u) * var(--s));
+  margin: 0 auto;
+}
+
+.pl-time {
+  display: none;
+  width: calc(8 * var(--u) * var(--s));
+  height: calc(1.6 * var(--u) * var(--s));
+  opacity: 0.7;
+}
+
+.pl-badges {
+  display: flex;
+  gap: calc(0.8 * var(--u));
+}
+
+.pl-badge {
+  width: calc(5 * var(--u) * var(--s));
+  height: calc(2.6 * var(--u) * var(--s));
+  border-radius: calc(0.6 * var(--u));
+  box-shadow: inset 0 0 0 calc(0.4 * var(--u)) rgba(255, 255, 255, 0.85);
+}
+
+.pl-next {
+  width: calc(3.2 * var(--u) * var(--s));
+  height: calc(3.2 * var(--u) * var(--s));
+  background: #fff;
+  clip-path: polygon(10% 10%, 70% 50%, 10% 90%, 10% 10%, 80% 10%, 95% 10%, 95% 90%, 80% 90%, 80% 10%);
+}
+
+.pl-row2,
+.pl-info,
+.pl-center {
+  display: none;
+}
+
+/* ── Switches ── */
+
+.pl-mini[data-title-info='off'] :is(.pl-title, .pl-name, .pl-info) {
+  visibility: hidden;
+}
+
+.pl-mini[data-badges='off'] .pl-badges,
+.pl-mini[data-next-button='off'] .pl-next,
+.pl-mini[data-chapter-marks='off'] .pl-mark {
+  display: none;
+}
+
+.pl-mini:is([data-timeline='accent'], [data-timeline='chapters']) .pl-seek {
+  height: calc(2 * var(--u) * var(--s));
+}
+
+.pl-mini[data-timeline='chapters'] .pl-mark {
+  width: calc(1.4 * var(--u));
+}
+
+.pl-mini[data-controls-bg='none'] :is(.pl-top, .pl-bottom) {
+  background: none;
+}
+
+.pl-mini[data-controls-bg='blur'] .pl-top {
+  background: rgba(14, 13, 12, 0.62);
+}
+
+.pl-mini[data-controls-bg='blur'] .pl-bottom {
+  padding-top: calc(4 * var(--u));
+  background: rgba(14, 13, 12, 0.74);
+}
+
+/* ── Presets ── */
+
+.pl-mini:is([data-layout='minimal'], [data-layout='compact'], [data-layout='tv']) .pl-title {
+  display: block;
+}
+
+.pl-mini:is([data-layout='minimal'], [data-layout='compact'], [data-layout='tv'], [data-layout='streaming']) .pl-name {
+  display: none;
+}
+
+/* Minimal: play, a thin line and the time; the other buttons only on input (drawn faint). */
+.pl-mini[data-layout='minimal'] .pl-bottom {
+  flex-direction: row;
+  align-items: center;
+}
+
+.pl-mini[data-layout='minimal'] .pl-row {
+  display: contents;
+}
+
+.pl-mini[data-layout='minimal'] .pl-play {
+  order: -1;
+}
+
+.pl-mini[data-layout='minimal'] .pl-seek {
+  flex: 1;
+  height: calc(0.8 * var(--u) * var(--s));
+}
+
+.pl-mini[data-layout='minimal'] .pl-time {
+  display: block;
+}
+
+.pl-mini[data-layout='minimal'] :is(.pl-skip, .pl-vol, .pl-btn, .pl-badges, .pl-next, .pl-chip) {
+  opacity: 0.25;
+}
+
+/* Compact: one slim bar. */
+.pl-mini[data-layout='compact'] .pl-bottom {
+  flex-direction: row;
+  align-items: center;
+  gap: calc(1.6 * var(--u));
+  padding: calc(6 * var(--u)) calc(4 * var(--u)) calc(2 * var(--u));
+}
+
+.pl-mini[data-layout='compact'] .pl-row {
+  display: contents;
+}
+
+.pl-mini[data-layout='compact'] .pl-play {
+  order: -2;
+}
+
+.pl-mini[data-layout='compact'] .pl-time {
+  display: block;
+  order: -1;
+}
+
+.pl-mini[data-layout='compact'] .pl-seek {
+  flex: 1;
+}
+
+.pl-mini[data-layout='compact'] .pl-skip {
+  display: none;
+}
+
+/* Floating: a rounded panel above the bottom edge. */
+.pl-mini[data-layout='floating'] .pl-bottom {
+  inset: auto 14% calc(5 * var(--u));
+  padding: calc(3 * var(--u)) calc(5 * var(--u));
+  border-radius: calc(4 * var(--u));
+}
+
+.pl-mini[data-layout='floating'][data-controls-bg='gradient'] .pl-bottom {
+  background: linear-gradient(180deg, rgba(36, 34, 32, 0.85), rgba(10, 9, 8, 0.9));
+}
+
+.pl-mini[data-layout='floating'][data-controls-bg='blur'] .pl-bottom {
+  background: rgba(20, 19, 18, 0.72);
+  box-shadow: inset 0 0 0 calc(0.4 * var(--u)) rgba(255, 255, 255, 0.18);
+}
+
+/* Streaming: title block, big centred transport, Next card. */
+.pl-mini[data-layout='streaming'] .pl-info {
+  position: absolute;
+  top: calc(16 * var(--u));
+  left: calc(8 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(1.6 * var(--u));
+}
+
+.pl-info-title {
+  width: calc(40 * var(--u) * var(--s));
+  height: calc(4 * var(--u) * var(--s));
+}
+
+.pl-info-meta {
+  width: calc(24 * var(--u) * var(--s));
+  opacity: 0.7;
+}
+
+.pl-info-line {
+  width: calc(50 * var(--u) * var(--s));
+  height: calc(1.4 * var(--u) * var(--s));
+  opacity: 0.5;
+}
+
+.pl-mini[data-layout='streaming'] .pl-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  translate: -50% -50%;
+}
+
+.pl-c-play {
+  width: calc(12 * var(--u) * var(--s));
+  height: calc(12 * var(--u) * var(--s));
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 0 0 calc(0.6 * var(--u)) rgba(255, 255, 255, 0.85);
+}
+
+.pl-c-skip {
+  width: calc(7 * var(--u) * var(--s));
+  height: calc(7 * var(--u) * var(--s));
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 0 0 calc(0.5 * var(--u)) rgba(255, 255, 255, 0.7);
+}
+
+.pl-mini[data-layout='streaming'] :is(.pl-play, .pl-skip) {
+  display: none;
+}
+
+.pl-mini[data-layout='streaming'] .pl-next {
+  order: 1;
+  width: calc(22 * var(--u) * var(--s));
+  height: calc(6 * var(--u) * var(--s));
+  border-radius: calc(1.4 * var(--u));
+  background: rgba(20, 19, 18, 0.85);
+  box-shadow: inset 0 0 0 calc(0.4 * var(--u)) rgba(255, 255, 255, 0.3);
+  clip-path: none;
+}
+
+.pl-mini[data-layout='streaming'] .pl-vol {
+  margin-right: auto;
+}
+
+/* Theatre: the timeline full width with the time at its end, and a two-line title in the middle of the row. */
+.pl-mini[data-layout='theater'] .pl-seek {
+  margin-right: calc(11 * var(--u));
+}
+
+.pl-mini[data-layout='theater'] .pl-time {
+  position: absolute;
+  top: calc(10 * var(--u) + 0.2 * var(--u) * var(--s));
+  right: calc(8 * var(--u));
+  display: block;
+}
+
+.pl-mini[data-layout='theater'] .pl-name {
+  position: absolute;
+  left: 50%;
+  width: calc(22 * var(--u) * var(--s));
+  translate: -50% 0;
+  box-shadow: 0 calc(3 * var(--u) * var(--s)) 0 calc(-0.4 * var(--u)) rgba(255, 255, 255, 0.45);
+}
+
+.pl-mini[data-layout='theater'] .pl-badges {
+  margin-left: auto;
+}
+
+.pl-mini[data-layout='theater'] .pl-row {
+  margin-bottom: calc(2 * var(--u) * var(--s));
+}
+
+/* Cinema: volume top start, plain glyphs in the middle, and at the bottom the
+   title over a thin line, three small icons at its end, two outlined pills under it. */
+.pl-mini[data-layout='cinema'] :is(.pl-vol, .pl-play, .pl-skip, .pl-badges, .pl-time) {
+  display: none;
+}
+
+/* Top start: the volume as a slim line (drawn by the Back part, which Cinema doesn't show). */
+.pl-mini[data-layout='cinema'] .pl-back {
+  width: calc(14 * var(--u) * var(--s));
+  height: calc(0.9 * var(--u) * var(--s));
+  border-radius: var(--u);
+}
+
+.pl-mini[data-layout='cinema'] .pl-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  translate: -50% -50%;
+}
+
+.pl-mini[data-layout='cinema'] .pl-c-play {
+  width: calc(6 * var(--u) * var(--s));
+  height: calc(6 * var(--u) * var(--s));
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+  clip-path: polygon(15% 5%, 95% 50%, 15% 95%);
+}
+
+.pl-mini[data-layout='cinema'] .pl-c-skip {
+  width: calc(4.4 * var(--u) * var(--s));
+  height: calc(4.4 * var(--u) * var(--s));
+  background: none;
+  box-shadow: inset 0 0 0 calc(0.5 * var(--u)) rgba(255, 255, 255, 0.9);
+}
+
+.pl-mini[data-layout='cinema'] .pl-bottom {
+  gap: calc(1.6 * var(--u));
+  padding: calc(10 * var(--u)) calc(12 * var(--u)) calc(4 * var(--u));
+}
+
+.pl-mini[data-layout='cinema'] .pl-row {
+  order: -1;
+  gap: calc(1.4 * var(--u));
+}
+
+.pl-mini[data-layout='cinema'] .pl-name {
+  width: calc(30 * var(--u) * var(--s));
+  height: calc(2.4 * var(--u) * var(--s));
+  margin: 0 auto 0 0;
+}
+
+.pl-mini[data-layout='cinema'] .pl-btn {
+  width: calc(2.4 * var(--u) * var(--s));
+  height: calc(2.4 * var(--u) * var(--s));
+}
+
+.pl-mini[data-layout='cinema'] .pl-seek {
+  height: calc(0.8 * var(--u) * var(--s));
+}
+
+.pl-mini[data-layout='cinema'] .pl-fill {
+  background: #fff;
+}
+
+.pl-mini[data-layout='cinema'] .pl-row2 {
+  display: flex;
+  gap: calc(1.4 * var(--u));
+  margin-top: calc(0.6 * var(--u));
+}
+
+.pl-mini[data-layout='cinema'] .pl-pill {
+  width: calc(9 * var(--u) * var(--s));
+  height: calc(3.2 * var(--u) * var(--s));
+  background: none;
+  box-shadow: inset 0 0 0 calc(0.4 * var(--u)) rgba(255, 255, 255, 0.85);
+}
+
+.pl-mini[data-layout='cinema'] .pl-pill:first-child {
+  background: #fff;
+}
+
+.pl-mini[data-layout='cinema'] .pl-pill:last-child {
+  display: none;
+}
+
+/* TV: oversized round buttons, then a row of labelled ones. */
+.pl-mini[data-layout='tv'] .pl-row {
+  justify-content: center;
+}
+
+.pl-mini[data-layout='tv'] :is(.pl-btn, .pl-badges, .pl-next) {
+  display: none;
+}
+
+.pl-mini[data-layout='tv'] :is(.pl-skip, .pl-vol) {
+  box-shadow: 0 0 0 calc(1 * var(--u)) rgba(255, 255, 255, 0.15);
+}
+
+.pl-mini[data-layout='tv'] .pl-row2 {
+  display: flex;
+  justify-content: center;
+  gap: calc(2 * var(--u));
+}
+
+.pl-pill {
+  width: calc(14 * var(--u) * var(--s));
+  height: calc(4.4 * var(--u) * var(--s));
+  border-radius: calc(3 * var(--u));
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* Arc: the title block at the start, a capsule with a ringed Play in the middle, the tools at the end. */
+.pl-mini[data-layout='arc'] :is(.pl-play, .pl-skip) {
+  display: none;
+}
+
+.pl-mini[data-layout='arc'] .pl-center {
+  position: absolute;
+  bottom: calc(3 * var(--u));
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: calc(3 * var(--u));
+  padding: calc(1.4 * var(--u)) calc(4 * var(--u));
+  border-radius: calc(6 * var(--u));
+  background: rgba(14, 13, 12, 0.8);
+  translate: -50% 0;
+}
+
+.pl-mini[data-layout='arc'] .pl-c-play {
+  width: calc(7 * var(--u) * var(--s));
+  height: calc(7 * var(--u) * var(--s));
+  background: conic-gradient(var(--color-accent) 0.4turn, rgba(255, 255, 255, 0.35) 0);
+  box-shadow: none;
+  mask: radial-gradient(farthest-side, transparent calc(100% - 0.7 * var(--u)), #000 calc(100% - 0.6 * var(--u)));
+}
+
+.pl-mini[data-layout='arc'] .pl-c-skip {
+  width: calc(3.6 * var(--u) * var(--s));
+  height: calc(3.6 * var(--u) * var(--s));
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: none;
+}
+
+.pl-mini[data-layout='arc'] .pl-bottom {
+  padding-bottom: calc(5 * var(--u));
+}
+
+.pl-mini[data-layout='arc'] .pl-row {
+  min-height: calc(9 * var(--u) * var(--s));
+}
+
+.pl-mini[data-layout='arc'] .pl-name {
+  margin: 0 auto 0 0;
+  box-shadow: 0 calc(3 * var(--u) * var(--s)) 0 calc(-0.4 * var(--u)) rgba(255, 255, 255, 0.45);
+}

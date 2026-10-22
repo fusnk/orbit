@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'Betyg på affischer',
+  'posters.ratings-hint': 'Betyg från IMDb, TMDB och Letterboxd på bilderna, utifrån det Orbit redan vet om varje titel. Minimal visar ett betyg; Fullständig visar alla.',
+  'posters.ratings-minimal': 'Minimal',
+  'posters.ratings-full': 'Fullständig',
+  'posters.provider': 'Affischleverantör',
+  'posters.provider-hint': 'Var affischerna kommer ifrån. RPDB ritar betyg på sina affischer och kräver en egen RPDB-nyckel (ratingposterdb.com). När RPDB saknar affisch för en titel visar Orbit den vanliga med sina egna betyg. Gäller affischer som ritas härnäst.',
+  'posters.provider-orbit': 'Orbit (inbyggd)',
+  'posters.rpdb.key': 'RPDB-nyckel',
+  'posters.rpdb.key-hint': 'Din nyckel från ratingposterdb.com. Den förvaras i systemets nyckelring och skickas bara till RPDB.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'Kontrollerar med RPDB…',
+  'posters.rpdb.connected': 'RPDB-nyckeln har sparats. Affischerna kommer från RPDB.',
+  'posters.rpdb.saved': 'Sparad',
+  'posters.rpdb.removed': 'RPDB-nyckeln har tagits bort.',
+  'posters.rpdb.key-format': 'Det ser inte ut som en RPDB-nyckel. Nycklar börjar med t0-, t1-, t2- och så vidare.',
+  'posters.rpdb.refused': 'RPDB godkände inte nyckeln.',
+  'posters.rpdb.busy': 'RPDB får för många förfrågningar just nu. Försök igen om en stund.',
+  'posters.rpdb.unreachable': 'Kunde inte nå RPDB för att kontrollera nyckeln.',
+  'posters.rpdb.style': 'Affischstil för RPDB',
+  'posters.rpdb.style-hint': 'Vilka betyg RPDB ritar. Gratisnycklar ger bara Standard; andra stilar kräver en betald RPDB-nivå.',
+  'posters.rpdb.style-default': 'Standard',
+  'posters.rpdb.style-certs': 'Åldersgränser',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'Utan titeltext',
+  'posters.description': 'Betyg: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} av 5',
+};

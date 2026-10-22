@@ -1,0 +1,30 @@
+import type { plex as source } from '../en/plex';
+import type { Catalog } from '../types';
+
+export const plex: Catalog<typeof source> = {
+  'plex.settings.intro': 'הפעלה מ-Plex Media Server בחשבון ה-Plex שלך. סרטים ופרקים שיש בו מקבלים מקור Plex, והשורות שלו יכולות להופיע בדף הבית. ההתחברות נעשית בדף של Plex עצמו, כך ש-Orbit אף פעם לא רואה את הסיסמה.',
+  'plex.settings.connect': 'חיבור עם Plex',
+  'plex.settings.connect-hint': 'פותח בדפדפן את דף ההתחברות של Plex. יש לאשר שם את Orbit ואז לחזור לכאן.',
+  'plex.settings.opening': 'פותח את Plex בדפדפן…',
+  'plex.settings.waiting': 'יש להתחבר ל-Plex בדפדפן ולאשר את Orbit. ממתין…',
+  'plex.settings.open-again': 'פתיחת דף ההתחברות שוב',
+  'plex.settings.cancel': 'ביטול',
+  'plex.settings.choose': 'בחירת השרת לשימוש:',
+  'plex.settings.shared': '{server} (משותף איתך)',
+  'plex.settings.reaching': 'מתחבר ל-{server}…',
+  'plex.settings.server-label': 'שרת',
+  'plex.settings.connected-as': 'מחובר כ-{user} ב-{server}',
+  'plex.settings.connected': 'מחובר ל-{server}.',
+  'plex.settings.connected-first': 'מחובר ל-{server}. “נוספו לאחרונה” נמצא עכשיו בדף הבית; אפשר להוסיף עוד שורות Plex בהגדרות ← בית וספרייה ← שורות בדף הבית.',
+  'plex.settings.disconnect': 'ניתוק',
+  'plex.settings.disconnected': 'נותק, ו-Orbit שכח את ההתחברות שלו ל-Plex. כדי לבטל אותה גם ב-Plex, יש להסיר את Orbit תחת Authorized Devices ב-plex.tv.',
+  'plex.settings.insecure': 'לא מאובטח',
+  'plex.settings.insecure-title': 'Orbit מתחבר לשרת הזה דרך http רגיל, כך שההתחברות והסרטונים עוברים ללא הצפנה. בבית זה בסדר; לשימוש דרך האינטרנט כדאי להפעיל חיבורים מאובטחים ב-Plex.',
+  'plex.rows.kind': 'Plex',
+  'plex.rows.resume': 'המשך צפייה',
+  'plex.rows.latest': 'נוספו לאחרונה',
+  'plex.rows.label': 'Plex: {row}',
+  'plex.rows.not-connected': 'קודם יש לחבר שרת Plex בהגדרות ← חשבונות ושירותים.',
+  'plex.rows.libraries-failed': 'לא הצלחנו לטעון את הספריות של השרת.',
+  'plex.source.origin': 'Plex · {server}',
+};

@@ -1,0 +1,703 @@
+/* Where the nav lives (Theme Studio → Layout; theme/layout.ts sets
+   data-nav, data-nav-side and data-nav-align on <html>). Every layout is the same <nav> in
+   the title bar, moved by CSS, so focus order, spatial navigation and the
+   window's drag region stay as they are. Sides are logical: "start" is the
+   left in left-to-right languages and the right in Arabic. */
+
+/* The top bar shows Search's icon only; the other layouts show every page's. */
+.nav-item:not([data-room='search']) > .icon {
+  display: none;
+}
+
+/* In the top bar (and cinematic) Search is a round icon button. Its name stays
+   for screen readers, and in the tooltip with its shortcut. */
+:root:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .nav-item[data-room='search'] {
+  justify-content: center;
+  width: 34px;
+  padding: 0;
+  margin-inline-start: 2px;
+}
+
+:root:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .nav-item[data-room='search']:not(.active) {
+  background: var(--color-surface);
+}
+
+:root:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .nav-item[data-room='search']:not(.active):is(:hover, :focus-visible) {
+  background: var(--color-surface-raised);
+}
+
+:root:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .nav-item[data-room='search'] .nav-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+:root:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .nav-item[data-room='search'] > .icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* The round button's accent line would be wider than its icon. */
+:root:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .nav:has(.nav-item[data-room='search'].active) .nav-indicator::after {
+  width: 10px;
+}
+
+/* A window too narrow for the whole bar: the pill scrolls rather than
+   covering Back or pushing the window's buttons off screen. Its items keep
+   their size (Search stays round). The margin keeps it off the avatar when
+   long names (German) fill the bar just short of going icons-only. */
+:root:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .titlebar .nav {
+  min-width: 0;
+  margin-inline: var(--space-3);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+:root:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .titlebar .nav-item {
+  flex: none;
+}
+
+/* Too narrow for every page's name (nav.ts measures): icons only, as the
+   dock does in a narrow window. The names stay for screen readers and in
+   the tooltips. */
+:root:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .nav.compact .nav-item {
+  justify-content: center;
+  width: 34px;
+  padding: 0;
+}
+
+:root:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .nav.compact .nav-item > .icon {
+  display: block;
+  width: 15px;
+  height: 15px;
+}
+
+:root:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .nav.compact .nav-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Every page hidden: no empty pill (Settings is the title bar's own button). */
+.nav:not(:has(.nav-item:not([hidden]))) {
+  display: none;
+}
+
+/* ── Top bars aligned to the start (data-nav-align) ───────────────────
+   The pill follows the wordmark instead of sitting in the middle. Only the
+   columns change: the bar keeps its drag region (the empty end column is
+   still the header's own), the caption buttons stay in the end corner, and
+   nav.ts measures the indicator within the nav, so it doesn't notice. */
+
+:root[data-nav-align='start']:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .titlebar {
+  grid-template-columns: max-content minmax(0, auto) minmax(max-content, 1fr);
+}
+
+:root[data-nav-align='start']:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .nav {
+  margin-inline-start: var(--space-6);
+}
+
+/* ── Sidebar with labels, and icon rail ─────────────────────────────── */
+
+:root[data-nav='sidebar'] {
+  --nav-dock-size: 212px;
+}
+
+:root[data-nav='rail'] {
+  --nav-dock-size: 80px;
+}
+
+:root:is([data-nav='sidebar'], [data-nav='rail']) .nav {
+  position: fixed;
+  inset-block: var(--header-height) var(--space-4);
+  inset-inline-start: var(--space-3);
+  width: calc(var(--nav-dock-size) - var(--space-3) - var(--space-2));
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  overflow-y: auto;
+  border-radius: var(--radius-xl);
+}
+
+:root:is([data-nav='sidebar'], [data-nav='rail'])[data-nav-side='end'] .nav {
+  inset-inline: auto var(--space-3);
+}
+
+/* The nav left the title bar's middle column; the end group keeps its place. */
+:root:is([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .titlebar-end {
+  grid-column: 3;
+}
+
+:root:is([data-nav='sidebar'], [data-nav='rail']) .outlet {
+  margin-inline-start: var(--nav-dock-size);
+}
+
+:root:is([data-nav='sidebar'], [data-nav='rail'])[data-nav-side='end'] .outlet {
+  margin-inline: 0 var(--nav-dock-size);
+}
+
+/* The offline and update banners sit beside the nav too, lined up with the page. */
+:root:is([data-nav='sidebar'], [data-nav='rail']) #app > .offline-banner {
+  margin-inline-start: calc(var(--nav-dock-size) + var(--page-gutter));
+}
+
+:root:is([data-nav='sidebar'], [data-nav='rail'])[data-nav-side='end'] #app > .offline-banner {
+  margin-inline: var(--page-gutter) calc(var(--nav-dock-size) + var(--page-gutter));
+}
+
+:root:is([data-nav='sidebar'], [data-nav='rail'], [data-nav='dock']) .nav-item > .icon {
+  display: block;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+}
+
+:root[data-nav='sidebar'] .nav-item {
+  flex: none;
+  justify-content: flex-start;
+  gap: var(--space-3);
+  height: 42px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+}
+
+.nav-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:root[data-nav='rail'] .nav-item {
+  flex: none;
+  justify-content: center;
+  height: 48px;
+  padding: 0;
+  border-radius: var(--radius-lg);
+}
+
+:root[data-nav='rail'] .nav-item > .icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* The indicator takes each layout's item shape; in the vertical ones its
+   accent line stands at the start edge. */
+:root[data-nav='sidebar'] .nav-indicator {
+  border-radius: var(--radius-md);
+}
+
+:root[data-nav='rail'] .nav-indicator {
+  border-radius: var(--radius-lg);
+}
+
+:root:is([data-nav='sidebar'], [data-nav='rail']) .nav-indicator::after {
+  inset-block: 0;
+  inset-inline: 4px auto;
+  width: 2px;
+  height: 16px;
+  margin: auto 0;
+}
+
+/* Icons only: the name stays for screen readers (and in the tooltip). */
+:root[data-nav='rail'] .nav-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Floating pill (saved as 'dock', its name from before it could move) ──
+   A compact pill of icons and names, away from the window's edges, in one of
+   six places (data-nav-place): top or bottom, at the start, in the middle or
+   at the end; start and end mirror in Arabic. It keeps the bar's glass, thin
+   neutral edge and soft shadow (solid with Reduce effects: styles.css), and
+   no glow. At the top it sits under the title bar rather than in it, so the
+   whole header stays the window's drag region and keeps its buttons
+   (Settings among them). The page gets room on the pill's side, so its
+   first or last row isn't covered; the player hides the pill with the
+   title bar it belongs to. */
+
+:root[data-nav='dock'] {
+  /* The pill (34px items in 5px of padding) and its gap from the edge, plus a little air. */
+  --nav-pill-room: 68px;
+}
+
+:root[data-nav='dock'] .nav {
+  position: fixed;
+  inset-block: auto var(--space-4);
+  inset-inline: 0;
+  width: max-content;
+  max-width: calc(100% - var(--space-8));
+  margin-inline: auto;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 2px;
+  padding: 5px;
+}
+
+:root[data-nav='dock'][data-nav-place^='top'] .nav {
+  inset-block: calc(var(--header-height) + var(--space-1)) auto;
+}
+
+/* Scrolled, the page eases out under the pill instead of being sliced off by
+   the see-through title bar right above it. */
+:root[data-nav='dock'][data-nav-place^='top'] .outlet.scrolled {
+  mask-image: linear-gradient(to bottom, transparent, #000 var(--nav-pill-room));
+}
+
+/* Glass (a tinted pill at the top): thinner, brighter glass with a lit rim and
+   a deeper lift, and the current page as a raised glass chip. Colours come
+   from the palette so it follows the theme; reduced effects and light themes
+   keep the plain pill. */
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .nav {
+  background: color-mix(in srgb, var(--color-glass) 47%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--base-text) 32%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--base-text) 22%, transparent),
+    0 18px 44px -16px rgb(0 0 0 / 0.75),
+    0 4px 12px rgb(0 0 0 / 0.2);
+  backdrop-filter: blur(28px) saturate(1.55);
+}
+
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .nav-indicator {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--base-text) 24%, transparent),
+    color-mix(in srgb, color-mix(in srgb, var(--color-accent) 30%, var(--base-text)) 10%, transparent)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--base-text) 52%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--base-text) 24%, transparent),
+    0 5px 14px -7px rgb(0 0 0 / 0.8);
+}
+
+/* Its avatar, bell and Quick settings share one capsule of the same glass,
+   as tall as the pill (34px items in 5px of padding), the avatar shrunk to
+   the icons' size. Where it can't collide with the pill it drops level with
+   it, under the window's buttons; otherwise (the pill at the end, or a
+   window narrow enough for the pill's names to reach it) it stays in the
+   title bar's row. */
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .titlebar-tools {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  gap: 2px;
+  height: 44px;
+  margin-inline-end: var(--space-2);
+  padding: 5px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-glass) 47%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--base-text) 32%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--base-text) 22%, transparent),
+    0 18px 44px -16px rgb(0 0 0 / 0.75),
+    0 4px 12px rgb(0 0 0 / 0.2);
+  backdrop-filter: blur(28px) saturate(1.55);
+}
+
+@media (min-width: 1280px), (max-width: 1000px) {
+  :root[data-nav='dock'][data-nav-place^='top']:not([data-nav-place='top-end'])[data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .titlebar-tools {
+    position: fixed;
+    inset-block-start: calc(var(--header-height) + var(--space-1));
+    inset-inline-end: var(--space-5);
+    margin: 0;
+  }
+}
+
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .titlebar-tools > :is(.profile-button, .alerts-button, .settings-button) {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text);
+  transition: background var(--duration-fast) var(--ease);
+}
+
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .titlebar-tools > :is(.alerts-button, .settings-button)[hidden] {
+  display: none;
+}
+
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .titlebar-tools > :is(.profile-button, .alerts-button, .settings-button):hover {
+  background: color-mix(in srgb, var(--base-text) 12%, transparent);
+}
+
+/* Quick settings open on the Settings page: the pill's raised glass chip. */
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .titlebar-tools > .settings-button.active {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--base-text) 24%, transparent),
+    color-mix(in srgb, color-mix(in srgb, var(--color-accent) 30%, var(--base-text)) 10%, transparent)
+  );
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--base-text) 52%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--base-text) 24%, transparent);
+}
+
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .titlebar-tools > :is(.alerts-button, .settings-button) .icon {
+  width: 18px;
+  height: 18px;
+}
+
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .titlebar-tools > .profile-button .avatar {
+  width: 22px;
+  height: 22px;
+  font-size: 11px;
+}
+
+/* The avatar's own hover ring would double the capsule's hover. */
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .titlebar-tools > .profile-button:hover .avatar {
+  box-shadow: none;
+}
+
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .titlebar-tools .alerts-badge {
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  box-shadow: 0 0 0 2px var(--color-glass);
+}
+
+:root[data-nav='dock']:is([data-nav-place='top-start'], [data-nav-place='bottom-start']) .nav {
+  inset-inline: var(--space-5) auto;
+  margin-inline: 0;
+}
+
+:root[data-nav='dock']:is([data-nav-place='top-end'], [data-nav-place='bottom-end']) .nav {
+  inset-inline: auto var(--space-5);
+  margin-inline: 0;
+}
+
+:root[data-nav='dock'] .nav-item {
+  flex: none;
+  padding: 0 var(--space-3);
+}
+
+:root[data-nav='dock'] .nav-item > .icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.2;
+}
+
+/* A narrow window: icons only. The names stay for screen readers and in the tooltips. */
+@media (max-width: 1000px) {
+  :root[data-nav='dock'] .nav-item {
+    justify-content: center;
+    width: 40px;
+    padding: 0;
+  }
+
+  :root[data-nav='dock'] .nav-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Room under the last row (or over the first) to scroll it clear of the pill. */
+:root[data-nav='dock']:is([data-nav-place^='bottom'], :not([data-nav-place])) .outlet {
+  padding-block-end: var(--nav-pill-room);
+  scroll-padding-block-end: var(--nav-pill-room);
+}
+
+/* Toasts rise above a bottom pill instead of covering it (the player hides the pill). */
+:root[data-nav='dock']:is([data-nav-place^='bottom'], :not([data-nav-place])):not(.player-open) .toast {
+  bottom: calc(var(--nav-pill-room) + var(--space-2));
+}
+
+:root[data-nav='dock'][data-nav-place^='top'] .outlet {
+  padding-block-start: calc(var(--nav-pill-room) - var(--space-2));
+  scroll-padding-block-start: calc(var(--nav-pill-room) - var(--space-2));
+}
+
+/* Art that already runs under the title bar (Home's cinematic banner, the
+   Showcase title page) runs under the pill too, as it does under the bar. */
+:root[data-nav='dock'][data-nav-place^='top'][data-hero='cinematic'] .outlet:has(> .home.view-shown),
+:root[data-nav='dock'][data-nav-place^='top'] .outlet:has(> .detail.showcase) {
+  padding-block-start: 0;
+}
+
+/* Their text keeps clear of the pill, though: on a short window it reaches the top. */
+:root[data-nav='dock'][data-nav-place^='top'][data-hero='cinematic'] .outlet > .home .hero,
+:root[data-nav='dock'][data-nav-place^='top'] .outlet > .detail.showcase .detail-hero {
+  padding-block-start: calc(var(--header-height) + var(--nav-pill-room));
+}
+
+/* The offline and update banners go under the pill rather than beneath it,
+   and take the room the page kept for it. */
+:root[data-nav='dock'][data-nav-place^='top'] #app > .offline-banner {
+  margin-block-start: calc(var(--nav-pill-room) - var(--space-2));
+}
+
+/* While either banner shows (main.ts puts the update banner right after the offline one). */
+:root[data-nav='dock'][data-nav-place^='top'] #app:not(:has(> .offline-banner[hidden] + .update-banner[hidden])) > .outlet {
+  padding-block-start: 0;
+  mask-image: none;
+}
+
+/* ── Cinematic: the bar floats over every page and fades while it scrolls ── */
+
+:root[data-nav='cinematic'] #app > .titlebar {
+  position: absolute;
+  inset: 0 0 auto;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 80%, transparent), transparent);
+}
+
+:root[data-nav='cinematic'] .outlet {
+  padding-block-start: var(--header-height);
+  scroll-padding-block-start: var(--header-height);
+}
+
+/* Home's cinematic banner already starts under the bar. */
+:root[data-nav='cinematic'][data-hero='cinematic'] .outlet:has(> .home.view-shown) {
+  padding-block-start: 0;
+}
+
+:root[data-nav='cinematic'] .outlet.scrolled {
+  mask-image: none;
+}
+
+:root[data-nav='cinematic'] .titlebar :is(.nav, .titlebar-start) {
+  transition: opacity var(--duration-hover) var(--ease);
+}
+
+/* Scrolled: the nav and wordmark fade until the pointer or focus comes back
+   to the bar (window buttons and Settings stay put). */
+:root[data-nav='cinematic'] #app:has(> .outlet.scrolled) > .titlebar:not(:hover, :focus-within) :is(.nav, .titlebar-start) {
+  opacity: 0;
+}
+
+/* ── Arc bar (the Orbit Arc Look) ──────────────────────────────────────
+   Plain links just after the wordmark, the current page marked by an arc
+   cut from the logo's ring rather than a filled pill. The bar is clear over
+   the page (and over art that runs under it), and turns solid with a
+   hairline once the page scrolls. Back keeps its place before the wordmark
+   (styles.css), so the links never shift. Avatar, bell and Quick settings
+   sit together in one capsule at the end. Everything else (Search's round
+   button, icons-only when narrow) is the top bar's, above. */
+
+:root[data-nav='arc'] {
+  /* The arc's glide: 280 ms, and none with Reduce motion (it zeroes the drawer duration). */
+  --arc-glide: calc(var(--duration-drawer) * 1.12);
+  --arc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-nav='arc'] .titlebar {
+  grid-template-columns: max-content minmax(0, auto) minmax(max-content, 1fr);
+  transition:
+    background-color var(--duration-enter) var(--ease),
+    box-shadow var(--duration-enter) var(--ease);
+}
+
+:root[data-nav='arc'] #app:has(> .outlet.scrolled) > .titlebar {
+  background-color: color-mix(in srgb, var(--color-bg) 94%, transparent);
+  box-shadow: inset 0 -1px 0 var(--color-border);
+}
+
+/* The bar is solid once scrolled, so rows needn't fade out before reaching it. */
+:root[data-nav='arc'] .outlet.scrolled {
+  mask-image: none;
+}
+
+:root[data-nav='arc'] .titlebar-start > .back-button {
+  border-color: transparent;
+  background: transparent;
+}
+
+:root[data-nav='arc'] .titlebar-start > .back-button:hover {
+  background: var(--color-surface);
+}
+
+:root[data-nav='arc'] .titlebar .nav {
+  gap: 2px;
+  margin-inline-start: var(--space-6);
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+:root[data-nav='arc'] .nav-item {
+  height: 40px;
+  padding: 0 var(--space-3);
+  color: color-mix(in srgb, var(--color-text) 64%, transparent);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+}
+
+:root[data-nav='arc'] .nav-item:not(.active):is(:hover, :focus-visible) {
+  background: transparent;
+  color: var(--color-text);
+}
+
+:root[data-nav='arc'] .nav-item.active {
+  color: var(--color-text);
+}
+
+/* Search: a bare icon like the bar's other icons, lit on hover. */
+:root[data-nav='arc'] .nav-item[data-room='search'] {
+  width: 40px;
+}
+
+:root[data-nav='arc'] .nav-item[data-room='search']:not(.active) {
+  background: transparent;
+}
+
+:root[data-nav='arc'] .nav-item[data-room='search']:not(.active):is(:hover, :focus-visible) {
+  background: var(--color-surface);
+}
+
+:root[data-nav='arc'] .nav-item[data-room='search'] > .icon,
+:root[data-nav='arc'] .nav.compact .nav-item > .icon {
+  width: 17px;
+  height: 17px;
+  stroke-width: 2.1;
+}
+
+:root[data-nav='arc'] .nav.compact .nav-item {
+  width: 40px;
+}
+
+/* The indicator carries no fill: only its arc shows, a slice of the logo's
+   ring (thick in the middle, thinning to nothing at its ends). */
+:root[data-nav='arc'] .nav-indicator {
+  background: none;
+  box-shadow: none;
+  transition:
+    transform var(--arc-glide) var(--arc-ease),
+    width var(--arc-glide) var(--arc-ease),
+    height var(--arc-glide) var(--arc-ease),
+    opacity var(--duration-fast) var(--ease);
+}
+
+:root[data-nav='arc'] .nav-indicator::after,
+:root[data-nav='arc'] .nav:has(.nav-item[data-room='search'].active) .nav-indicator::after {
+  bottom: 1px;
+  width: 24px;
+  height: 7px;
+  border-block-end: 2.5px solid var(--color-accent);
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+  background: none;
+}
+
+:root[data-nav='arc'] .nav:has(.nav-item[data-room='search'].active) .nav-indicator::after {
+  width: 18px;
+}
+
+/* On light themes the links are dark: over art that runs under the bar
+   (Home's cinematic banner, the Showcase title page) they turn light until
+   the page scrolls, as the wordmark does (home.css, showcase.css). */
+:root[data-nav='arc'][data-theme='light'][data-hero='cinematic'] #app:has(> .outlet > .home.view-shown):not(:has(> .outlet.scrolled)) > .titlebar .nav,
+:root[data-nav='arc'][data-theme='light'] #app:has(> .outlet > .detail.showcase):not(:has(> .outlet.scrolled)) > .titlebar .nav {
+  --color-text: #f4f2ef;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+}
+
+/* ── The end group: avatar (with the profile's name when there's room), bell and Quick settings ── */
+
+:root[data-nav='arc'] .titlebar-tools {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  gap: 2px;
+  /* Its buttons' height, not the whole bar's (styles.css), so it floats off the window's top edge. */
+  height: auto;
+  margin-inline-end: var(--space-3);
+  padding: 4px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-glass) 72%, transparent);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  /* It floats over banner art: the blur keeps its icons readable on bright frames. */
+  backdrop-filter: blur(20px) saturate(1.3);
+}
+
+:root[data-effects='reduced'][data-nav='arc'] .titlebar-tools {
+  background: var(--color-glass);
+  backdrop-filter: none;
+}
+
+:root[data-nav='arc'] .titlebar-tools > :is(.profile-button, .alerts-button, .settings-button) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  margin: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text);
+  transition: background var(--duration-fast) var(--ease);
+}
+
+:root[data-nav='arc'] .titlebar-tools > :is(.alerts-button, .settings-button) {
+  width: 38px;
+}
+
+:root[data-nav='arc'] .titlebar-tools > :is(.alerts-button, .settings-button)[hidden] {
+  display: none;
+}
+
+:root[data-nav='arc'] .titlebar-tools > :is(.profile-button, .alerts-button, .settings-button):hover,
+:root[data-nav='arc'] .titlebar-tools > .settings-button.active {
+  background: color-mix(in srgb, var(--color-text) 12%, transparent);
+}
+
+:root[data-nav='arc'] .titlebar-tools > :is(.alerts-button, .settings-button) .icon {
+  width: 19px;
+  height: 19px;
+}
+
+:root[data-nav='arc'] .titlebar-tools > .profile-button {
+  gap: var(--space-2);
+  padding: 2px;
+}
+
+:root[data-nav='arc'] .titlebar-tools > .profile-button .avatar {
+  width: 32px;
+  height: 32px;
+}
+
+/* The avatar's own hover ring would double the group's hover. */
+:root[data-nav='arc'] .titlebar-tools > .profile-button:hover .avatar {
+  box-shadow: none;
+}
+
+/* The badge sits on the bell's shoulder, ringed in the group's colour. */
+:root[data-nav='arc'] .titlebar-tools .alerts-badge {
+  inset-block-start: 1px;
+  inset-inline-end: 1px;
+  box-shadow: 0 0 0 2px var(--color-glass);
+}
+
+@media (min-width: 1280px) {
+  :root[data-nav='arc'] .titlebar-tools > .profile-button {
+    padding-inline-end: var(--space-3);
+  }
+
+  :root[data-nav='arc'] .titlebar-tools .profile-name {
+    display: block;
+    max-width: 14ch;
+    overflow: hidden;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    unicode-bidi: plaintext;
+  }
+}

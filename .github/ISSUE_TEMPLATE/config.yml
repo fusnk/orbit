@@ -1,0 +1,11 @@
+# JSON-compatible YAML: validated with Python's built-in JSON parser.
+{
+  "blank_issues_enabled": false,
+  "contact_links": [
+    {
+      "name": "Report a security problem privately",
+      "url": "https://github.com/fusnk/orbit/security/advisories/new",
+      "about": "Never in a public issue. See SECURITY.md for what to include."
+    }
+  ]
+}

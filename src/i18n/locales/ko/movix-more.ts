@@ -1,0 +1,68 @@
+import type { movixMore as source } from '../en/movix-more';
+import type { Catalog } from '../types';
+
+/** Korean strings for the Movix-inspired additions. */
+export const movixMore: Catalog<typeof source> = {
+  // Settings → Playback → Next episode: when Next Up appears and its style (rooms/settings/next-up-rows.ts)
+  'movix.next-up.when': '다음 재생 카드 표시 시점',
+  'movix.next-up.when-hint': '엔딩 크레딧 위치를 모르는 에피소드에 적용돼요. 알고 있으면 크레딧과 함께 표시돼요.',
+  'movix.next-up.when-percent': '에피소드 중간 지점',
+  'movix.next-up.when-before-end': '끝나기 전',
+  'movix.next-up.amount': '표시 지점',
+  'movix.next-up.amount-hint': '에피소드의 어느 지점인지, 또는 끝나기 몇 분 전인지 정해요. 끝나기 전 분 단위는 절반 지점보다 앞서지 않아요.',
+  'movix.next-up.style': '다음 재생 카드 스타일',
+  'movix.next-up.style-hint': '모서리의 작은 카드 또는 화면 옆의 패널이에요.',
+  'movix.next-up.style-card': '카드',
+  'movix.next-up.style-panel': '패널',
+  // Exact air times from TVmaze: the setting and "Out today at 21:00" (catalog/air-times.ts, rooms/settings/general.ts)
+  'movix.air.setting': '정확한 방영 시간 찾기',
+  'movix.air.setting-hint': '무료 TV 가이드인 TVmaze에 새 에피소드 방영 시간을 물어봐요. 출시 레이더에 “오늘 21:00 공개”로 표시되고, 알림은 방영 시간에 오며, 자동 재생은 공개될 때까지 기다려요. 프로그램의 IMDb 또는 TheTVDB ID만 보내요.',
+  'movix.air.today': '오늘 {time} 공개',
+  'movix.air.tomorrow': '내일 {time} 공개',
+  'movix.air.date': '{date} {time} 공개',
+  // Episode reminders: "Remind me" on an upcoming episode, and the notification (rooms/detail/reminder-button.ts, library/reminders.ts)
+  'movix.remind.set': '알림 받기',
+  'movix.remind.current': '알림: {when}',
+  'movix.remind.on-day': '공개 당일',
+  'movix.remind.days-before.one': '{count}일 전',
+  'movix.remind.days-before.other': '{count}일 전',
+  'movix.remind.none': '알림 없음',
+  'movix.remind.saved': '{name}의 새 에피소드를 알려 드릴게요: {when}.',
+  'movix.remind.removed': '{name} 알림을 껐어요.',
+  'movix.remind.full': '알림은 최대 {count}개 시리즈까지 설정할 수 있어요. {name}을(를) 추가하려면 하나를 해제하세요.',
+  'movix.remind.today': '{code}이(가) 오늘 공개돼요.',
+  'movix.remind.today-at': '{code}이(가) 오늘 {time}에 공개돼요.',
+  'movix.remind.tomorrow': '{code}이(가) 내일 공개돼요.',
+  'movix.remind.tomorrow-at': '{code}이(가) 내일 {time}에 공개돼요.',
+  'movix.remind.in-days.one': '{code}이(가) {count}일 후 공개돼요.',
+  'movix.remind.in-days.other': '{code}이(가) {count}일 후 공개돼요.',
+  // A film’s end screen: the next film in its franchise, offered first (rooms/player/end-screen.ts)
+  'movix.end.next-in': '{name}의 다음 작품',
+  // Lists: description, sort, export and import of one list (rooms/lists/lists.ts)
+  'movix.lists.sort': '정렬 기준',
+  'movix.lists.sort-added': '추가한 날짜',
+  'movix.lists.sort-title': '제목',
+  'movix.lists.sort-year': '연도',
+  'movix.lists.sort-rating': '평점',
+  'movix.lists.description': '설명',
+  'movix.lists.add-description': '설명 추가',
+  'movix.lists.edit-description': '설명 편집',
+  'movix.lists.export': '목록 내보내기',
+  'movix.lists.import': '목록 가져오기',
+  'movix.lists.imported.one': '“{name}” 목록을 {count}개 작품과 함께 가져왔어요.',
+  'movix.lists.imported.other': '“{name}” 목록을 {count}개 작품과 함께 가져왔어요.',
+  'movix.lists.skipped.one': '파일에서 읽을 수 없는 작품 {count}개는 제외했어요.',
+  'movix.lists.skipped.other': '파일에서 읽을 수 없는 작품 {count}개는 제외했어요.',
+  'movix.lists.file-too-large': '목록 파일이라기엔 너무 커요.',
+  'movix.lists.file-not-list': 'Orbit에서 내보낸 목록 파일이 아니에요.',
+  'movix.lists.file-empty': '이 목록 파일에는 Orbit이 읽을 수 있는 작품이 없어요.',
+  'errors.lists.description': '목록 설명은 한 줄에 최대 {max}자까지예요.',
+  // Settings → General → Comfort → Reduce visual effects → Auto: what it decided and why (rooms/settings/appearance.ts)
+  'movix.effects.auto-off': '자동으로 꺼짐: 이 기기는 효과를 잘 처리해요.',
+  'movix.effects.auto-tv': '자동으로 켜짐: TV에서 실행 중이에요.',
+  'movix.effects.auto-cores.one': '자동으로 켜짐: 이 기기의 프로세서 코어는 {count}개예요.',
+  'movix.effects.auto-cores.other': '자동으로 켜짐: 이 기기의 프로세서 코어는 {count}개예요.',
+  'movix.effects.auto-memory': '자동으로 켜짐: 이 기기의 메모리는 {memory}예요.',
+  'movix.effects.auto-frames.one': '자동으로 켜짐: 여기서 화면이 초당 {count}프레임으로 움직였어요.',
+  'movix.effects.auto-frames.other': '자동으로 켜짐: 여기서 화면이 초당 {count}프레임으로 움직였어요.',
+};

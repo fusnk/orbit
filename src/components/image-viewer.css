@@ -1,0 +1,62 @@
+/* A full-size image over the app (image-viewer.ts), above drawers and below toasts. */
+.image-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--color-bg) 94%, transparent);
+  animation: page-in var(--duration-enter) var(--ease);
+}
+
+.image-viewer-img {
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 140px);
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  opacity: 0;
+  transition: opacity var(--duration-enter) var(--ease);
+}
+
+.image-viewer-img.loaded {
+  opacity: 1;
+}
+
+.image-viewer-bar {
+  position: absolute;
+  inset-inline: 0;
+  bottom: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.image-viewer-button {
+  display: grid;
+  place-items: center;
+  width: var(--control-compact);
+  height: var(--control-compact);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-surface-overlay);
+  color: var(--color-text);
+}
+
+.image-viewer-button:hover {
+  background: var(--color-border-strong);
+}
+
+.image-viewer-count {
+  min-width: 72px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+/* Right to left, previous and next point the other way (they also swap sides). */
+[dir='rtl'] .image-viewer-button.step .icon {
+  transform: scaleX(-1);
+}

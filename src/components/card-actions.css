@@ -1,0 +1,66 @@
+/*
+ * A card's quick actions (card-actions.ts): Save and ⋯ in the artwork's top
+ * corner, while the card is pointed at or has focus. Off with Settings →
+ * Appearance → Cards (data-card-actions on <html>).
+ */
+.card-quick-actions {
+  position: absolute;
+  z-index: 2;
+  top: var(--space-2);
+  inset-inline-end: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-popover) var(--ease);
+}
+
+.card:is(:hover, :focus-visible) .card-quick-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* They take the Watched check's (and the score chip's) corner while they show. */
+.card:is(:hover, :focus-visible) .frame:has(.card-quick-actions) :is(.watched-mark, .poster-scores) {
+  opacity: 0;
+}
+
+:root[data-card-actions='off'] .card-quick-actions,
+.card:not([data-has-menu]) .card-more {
+  display: none;
+}
+
+.card-quick {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(11, 10, 9, 0.72);
+  color: #fff;
+  cursor: pointer;
+}
+
+.card-quick:hover {
+  background: rgba(11, 10, 9, 0.9);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.card-quick .icon {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.4;
+}
+
+.card-save.on {
+  color: var(--color-accent-hi, var(--color-accent));
+}
+
+/* Touch screens have no hover: the corner stays clear there. */
+@media (hover: none) {
+  .card-quick-actions {
+    display: none;
+  }
+}

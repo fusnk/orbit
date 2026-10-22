@@ -1,0 +1,33 @@
+.player-panel.transcript-panel {
+  inset-inline-end: var(--space-6);
+  inset-inline-start: auto;
+  /* Below the top bar, which grows with the layout's scale (TV, Large), as panels from the top do (layout.css). */
+  inset-block-start: calc(72px * var(--ps, 1));
+  inset-block-end: 124px;
+  max-block-size: calc(100% - 196px);
+  inline-size: min(500px, calc(100% - 48px));
+}
+.transcript { display: flex; flex-direction: column; gap: var(--space-3); }
+.transcript-tools, .transcript-pages { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+/* .chip sets a display, which would otherwise keep "Follow playback" showing while it's hidden. */
+.transcript .chip[hidden] { display: none; }
+.transcript-tools > .panel-note { flex: 1; }
+.transcript-list { display: flex; flex-direction: column; gap: 2px; }
+.transcript-row { display: flex; align-items: baseline; gap: var(--space-3); text-align: start; padding-block: 10px; padding-inline: 10px; border: 0; border-radius: 8px; color: inherit; background: transparent; }
+.transcript-row > time { flex-shrink: 0; font-variant-numeric: tabular-nums; opacity: .65; min-inline-size: 4.5ch; }
+.transcript-text { white-space: pre-line; overflow-wrap: anywhere; }
+.transcript-row.current { background: color-mix(in srgb, var(--color-accent) 20%, transparent); }
+.transcript-row:hover:not(.current) { background: rgba(255,255,255,.08); }
+.transcript-row mark { background: color-mix(in srgb, var(--color-accent) 45%, transparent); color: inherit; border-radius: 2px; }
+.player.pip .player-panel.transcript-panel { inset-block-start: 48px; inset-block-end: 70px; max-block-size: calc(100% - 118px); }
+
+.transcript > .text-field {
+  flex: none;
+  inline-size: 100%;
+  block-size: var(--control-primary);
+  font-size: var(--font-size-md);
+}
+/* The panel scrollport clips outer shadows at its upper edge. */
+.transcript > .text-field:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}

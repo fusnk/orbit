@@ -1,0 +1,74 @@
+/* The Home builder (Settings → Library & Metadata → Home rows). Logical
+   properties only, so it mirrors in right-to-left languages. */
+
+.home-rows-list .home-row-item {
+  flex-wrap: wrap;
+  row-gap: var(--space-2);
+}
+
+/* Room for a few words: when the buttons would squeeze the name to less, they wrap under it instead
+   (short labels, as in Arabic, otherwise fit them all beside a name left a few pixels wide). */
+.home-rows-list .home-row-name {
+  flex-basis: 12em;
+}
+
+.home-row-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+/* "Half width" when on. */
+.home-row-controls .button[aria-pressed='true'] {
+  background: var(--color-accent-soft);
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+/* The Dashboard preset and the banner's option, above the rows. */
+.home-layout-options {
+  margin-bottom: var(--space-4);
+}
+
+.home-layout-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.home-row-rename {
+  flex: 1 1 200px;
+  max-width: 360px;
+}
+
+.home-add {
+  margin-top: var(--space-6);
+}
+
+.home-add-heading {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-md);
+}
+
+.home-add .segments {
+  flex-wrap: wrap;
+}
+
+.home-add-options {
+  max-height: 300px;
+  margin-top: var(--space-3);
+  padding: 4px;
+  overflow-y: auto;
+}
+
+.home-add-back {
+  font-weight: 700;
+}
+
+.home-add-message {
+  margin: 0;
+  text-align: start;
+}

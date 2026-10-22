@@ -1,0 +1,27 @@
+import type { jellyfin as source } from '../en/jellyfin';
+
+export const jellyfin: Record<keyof typeof source, string> = {
+  'jellyfin.settings.intro': 'Riproduci dal tuo server Jellyfin. Film ed episodi che contiene ottengono una fonte Jellyfin, e le sue righe possono andare nella Home. Orbit conserva un token di accesso del server, mai la tua password.',
+  'jellyfin.settings.server': 'Indirizzo del server',
+  'jellyfin.settings.server-placeholder': 'http://192.168.1.10:8096',
+  'jellyfin.settings.username': 'Nome utente',
+  'jellyfin.settings.password': 'Password',
+  'jellyfin.settings.fields-hint': 'L’indirizzo con cui apri Jellyfin nel browser. Richiede Jellyfin 10.9 o successivo.',
+  'jellyfin.settings.connect': 'Collega',
+  'jellyfin.settings.connecting': 'Collegamento…',
+  'jellyfin.settings.server-label': 'Server',
+  'jellyfin.settings.connected-as': 'Collegato come {user} su {server}',
+  'jellyfin.settings.connected': 'Collegato a {server}.',
+  'jellyfin.settings.connected-first': 'Collegato a {server}. “Aggiunti di recente” ora è nella Home; aggiungi altre righe Jellyfin in Impostazioni → Home e libreria → Righe della Home.',
+  'jellyfin.settings.disconnect': 'Scollega',
+  'jellyfin.settings.disconnected': 'Scollegato, ed è stata chiusa la sessione sul server.',
+  'jellyfin.settings.insecure': 'Non sicuro',
+  'jellyfin.settings.insecure-title': 'Questo server usa http non cifrato, quindi accesso e video viaggiano in chiaro. Va bene in casa; via internet usa https.',
+  'jellyfin.rows.kind': 'Jellyfin',
+  'jellyfin.rows.resume': 'Continua a guardare',
+  'jellyfin.rows.latest': 'Aggiunti di recente',
+  'jellyfin.rows.label': 'Jellyfin: {row}',
+  'jellyfin.rows.not-connected': 'Collega prima un server Jellyfin in Impostazioni → Account e servizi.',
+  'jellyfin.rows.libraries-failed': 'Impossibile caricare le librerie del server.',
+  'jellyfin.source.origin': 'Jellyfin · {server}',
+};

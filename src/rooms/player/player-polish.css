@@ -1,0 +1,169 @@
+/* Player polish: the bars' idle motion, button feedback, the key-chip tooltip
+   (tooltips.ts), the hub's chips and the playback info pinned on screen. */
+
+.player :is(.player-top, .player-bottom) {
+  transition:
+    opacity 300ms ease-in-out,
+    translate 300ms ease-in-out;
+}
+
+.player.idle .player-top {
+  translate: 0 -8px;
+  pointer-events: none;
+}
+
+.player.idle .player-bottom {
+  translate: 0 8px;
+  pointer-events: none;
+}
+
+/* These centre their transport on the screen from inside the bar; a translate
+   would make the bar their containing block, dropping them into it mid-fade. */
+.player:is([data-layout='cinema'], [data-layout='streaming']).idle .player-bottom {
+  translate: none;
+}
+
+.player :is(.player-top, .player-bottom) .player-button > .icon {
+  transition: transform 150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.player :is(.player-top, .player-bottom) .player-button:is(:hover, :focus-visible) > .icon {
+  transform: scale(1.12);
+}
+
+.player :is(.player-top, .player-bottom) .player-button:active > .icon {
+  transform: scale(0.95);
+}
+
+/* ── Tooltip with the action's key ── */
+
+.player-tip {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-inline-size: calc(100vw - 16px);
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(16, 15, 14, 0.96);
+  color: #f4f0ea;
+  font: 600 12px/1.4 var(--font-ui);
+  pointer-events: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+  animation: player-tip-enter 120ms ease-out;
+}
+
+.player-tip[hidden] {
+  display: none;
+}
+
+.player-tip-label {
+  overflow-wrap: anywhere;
+}
+
+.player-tip kbd {
+  flex: none;
+  padding: 2px 5px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  font: inherit;
+}
+
+@keyframes player-tip-enter {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+}
+
+/* ── The hub's chips ── */
+
+.hub-chips {
+  margin-block-start: 14px;
+  padding-block-start: 12px;
+  border-block-start: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hub-chips .chip {
+  min-block-size: 32px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ── Playback info pinned on screen ── */
+
+.player-info-hud {
+  position: absolute;
+  inset-block-start: 92px;
+  inset-inline-start: 24px;
+  z-index: 5;
+  inline-size: min(320px, calc(100% - 48px));
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(16, 15, 14, 0.94);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.25);
+  color: #eee9e2;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.player-info-hud[hidden],
+.player.pip .player-info-hud {
+  display: none;
+}
+
+.player-info-hud .info-list {
+  margin: 0;
+  gap: 6px 12px;
+}
+
+.player-info-hud dd {
+  overflow-wrap: anywhere;
+  min-inline-size: 0;
+}
+
+/* The subtitle preview in the Subtitle style view (its look: subtitle-preview.css). */
+.player-panel .subtitle-preview {
+  flex: none;
+}
+
+/* ── Reduced motion ── */
+
+:root[data-motion='reduce'] .player-tip {
+  animation: none;
+}
+
+:root[data-motion='reduce'] .player :is(.player-top, .player-bottom, .player-button > .icon) {
+  transition: none;
+  translate: none;
+}
+
+:root[data-motion='reduce'] .player .player-button > .icon {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .player-tip {
+    animation: none;
+  }
+
+  :root:not([data-motion='full']) .player :is(.player-top, .player-bottom, .player-button > .icon) {
+    transition: none;
+    translate: none;
+  }
+
+  :root:not([data-motion='full']) .player .player-button > .icon {
+    transform: none;
+  }
+}
+
+/* Portalled context menus also sit over the native video while the player is open. */
+:root.player-open .menu {
+  backdrop-filter: none;
+  background: rgba(16, 15, 14, 0.96);
+}

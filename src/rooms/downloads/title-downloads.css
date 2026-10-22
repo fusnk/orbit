@@ -1,0 +1,91 @@
+/* Download controls outside the Downloads page: title pages (title-downloads.ts) and Settings. */
+
+.download-progress-note {
+  font-variant-numeric: tabular-nums;
+}
+
+/* A third cell beside the episode row and its watched check. */
+.episode-item:has(.episode-download) {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+.episode-download {
+  display: grid;
+  place-items: center;
+  width: var(--control-chip);
+  height: var(--control-chip);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  /* From the theme, like the watched check beside it, so light themes show it. */
+  box-shadow: inset 0 0 0 1.5px var(--color-border-strong);
+  color: var(--color-text-faint);
+}
+
+.episode-download:hover {
+  color: var(--color-text);
+}
+
+.episode-download:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.episode-download.on {
+  box-shadow: inset 0 0 0 1.5px var(--color-success);
+  color: var(--color-success);
+}
+
+.episode-download .icon {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2.2;
+}
+
+.download-percent {
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.download-folder-path {
+  overflow-wrap: anywhere;
+}
+
+/* The season header's "Download season" beside "Mark season watched". */
+.episodes-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* Settings → Downloads → "Only download between": the hours, under its text while it's on. */
+.hour-range {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-block-start: var(--space-2);
+}
+
+.hour-range[hidden] {
+  display: none;
+}
+
+.hour-stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hour-stepper-value {
+  min-inline-size: 5.5ch;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* The arrows point the way time runs, in either reading direction. */
+[dir='rtl'] .hour-stepper .icon {
+  transform: scaleX(-1);
+}

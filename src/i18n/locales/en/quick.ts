@@ -1,0 +1,20 @@
+/** English strings for Quick settings (the title bar's sliders button) and pausing watch history: the source every translation follows. */
+export const quick = {
+  'quick.button': 'Quick settings',
+  'quick.heading': 'Quick settings',
+  'quick.switch-profile': 'Switch profile',
+  'quick.pause-history': 'Pause watch history',
+  'quick.pause-history-hint': 'What you play isn’t added to your history or Continue Watching, and isn’t sent to Stremio, Jellyfin or Plex.',
+  'quick.look': 'Look',
+  'quick.look-custom': 'Custom',
+  'quick.trailers': 'Autoplay trailers',
+  'quick.trailers-partly': 'On for title pages or banners only. Turning it on plays trailers in both.',
+  'quick.skip-intros': 'Skip intros automatically',
+  'quick.all-settings': 'All settings',
+  'quick.chip': 'History paused',
+  'quick.chip-label': 'Watch history is paused. Open Quick settings',
+  'quick.paused': 'Watch history paused. What you play now leaves no trace.',
+  'quick.resumed': 'Watch history is back on.',
+  'quick.palette.pause': 'Pause watch history',
+  'quick.palette.resume': 'Resume watch history',
+};

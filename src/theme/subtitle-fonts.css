@@ -1,0 +1,62 @@
+/* The readability fonts for subtitles (Settings → Subtitles → Font), for the page's
+   preview and the picker's samples. The same files go to mpv as a resource
+   (tauri.conf.json), so the preview and the player draw the same font. All four
+   are under the SIL Open Font License 1.1 (licences next to the files in public/fonts).
+   Loaded only once something uses them. */
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/AtkinsonHyperlegible-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/AtkinsonHyperlegible-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Lexend';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/Lexend-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Lexend';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/Lexend-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/OpenDyslexic-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/OpenDyslexic-Bold.otf') format('opentype');
+}
+
+/* Only the Bold weight ships (that's the look); it serves both weights so the
+   preview never fakes a heavier bold, matching libass with the one face. */
+@font-face {
+  font-family: 'Arimo';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/Arimo-Bold.ttf') format('truetype');
+}

@@ -1,0 +1,38 @@
+/* The Addons page (src/rooms/addons/page.ts). The panel keeps its Settings
+   styles (styles.css, settings.css); this lays out the page and its "Add an
+   addon" section. Logical properties throughout, so it mirrors right to left. */
+
+/* So the panel's narrow layout (settings.css, a narrow pane) also applies here. */
+.addons-page-panel {
+  container-type: inline-size;
+}
+
+.addons-page-head .page-title {
+  margin-block-end: var(--space-2);
+}
+
+.addons-page-head p {
+  max-inline-size: 64ch;
+  margin: 0 0 var(--space-6);
+}
+
+.addons-install {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-inline-size: 760px;
+  margin-block-end: var(--space-8);
+}
+
+.addons-install h2 {
+  margin: 0;
+}
+
+.addons-install[hidden] {
+  display: none;
+}
+
+.addons-install-hint {
+  margin: 0;
+  font-size: var(--font-size-sm);
+}

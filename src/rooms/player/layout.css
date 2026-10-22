@@ -1,0 +1,940 @@
+/* ── Player layouts (Settings → Player) ──────────────────────────────────
+   Presets and switches on top of player.css, keyed on data attributes that
+   layout.ts sets on .player. With none set (or Orbit with the defaults) the
+   player looks exactly as player.css draws it: every size here is the old
+   value times --ps, which is 1 by default.
+
+   "Blur" is drawn as a frosted plate, not a backdrop-filter: the video is
+   drawn natively beneath the WebView, so there is nothing for a backdrop
+   blur to sample, and a backdrop-filter would also make the controls
+   container the containing block for Streaming's centred buttons. */
+
+.player {
+  --ps-base: 1;
+  --ps-size: 1;
+  --ps: calc(var(--ps-base) * var(--ps-size));
+  /* Room the bottom controls take: panels, Next Up, Skip and the channel card sit above it. */
+  --player-clear: calc(124px * var(--ps));
+}
+
+.player[data-size='compact'] {
+  --ps-size: 0.85;
+}
+
+.player[data-size='large'] {
+  --ps-size: 1.2;
+}
+
+/* ── Sizes (scaled from player.css's values) ──────────────────────────── */
+
+.player .player-top {
+  height: calc(88px * var(--ps));
+}
+
+.player :is(.player-top, .player-bottom) .player-button {
+  width: calc(44px * var(--ps));
+  height: calc(44px * var(--ps));
+}
+
+.player :is(.player-top, .player-bottom) .player-button .icon {
+  width: calc(24px * var(--ps));
+  height: calc(24px * var(--ps));
+}
+
+.player .player-bottom .player-button.large .icon {
+  width: calc(30px * var(--ps));
+  height: calc(30px * var(--ps));
+}
+
+.player .skip-label {
+  font-size: calc(var(--font-size-2xs) * var(--ps));
+}
+
+.player .player-title {
+  font-size: calc(15px * var(--ps));
+  unicode-bidi: plaintext;
+}
+
+.player .player-episode {
+  font-size: calc(var(--font-size-sm) * var(--ps));
+}
+
+.player .player-time {
+  min-width: calc(64px * var(--ps));
+  font-size: calc(12px * var(--ps));
+}
+
+.player .quality-badge {
+  font-size: calc(11px * var(--ps));
+}
+
+.player .seek {
+  height: calc(20px * var(--ps));
+}
+
+.player .source-chip {
+  height: calc(34px * var(--ps));
+  font-size: calc(var(--font-size-sm) * var(--ps));
+}
+
+.player .player-panel:not(.from-top) {
+  bottom: var(--player-clear);
+  /* Below the top bar, which grows with the controls (TV's Source chip sat under the panel's top edge). */
+  max-height: calc(100% - var(--player-clear) - 88px * var(--ps) - 8px);
+}
+
+.player .player-panel.from-top {
+  top: calc(72px * var(--ps));
+}
+
+.player .next-up:not(.takeover),
+.player .skip-segment,
+.player .surf-card {
+  bottom: var(--player-clear);
+}
+
+/* ── Switches ─────────────────────────────────────────────────────────── */
+
+/* The Live / Catch-up / Trailer badge stays: it says what kind of thing is playing. */
+.player[data-title-info='off'] .player-name > :not(.live-badge) {
+  visibility: hidden;
+}
+
+.player[data-badges='off'] .layout-badges,
+.layout-badges:not(:has(> :not([hidden]))),
+.layout-languages[hidden] {
+  display: none;
+}
+
+.layout-badges,
+.layout-languages {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.layout-badges {
+  margin-right: var(--space-2);
+}
+
+.layout-badges .quality-badge {
+  margin-right: 0;
+}
+
+.layout-badge {
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: calc(11px * var(--ps));
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* Outranks the layouts that draw the button as a labelled card
+   (Streaming's and TV's `.player[data-layout] .….has-label:not([hidden])`). */
+.player[data-layout][data-next-button='off'] .layout-next-button.has-label {
+  display: none;
+}
+
+.player[data-chapter-marks='off'] .seek-marks {
+  display: none;
+}
+
+.layout-clock {
+  display: none;
+  margin-right: var(--space-2);
+  font-size: calc(15px * var(--ps));
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: plaintext;
+  pointer-events: none;
+}
+
+.player[data-clock='on'] .layout-clock {
+  display: block;
+}
+
+/* Text labels on buttons: only where a preset has room for them. */
+.layout-label {
+  display: none;
+}
+
+/* Where it plays from, under the title: only Arc shows it. */
+.layout-source {
+  display: none;
+}
+
+/* ── Timeline ─────────────────────────────────────────────────────────── */
+
+/* Theme Studio's seek bar (theme/seekbar.css) draws the bar; a layout and a
+   timeline only adjust it, through these properties, so the person's
+   thickness and colour always come through: Accent and Chapters a little
+   thicker, every one scaled with the controls. Setting heights or fills here
+   directly would fight seekbar.css's more specific rules, and whichever won
+   would silently undo the other's setting. */
+.player {
+  --seek-track: calc(var(--seek-height) * var(--ps));
+}
+
+.player:is([data-timeline='accent'], [data-timeline='chapters']) {
+  --seek-track: calc((var(--seek-height) + 2px) * var(--ps));
+}
+
+.player[data-timeline='accent'] .seek-track {
+  background: color-mix(in srgb, var(--seek-bar) 22%, rgba(255, 255, 255, 0.18));
+}
+
+/* What's buffered keeps the brightness Studio picked, tinted. */
+:root[data-seek] .player[data-timeline='accent'] .seek-buffered {
+  background: color-mix(in srgb, var(--seek-bar) 30%, rgb(255 255 255 / var(--seek-buffered-alpha)));
+}
+
+/* A flat bar's colour as a gradient; Studio's patterns and pictures keep their own. */
+:root[data-seek='flat']:not([data-seek-image='on']) .player[data-timeline='accent'] .seek-fill {
+  background: linear-gradient(90deg, var(--seek-bar), color-mix(in srgb, var(--seek-bar) 70%, #fff));
+}
+
+.player[data-timeline='accent'] .seek-knob {
+  transform: scale(0.85);
+}
+
+/* Chapters: the marks become clear gaps, so the bar reads as segments. */
+.player[data-timeline='chapters'] .seek-mark {
+  width: calc(4px * var(--ps));
+  margin-left: calc(-2px * var(--ps));
+  background: rgba(0, 0, 0, 0.9);
+}
+
+/* ── Controls background ──────────────────────────────────────────────── */
+
+.player[data-controls-bg='none'] :is(.player-top, .player-bottom) {
+  background: none;
+}
+
+.player[data-controls-bg='none'] .player-ui {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
+.player[data-controls-bg='none'] :is(.player-top, .player-bottom) .icon {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+}
+
+/* Floating keeps the soft top fade: a full-width plate would fight its rounded panel. */
+.player[data-controls-bg='blur']:not([data-layout='floating']) .player-top {
+  background: rgba(14, 13, 12, 0.62);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.player[data-controls-bg='blur'] .player-bottom {
+  background: rgba(14, 13, 12, 0.74);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.player[data-controls-bg='blur']:not([data-layout='floating']) .player-bottom {
+  padding-top: var(--space-4);
+}
+
+.player[data-controls-bg='blur'] {
+  --player-clear: calc(116px * var(--ps));
+}
+
+/* ── Title on its own at the top left (Minimal, Compact, TV) ──────────── */
+
+.player:is([data-layout='minimal'], [data-layout='compact'], [data-layout='tv']) .player-name {
+  position: absolute;
+  top: calc(44px * var(--ps));
+  left: calc(var(--space-5) + 44px * var(--ps) + var(--space-3));
+  max-width: 50vw;
+  translate: 0 -50%;
+  /* The top of the player is the window's drag region. */
+  pointer-events: none;
+}
+
+/* ── Minimal: play, a thin timeline and the time; the rest on input ───── */
+
+
+.player[data-layout='minimal'] .player-bottom {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: 56px;
+}
+
+.player[data-layout='minimal'] :is(.player-bar, .player-bar-start) {
+  display: contents;
+}
+
+.player[data-layout='minimal'] .player-bar-start > .large {
+  order: -1;
+}
+
+.player[data-layout='minimal'] .player-seek-row {
+  flex: 1;
+}
+
+/* The other buttons float just above the row, so the timeline keeps its full width. */
+.player[data-layout='minimal'] :is(.skip-back, .skip-ahead, .player-volume, .player-bar-end) {
+  position: absolute;
+  bottom: calc(var(--space-4) + 52px * var(--ps));
+}
+
+/* A Blur plate has an edge, so it reaches up past those buttons (Blur's own padding would leave
+   them floating above it, half on the picture, half on a letterboxed film's black bar). */
+.player[data-layout='minimal'][data-controls-bg='blur'] {
+  --player-clear: calc(var(--space-4) * 2 + 96px * var(--ps));
+}
+
+.player[data-layout='minimal'][data-controls-bg='blur'] .player-bottom {
+  padding-top: calc(var(--space-4) + 52px * var(--ps));
+}
+
+.player[data-layout='minimal'] .skip-back {
+  left: var(--space-6);
+}
+
+.player[data-layout='minimal'] .skip-ahead {
+  left: calc(var(--space-6) + 44px * var(--ps));
+}
+
+.player[data-layout='minimal'] .player-volume {
+  left: calc(var(--space-6) + 88px * var(--ps));
+}
+
+.player[data-layout='minimal'] .player-bar-end {
+  right: var(--space-6);
+}
+
+/* A pixel thinner than Studio's bar, whatever the timeline. */
+.player[data-layout='minimal'][data-timeline] {
+  --seek-track: calc(max(var(--seek-height) - 1px, 2px) * var(--ps));
+}
+
+.player[data-layout='minimal'] :is(.player-button.skip, .player-volume, .player-bar-end),
+.player[data-layout='minimal'] .player-top-end > :not(.layout-clock) {
+  transition: opacity var(--duration-popover) var(--ease);
+}
+
+/* Hidden but still reachable: moving focus to one (keyboard, remote) shows them all. */
+.player[data-layout='minimal']:not(.engaged) .player-bottom:not(:hover, :focus-within) :is(.player-button.skip, .player-volume, .player-bar-end),
+.player[data-layout='minimal']:not(.engaged) .player-top:not(:hover, :focus-within) .player-top-end > :not(.layout-clock) {
+  opacity: 0;
+}
+
+/* ── Compact: one slim bar ────────────────────────────────────────────── */
+
+.player[data-layout='compact'] {
+  --player-clear: calc(76px * var(--ps));
+}
+
+.player[data-layout='compact'] .player-bottom {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 32px var(--space-3) var(--space-2);
+}
+
+.player[data-layout='compact'] :is(.player-bar, .player-bar-start, .player-bar-end, .player-seek-row) {
+  display: contents;
+}
+
+.player[data-layout='compact'] :is(.player-button.skip, .layout-secondary) {
+  display: none;
+}
+
+.player[data-layout='compact'] .player-bar-start > .large {
+  order: -2;
+}
+
+.player[data-layout='compact'] .player-time {
+  order: -1;
+  min-width: 0;
+  text-align: center;
+}
+
+.player[data-layout='compact'] .seek {
+  margin: 0 var(--space-2);
+}
+
+.player[data-layout='compact'] .player-bar-end > * {
+  order: 1;
+}
+
+/* ── Floating: the controls in a rounded panel above the bottom edge ──── */
+
+.player[data-layout='floating'] {
+  --player-clear: calc(150px * var(--ps));
+}
+
+.player[data-layout='floating'] .player-bottom {
+  align-self: center;
+  width: min(960px, calc(100% - 48px));
+  margin-bottom: var(--space-6);
+  padding: var(--space-2) var(--space-5) var(--space-3);
+  border-radius: 22px;
+  gap: var(--space-1);
+  background: none;
+}
+
+.player[data-layout='floating'][data-controls-bg='gradient'] .player-bottom {
+  background: linear-gradient(180deg, rgba(36, 34, 32, 0.82), rgba(10, 9, 8, 0.9));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 24px 60px -24px rgba(0, 0, 0, 0.9);
+}
+
+.player[data-layout='floating'][data-controls-bg='blur'] .player-bottom {
+  background: rgba(20, 19, 18, 0.72);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 24px 60px -24px rgba(0, 0, 0, 0.9);
+}
+
+.player[data-layout='floating'] .player-name {
+  max-width: 34vw;
+}
+
+/* ── Streaming: big centred transport, title block, Next card ─────────── */
+
+/* The title block replaces the name in the bar (all but its Live badge). */
+.player[data-layout='streaming'] .player-name > :not(.live-badge) {
+  visibility: hidden;
+}
+
+.player[data-layout='streaming'] .player-bar-start > :is(.large, .skip) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.player[data-layout='streaming'] .player-bar-start > .large {
+  width: calc(88px * var(--ps));
+  height: calc(88px * var(--ps));
+  translate: -50% -50%;
+}
+
+.player[data-layout='streaming'] .player-bar-start > .large .icon {
+  width: calc(44px * var(--ps));
+  height: calc(44px * var(--ps));
+}
+
+.player[data-layout='streaming'] .player-bar-start > .skip {
+  width: calc(64px * var(--ps));
+  height: calc(64px * var(--ps));
+}
+
+.player[data-layout='streaming'] .player-bar-start > .skip .icon {
+  width: calc(34px * var(--ps));
+  height: calc(34px * var(--ps));
+}
+
+.player[data-layout='streaming'] .player-bar-start > .skip .skip-label {
+  font-size: calc(11px * var(--ps));
+}
+
+.player[data-layout='streaming'] .player-bar-start > .skip-back {
+  translate: calc(-50% - 120px * var(--ps)) -50%;
+}
+
+.player[data-layout='streaming'] .player-bar-start > .skip-ahead {
+  translate: calc(-50% + 120px * var(--ps)) -50%;
+}
+
+.player[data-layout='streaming'] .player-bar-start > :is(.large, .skip):hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* The title, year and runtime and a short description, top left, while paused and at the start. */
+.layout-info {
+  display: none;
+}
+
+.player[data-layout='streaming'][data-title-info='on'] .layout-info {
+  position: absolute;
+  top: calc(88px * var(--ps) + var(--space-4));
+  left: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: min(560px, 48vw);
+  /* It sits on the picture, below the top bar's shade or plate, so it brings its own. */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-enter) var(--ease);
+}
+
+.player[data-layout='streaming'].layout-info-on .layout-info {
+  opacity: 1;
+}
+
+.layout-info > * {
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+
+.layout-info-title {
+  font-size: calc(clamp(28px, 3.4vw, 48px) * var(--ps));
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.layout-info-meta {
+  font-size: calc(var(--font-size-sm) * var(--ps));
+  font-weight: 700;
+  color: #e6e1db;
+}
+
+.layout-info-summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  margin: 0;
+  overflow: hidden;
+  font-size: calc(14px * var(--ps));
+  line-height: 1.5;
+  color: #cdc7c0;
+}
+
+/* Next episode: a card at the right end of the bar. */
+.player[data-layout='streaming'] .layout-next-button:not([hidden]) {
+  display: flex;
+  order: 1;
+  align-items: center;
+  gap: var(--space-3);
+  width: auto;
+  max-width: 300px;
+  height: auto;
+  margin-left: var(--space-2);
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgba(20, 19, 18, 0.82);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.player[data-layout='streaming'] .layout-next-button:hover {
+  background: rgba(40, 38, 36, 0.9);
+}
+
+.player[data-layout='streaming'] .layout-next {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  text-align: start;
+}
+
+.layout-next-eyebrow {
+  font-size: calc(var(--font-size-xs) * var(--ps));
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: #cdc7c0;
+}
+
+.layout-next-name {
+  overflow: hidden;
+  font-size: calc(var(--font-size-sm) * var(--ps));
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  unicode-bidi: plaintext;
+}
+
+/* ── Theatre: a full-width timeline over one even row ────────────────────
+   Back at the top start and the source chip at the top end, as usual. The
+   timeline runs edge to edge with the time left at its end; under it the
+   transport sits at the start, the title (and "S1 · E3 · Name") in the
+   middle, and the tracks, speed, quality, picture in picture and full screen
+   at the end. No centre overlay: everything stays in the one row, in the
+   same order for the keyboard and remote as every other layout. */
+
+/* Shown by Theatre only (index.ts adds it beside the short "S1 · E3"). */
+.player-episode-full {
+  display: none;
+}
+
+.player[data-layout='theater'] {
+  --player-clear: calc(140px * var(--ps));
+}
+
+.player[data-layout='theater'] .player-bottom {
+  gap: var(--space-3);
+  padding: calc(96px * var(--ps)) var(--space-8) var(--space-5);
+}
+
+.player[data-layout='theater'] .player-seek-row {
+  gap: var(--space-5);
+}
+
+.player[data-layout='theater'] .player-time {
+  min-width: calc(72px * var(--ps));
+  font-size: calc(13px * var(--ps));
+}
+
+.player[data-layout='theater'] .player-bar-start {
+  gap: var(--space-2);
+}
+
+.player[data-layout='theater'] .player-bar-end {
+  gap: var(--space-2);
+}
+
+.player[data-layout='theater'] .player-name {
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  max-width: 38vw;
+  text-align: center;
+}
+
+.player[data-layout='theater'] .player-name > * {
+  max-width: 100%;
+}
+
+/* An episode's heart ends its episode line, rather than wrapping onto a row of its own below. */
+.player[data-layout='theater'] .player-name:has(> .player-fav) {
+  display: grid;
+  grid-template-columns: minmax(0, auto) auto;
+  justify-content: center;
+  align-items: center;
+  column-gap: var(--space-1);
+  row-gap: 2px;
+}
+
+.player[data-layout='theater'] .player-name:has(> .player-fav) > .player-title {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
+.player[data-layout='theater'] .player-title {
+  font-size: calc(16px * var(--ps));
+  font-weight: 600;
+  letter-spacing: 0.005em;
+}
+
+.player[data-layout='theater'] .player-name:has(.player-episode-full) .player-episode {
+  display: none;
+}
+
+.player[data-layout='theater'] :is(.player-episode, .player-episode-full) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: calc(var(--font-size-sm) * var(--ps));
+  font-weight: 500;
+  color: #cdc7c0;
+}
+
+.player[data-layout='theater'] .player-episode-full {
+  display: block;
+  unicode-bidi: plaintext;
+}
+
+/* ── TV: oversized, two rows, labelled buttons, a strong focus ring ───── */
+
+.player[data-layout='tv'] {
+  --ps-base: 1.35;
+  --player-clear: calc(190px * var(--ps));
+}
+
+.player[data-layout='tv'] .player-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.player[data-layout='tv'] .player-bar-start {
+  gap: var(--space-3);
+}
+
+.player[data-layout='tv'] .player-bar-start > .player-button {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.player[data-layout='tv'] .player-bar-start > .large {
+  width: calc(60px * var(--ps));
+  height: calc(60px * var(--ps));
+}
+
+.player[data-layout='tv'] .player-bar-end {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.player[data-layout='tv'] .has-label:not([hidden]) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: auto;
+  padding: 0 calc(16px * var(--ps)) 0 calc(12px * var(--ps));
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.player[data-layout='tv'] .has-label .layout-label {
+  display: inline;
+  font-size: calc(13px * var(--ps));
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Quality and languages under the title, so the button row stays one line. */
+.player[data-layout='tv'] .layout-badges {
+  position: absolute;
+  top: calc(66px * var(--ps));
+  left: calc(var(--space-5) + 44px * var(--ps) + var(--space-3));
+  pointer-events: none;
+}
+
+.player[data-layout='tv'] .layout-next-name {
+  display: none;
+}
+
+.player[data-layout='tv'] .layout-next-eyebrow {
+  font-size: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+  color: inherit;
+}
+
+.player[data-layout='tv'] .player-ui :focus-visible {
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.9),
+    0 0 0 6px var(--color-accent);
+}
+
+/* ── Arc (the Orbit Arc Look): title at the start, a centred capsule, tools at the end ──
+   The timeline runs the full width over one row: the title block (name,
+   "S1 · E3 · Name", where it plays from) at the start, a capsule in the
+   middle with the jumps either side of Play, and the volume and the other
+   buttons at the end. Play is ringed by how much has played (transport.ts
+   sets --played from mpv's position, so the ring is never a running
+   animation of its own), and the seek knob is a hollow ring. Only the
+   capsule's three buttons leave the row, as in Streaming: the keyboard and
+   remote reach every control in the same order as in the other layouts. */
+
+.player[data-layout='arc'] {
+  --player-clear: calc(150px * var(--ps));
+}
+
+.player[data-layout='arc'] .player-bottom {
+  gap: var(--space-3);
+  padding: calc(88px * var(--ps)) var(--space-12) var(--space-5);
+}
+
+/* Only for the Gradient background: None and Blur draw their own (Blur's plate also takes its own top padding). */
+.player[data-layout='arc'][data-controls-bg='gradient'] .player-bottom {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.84), rgba(0, 0, 0, 0.42) 58%, transparent);
+}
+
+.player[data-layout='arc'] .player-time {
+  font-size: calc(13px * var(--ps));
+}
+
+/* The knob: a hollow ring, always there while the controls show, a little larger under the pointer or focus. */
+.player[data-layout='arc'] .seek-knob {
+  width: calc(16px * var(--ps));
+  height: calc(16px * var(--ps));
+  margin: calc(-8px * var(--ps)) 0 0 calc(-8px * var(--ps));
+  background: #0b0a09;
+  box-shadow:
+    inset 0 0 0 calc(2.5px * var(--ps)) var(--color-accent),
+    0 1px 4px rgba(0, 0, 0, 0.6);
+  transform: scale(0.85);
+}
+
+.player[data-layout='arc'] .seek:is(:hover, .dragging, :focus-visible) .seek-knob {
+  transform: scale(1.2);
+}
+
+.player[data-layout='arc'] .player-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: calc(76px * var(--ps));
+}
+
+/* The capsule behind the three transport buttons. */
+.player[data-layout='arc'] .player-bar::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(236px * var(--ps));
+  height: calc(76px * var(--ps));
+  translate: -50% -50%;
+  border-radius: var(--radius-full);
+  background: rgba(14, 13, 12, 0.72);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 18px 40px -22px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+.player[data-layout='arc'] .player-bar-start {
+  display: contents;
+}
+
+.player[data-layout='arc'] .player-bar-start > :is(.large, .skip) {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
+.player[data-layout='arc'] .player-bar-start > .skip {
+  width: calc(48px * var(--ps));
+  height: calc(48px * var(--ps));
+}
+
+.player[data-layout='arc'] .player-bar-start > .skip .icon {
+  width: calc(26px * var(--ps));
+  height: calc(26px * var(--ps));
+}
+
+.player[data-layout='arc'] .player-bar-start > .skip-back {
+  left: calc(50% - 78px * var(--ps));
+}
+
+.player[data-layout='arc'] .player-bar-start > .skip-ahead {
+  left: calc(50% + 78px * var(--ps));
+}
+
+/* Play, ringed: a faint track and the accent arc of what has played. */
+.player[data-layout='arc'] .player-bar-start > .large {
+  width: calc(62px * var(--ps));
+  height: calc(62px * var(--ps));
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.player[data-layout='arc'] .player-bar-start > .large:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.player[data-layout='arc'] .player-bar-start > .large::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--color-accent) calc(var(--played, 0) * 1turn), rgba(255, 255, 255, 0.26) 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  pointer-events: none;
+}
+
+.player[data-layout='arc'] .player-bar-start > .large .icon {
+  width: calc(26px * var(--ps));
+  height: calc(26px * var(--ps));
+}
+
+/* The title block at the start, kept clear of the capsule. */
+.player[data-layout='arc'] .player-name {
+  order: -1;
+  flex: 1 1 0;
+  display: grid;
+  grid-template-columns: minmax(0, auto) auto 1fr;
+  justify-items: start;
+  align-items: center;
+  column-gap: var(--space-1);
+  row-gap: 3px;
+  max-width: calc(50% - 150px * var(--ps));
+  margin-inline-end: auto;
+}
+
+.player[data-layout='arc'] .player-name > * {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.player[data-layout='arc'] .player-name > :is(.live-badge, .player-title, .layout-source) {
+  grid-column: 1 / -1;
+}
+
+.player[data-layout='arc'] .player-title {
+  font-family: var(--font-display);
+  font-size: calc((19px + 6px * var(--font-display-tracking)) * var(--ps));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.005em + 0.05em * var(--font-display-tracking));
+  line-height: 1.15;
+}
+
+.player[data-layout='arc'] .player-name:has(.player-episode-full) .player-episode {
+  display: none;
+}
+
+.player[data-layout='arc'] :is(.player-episode, .player-episode-full) {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: calc(var(--font-size-sm) * var(--ps));
+  font-weight: 500;
+  color: #d8d2cb;
+  unicode-bidi: plaintext;
+}
+
+.player[data-layout='arc'] .layout-source {
+  display: block;
+  overflow: hidden;
+  margin-top: 3px;
+  padding: calc(3px * var(--ps)) calc(10px * var(--ps));
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  color: #e6e1db;
+  font-size: calc(var(--font-size-xs) * var(--ps));
+  font-weight: 600;
+  text-overflow: ellipsis;
+  unicode-bidi: plaintext;
+}
+
+/* The buttons at the end would reach the centred capsule (measured, layout.ts): its three buttons join the row after the title. */
+.player[data-layout='arc'][data-cramped] .player-bar::before {
+  /* Hidden, not removed: its width is what's measured. */
+  visibility: hidden;
+}
+
+.player[data-layout='arc'][data-cramped] .player-bar-start > :is(.large, .skip) {
+  position: relative;
+  top: auto;
+  left: auto;
+  translate: none;
+}
+
+.player[data-layout='arc'][data-cramped] .player-bar-start > .skip-back {
+  order: 1;
+}
+
+.player[data-layout='arc'][data-cramped] .player-bar-start > .large {
+  order: 2;
+}
+
+.player[data-layout='arc'][data-cramped] .player-bar-start > .skip-ahead {
+  order: 3;
+  margin-inline-end: auto;
+}
+
+.player[data-layout='arc'][data-cramped] :is(.player-volume, .player-bar-end) {
+  order: 4;
+}
+
+.player[data-layout='arc'][data-cramped] .player-name {
+  max-width: 34%;
+  margin-inline-end: var(--space-4);
+}
+
+/* ── A crowded bar (measured, layout.ts) ──────────────────────────────────
+   Too little room left for the title in a one-row bar: the quality and
+   language badges give way first, then the lock and picture in picture
+   (both keep their shortcuts, as in Compact). Hidden, not removed: their
+   size is what's measured, and visibility: hidden also keeps the keyboard
+   and remote from stopping on them. */
+.player[data-crowded] .layout-badges,
+.player[data-crowded='extras'] .layout-secondary {
+  position: absolute;
+  visibility: hidden;
+}

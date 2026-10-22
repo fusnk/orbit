@@ -1,0 +1,664 @@
+/* ── Live TV ──────────────────────────────────────────────────────────── */
+
+.live-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.live-header .text-field {
+  flex: 0 1 360px;
+}
+
+.live-body {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--space-6);
+  margin-top: var(--space-5);
+}
+
+/* "No TV provider yet" or a failure takes the page's width, not the groups column. */
+.live-body > .grid-message {
+  grid-column: 1 / -1;
+}
+
+.live-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-self: start;
+  position: sticky;
+  top: var(--space-4);
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  /* Room for the focus ring, which the scroll box would otherwise clip. */
+  padding: 4px;
+  margin: -4px;
+}
+
+.live-group {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 9px 12px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+
+.live-group > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Names from a provider take their own direction (dir="auto"), which sets where
+   they're cut, but still line up with the page's. */
+.live-group > span:first-child,
+.live-group-name,
+.live-name,
+.live-now {
+  text-align: match-parent;
+}
+
+.live-group:hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+/* The open group: a soft wash of the accent, its count in the accent, as in Settings' categories. */
+.live-group[aria-current='true'] {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.live-group[aria-current='true'] .count {
+  color: var(--color-accent-text);
+}
+
+.live-group .count .icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Edit groups / Lock again, and the editor's rows. */
+.live-groups-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-end: var(--space-2);
+}
+
+.live-groups > .live-groups-tool {
+  align-self: flex-start;
+  margin-block-end: var(--space-2);
+}
+
+/* Room for the names beside the editor's buttons. */
+@media (min-width: 901px) {
+  .live-body.editing-groups {
+    grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+  }
+}
+
+.live-groups-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-sm);
+}
+
+.live-groups-tool .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.live-groups-hint {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.live-item.live-group-edit {
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+  font-size: var(--font-size-sm);
+}
+
+.live-group-edit .live-move {
+  padding: 6px;
+}
+
+.live-group-name {
+  overflow: hidden;
+  padding-inline: 8px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.live-group-edit.hidden-group .live-group-name {
+  color: var(--color-text-faint);
+  text-decoration: line-through;
+}
+
+.live-toggle[aria-pressed='true'] {
+  color: var(--color-accent);
+}
+
+.live-locked-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-lg);
+}
+
+.live-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.live-group-skeleton {
+  height: 36px;
+}
+
+.live-row-skeleton {
+  height: 70px;
+}
+
+.live-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  transition:
+    background-color var(--duration-hover) var(--ease),
+    box-shadow var(--duration-hover) var(--ease);
+}
+
+/* Pointed at or focused: the rim leans toward the accent, like Discover's strips. */
+.live-item:is(:hover, :focus-within) {
+  background: var(--color-surface-raised);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 32%, var(--color-border));
+}
+
+.live-row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) minmax(0, 260px);
+  align-items: center;
+  gap: var(--space-4);
+  padding: 10px 14px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.live-logo {
+  width: 56px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.live-initial {
+  display: grid;
+  place-items: center;
+  background: var(--color-surface-raised);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.live-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.live-name {
+  font-weight: 700;
+}
+
+.live-now,
+.live-next {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+}
+
+.live-progress {
+  display: block;
+  width: min(220px, 100%);
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-surface-overlay);
+  overflow: hidden;
+}
+
+.live-progress > span {
+  display: block;
+  width: calc(var(--fraction, 0) * 100%);
+  height: 100%;
+  background: var(--color-accent);
+}
+
+.live-star {
+  margin-inline-end: 10px;
+  padding: 8px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--color-text-faint);
+  cursor: pointer;
+}
+
+.live-star[aria-pressed='true'] {
+  color: var(--color-accent);
+}
+
+/* Favourites in order: a grip to drag, and Move up / Move down for the keyboard. */
+.live-item.reorder {
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+}
+
+.live-grip {
+  display: grid;
+  place-items: center;
+  padding-block: 8px;
+  padding-inline: 10px 0;
+  color: var(--color-text-faint);
+  cursor: grab;
+  touch-action: none;
+}
+
+.live-item.dragging {
+  opacity: 0.5;
+}
+
+.live-item.dragging .live-grip {
+  cursor: grabbing;
+}
+
+.live-item.drop-before {
+  box-shadow: 0 -2px 0 var(--color-accent);
+}
+
+.live-item.drop-after {
+  box-shadow: 0 2px 0 var(--color-accent);
+}
+
+.live-moves {
+  display: flex;
+  gap: 2px;
+}
+
+.live-move {
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.live-move:hover:not(:disabled) {
+  color: var(--color-text);
+}
+
+.live-move.up .icon {
+  transform: rotate(180deg);
+}
+
+.live-move:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.live-note {
+  margin-top: var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .live-body {
+    /* minmax(0, …): a bare 1fr grows to the guide's full day, past the window, so it can't scroll. */
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* The search goes under Now and the view switch rather than past the window. */
+  .live-tools {
+    flex-wrap: wrap;
+  }
+
+  .live-groups {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .live-group-skeleton {
+    flex: 0 0 120px;
+  }
+
+  .live-row {
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+
+  .live-next {
+    display: none;
+  }
+}
+
+.live:not(.player) .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 520px;
+  color: var(--color-text-muted);
+}
+
+/* ── Guide grid ───────────────────────────────────────────────────────── */
+
+/* A fixed height (one line for name and time, two for the description):
+   if it grew with each programme, the grid would move under the mouse onto
+   another programme, whose details would resize it again, and so on. */
+.guide-detail {
+  display: grid;
+  /* The time line keeps room for a start and end time: a long title would otherwise squeeze it to nothing. */
+  grid-template-columns: minmax(0, max-content) minmax(min(10em, 40%), 1fr) auto;
+  grid-template-rows: 22px 40px;
+  align-items: baseline;
+  gap: 4px 12px;
+  height: 90px;
+  margin-bottom: var(--space-3);
+  padding: 12px 16px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--strip-wash), var(--color-surface);
+  box-shadow: var(--strip-ring);
+}
+
+.guide-detail-title,
+.guide-detail-when {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 22px;
+}
+
+.guide-detail-title {
+  font-weight: 700;
+}
+
+.guide-detail-when {
+  font-size: var(--font-size-sm);
+  color: var(--color-accent-text);
+  font-weight: 700;
+}
+
+.guide-search {
+  align-self: center;
+  padding-block: 2px;
+  font-size: var(--font-size-sm);
+}
+
+.guide-detail-desc {
+  grid-column: 1 / -1;
+  line-height: 20px;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.guide-scroller {
+  position: relative;
+  max-height: calc(100vh - 300px);
+  overflow: auto;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.guide-header {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  width: max-content;
+  height: 36px;
+  background: var(--color-panel, var(--color-bg));
+}
+
+.guide-corner {
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  flex: none;
+  width: 220px;
+  padding: 9px 14px;
+  background: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.guide-times {
+  position: relative;
+  flex: none;
+  width: var(--w);
+}
+
+.guide-slot {
+  position: absolute;
+  left: var(--x);
+  top: 9px;
+  padding-left: 6px;
+  border-left: 1px solid var(--color-border);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.guide-row {
+  display: flex;
+  width: max-content;
+  height: 64px;
+  border-top: 1px solid var(--color-border);
+}
+
+.guide-channel {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  width: 220px;
+  padding: 0 14px;
+  border: 0;
+  background: var(--color-panel, var(--color-bg));
+  color: inherit;
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.guide-channel img {
+  width: 40px;
+  height: 28px;
+  flex: none;
+  object-fit: contain;
+}
+
+.guide-channel span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.guide-track {
+  position: relative;
+  flex: none;
+  width: var(--w);
+}
+
+.guide-cell {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: var(--x);
+  width: var(--w);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  /* Narrower for a programme of a minute or two (a few px at 5px a minute): the padding alone made it 20px, over the next one. */
+  padding: 0 clamp(0px, calc(var(--w) / 2 - 1px), 10px);
+  /* clip, not hidden: it doesn't make a scroll container, so the label can stick. */
+  overflow: clip;
+  border: 0;
+  border-radius: 8px;
+  background: var(--color-surface-raised);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.guide-cell:hover,
+.guide-cell:focus-visible {
+  background: color-mix(in oklab, var(--color-accent) 22%, var(--color-surface-raised));
+}
+
+/* On now: a wash of the accent rather than a stripe down one side. */
+.guide-cell.now {
+  background: color-mix(in srgb, var(--color-accent) 18%, var(--color-surface-raised));
+}
+
+.guide-cell.past {
+  opacity: 0.45;
+}
+
+.guide-cell.empty {
+  color: var(--color-text-faint);
+}
+
+/* Labels of programmes that began off to the left stay readable beside the
+   channel column. As wide as their text, not the cell: a label as wide as its
+   cell has no room to slide along it. */
+.guide-cell-title,
+.guide-cell-time {
+  position: sticky;
+  left: 230px;
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+.guide-cell-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.guide-cell-time {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.guide-now {
+  position: absolute;
+  top: 0;
+  left: var(--x);
+  z-index: 1;
+  width: 2px;
+  height: var(--h);
+  background: var(--color-accent);
+  pointer-events: none;
+}
+
+.live-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.live-tools .button[hidden] {
+  display: none;
+}
+
+/* ── Catch-up ── */
+
+.guide-days {
+  margin-bottom: var(--space-3);
+}
+
+.guide-days[hidden] {
+  display: none;
+}
+
+/* Finished programmes that can still be watched stay readable. */
+.guide-cell.past.replay {
+  opacity: 0.8;
+}
+
+.guide-cell.replay .guide-cell-time::before {
+  content: '↺ ';
+}
+
+/* The hint shown before a programme is chosen uses the whole box, and ends
+   in an ellipsis rather than a half-cut line when a narrow window wraps it
+   past the box's three lines. */
+.guide-detail > .muted:only-child {
+  display: -webkit-box;
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-height: 22px;
+}
+
+/* A line with one action beside it (the guide couldn't be read, or there's none): the button keeps its own size. */
+.guide-detail > .muted:has(+ .guide-detail-action) {
+  display: -webkit-box;
+  grid-column: 1 / 3;
+  grid-row: 1 / -1;
+  align-self: center;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-height: 22px;
+}
+
+.guide-detail-action {
+  grid-column: 3;
+  grid-row: 1 / -1;
+  align-self: center;
+}

@@ -1,0 +1,392 @@
+/* Movies / TV Shows: title, featured banner, sticky filter bar, grid. */
+.discover {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0 72px;
+}
+
+.discover-title {
+  margin: 0;
+  padding: var(--space-2) var(--page-gutter) var(--space-5);
+}
+
+.discover-note {
+  margin: calc(-1 * var(--space-3)) 0 var(--space-5);
+  padding: 0 var(--page-gutter);
+}
+
+/* ── Featured banner ──────────────────────────────────────────────────── */
+
+.featured {
+  position: relative;
+  height: clamp(280px, 18vw, 380px);
+  margin: 0 var(--page-gutter);
+  overflow: clip; /* not `hidden`: that can be scrolled by focus, shifting the art */
+  border-radius: var(--radius-xl);
+  background: var(--color-panel);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border),
+    0 24px 48px -28px rgba(0, 0, 0, 0.8);
+  isolation: isolate;
+}
+
+.featured-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Wide windows crop the art's top and bottom; keep the upper part, where faces usually are. */
+  object-position: 50% 25%;
+  opacity: 0;
+  transition: opacity var(--duration-hero) var(--ease);
+}
+
+.featured-art.loaded {
+  opacity: 1;
+}
+
+.featured-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(11, 10, 9, 0.92) 0%, rgba(11, 10, 9, 0.4) 50%, transparent 75%);
+}
+
+.featured-content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3);
+  max-width: 520px;
+  color: #f4f2ef;
+}
+
+.featured-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 64px;
+  font-weight: var(--font-display-weight);
+  line-height: 0.95;
+  letter-spacing: calc(-0.025em + 0.105em * var(--font-display-tracking));
+}
+
+.featured-title.has-logo {
+  display: block;
+}
+
+.featured-title .title-logo {
+  max-width: min(440px, 100%);
+  max-height: 132px;
+  object-position: 0 100%;
+}
+
+:root[dir='rtl'] .featured-title .title-logo {
+  object-position: 100% 100%;
+}
+
+.featured-content .hero-meta {
+  color: #cdc7c0;
+}
+
+.featured-content .hero-actions {
+  margin-top: 6px;
+}
+
+/* ── Sticky filter bar ────────────────────────────────────────────────── */
+
+/* A floating glass strip (Discover's, washed from the accent) rather than a
+   band across the window: posters scroll under it, inset by the gutter. */
+.discover-bar {
+  position: sticky;
+  top: var(--space-2);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-6) var(--page-gutter) 0;
+  padding: 10px var(--space-4);
+  border-radius: var(--radius-lg);
+  background:
+    var(--strip-wash),
+    color-mix(in srgb, var(--color-bg) 84%, transparent);
+  box-shadow:
+    var(--strip-ring),
+    0 14px 30px -18px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+}
+
+/* Reduce visual effects: no blur behind it, so posters scrolling under it must not show through. */
+:root[data-effects='reduced'] .discover-bar {
+  background: var(--strip-wash), var(--color-bg);
+  box-shadow: var(--strip-ring);
+}
+
+/* A page with nothing to choose (one catalog, no genres, one source) has no
+   bar, rather than an empty strip. */
+.discover-bar:has(> .discover-bar-row:not(.explore-grid-bar) > .genre-picker[hidden]):not(:has(.source-picker:not([hidden]))):not(:has(> .discover-bar-row > .segments:not([hidden]))) {
+  display: none;
+}
+
+.discover-bar:has(> .discover-bar-row:not(.explore-grid-bar) > .genre-picker[hidden]):not(:has(.source-picker:not([hidden]))):not(:has(> .discover-bar-row > .segments:not([hidden]))) + .title-grid {
+  padding-top: var(--space-8);
+}
+
+/* Without catalog tabs (one catalog), the genre picker leads the strip: no hairline before it. */
+.discover-bar-row:not(.explore-grid-bar) > .segments[hidden] + .genre-picker::before {
+  display: none;
+}
+
+.discover-bar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+/* Movies / TV Shows / Anime: too narrow for the tabs, the genre picker and the source on one line (a
+   narrow window, a Look's larger type), the picker and then the source take the next line, rather than
+   running into each other or past the strip's end. Only the genre button counts toward the line, not
+   the recent genres beside it (genre-picker.css). */
+.discover > .discover-bar > .discover-bar-row {
+  flex-wrap: wrap;
+  row-gap: var(--space-2);
+}
+
+/* The genre picker between them takes what's left. Catalog tabs show when
+   there's more than one catalog to switch between. */
+.discover-bar-row > .segments[hidden],
+.discover-bar-row > .source-picker[hidden] {
+  display: none;
+}
+
+.source-picker {
+  flex: none;
+}
+
+.source-picker {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.source-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.source-button:hover:not(:disabled) {
+  background: var(--color-surface-overlay);
+}
+
+.source-button:disabled {
+  cursor: default;
+}
+
+.source-button:disabled .icon {
+  opacity: 0.4;
+}
+
+.source-button .icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* One scrolling line of genres, as in the design. */
+.genre-row {
+  flex-wrap: nowrap;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.genre-row .chip {
+  flex: none;
+}
+
+/* ── Grid ─────────────────────────────────────────────────────────────── */
+
+.discover > .title-grid {
+  padding: var(--space-3) var(--page-gutter) 0;
+}
+
+.grid-status {
+  padding: 0 var(--page-gutter);
+}
+
+.grid-status > .title-grid {
+  padding-top: 28px;
+}
+
+.grid-note {
+  padding-top: 18px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-faint);
+}
+
+.grid-sentinel {
+  height: 1px;
+}
+
+/* Title row with Surprise Me at the end. */
+.discover-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-inline-end: var(--page-gutter);
+}
+
+.discover-surprise {
+  flex: none;
+  margin-top: var(--space-2);
+}
+
+/* ── Surprise Me drawer ── */
+
+.surprise {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-6);
+}
+
+.surprise-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+.surprise-status {
+  min-height: 1.4em;
+  margin: 0;
+}
+
+.surprise-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.surprise-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.surprise-label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.surprise .segments {
+  flex-wrap: wrap;
+  align-self: flex-start;
+}
+
+.surprise-genres {
+  flex-wrap: wrap;
+}
+
+.surprise-catalogs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.surprise-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.surprise-pick {
+  display: flex;
+  gap: var(--space-5);
+}
+
+.surprise-loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.surprise-poster {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 160px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: oklch(0.35 0.06 var(--hue, 220));
+}
+
+.surprise-poster-name {
+  font-weight: 700;
+  text-align: center;
+}
+
+.surprise-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.surprise-name {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.surprise-description {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+}
+
+.surprise-none {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.surprise-none-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.surprise-none .muted {
+  margin: 0;
+}
+.surprise-genres-line {
+  font-size: var(--font-size-sm);
+}

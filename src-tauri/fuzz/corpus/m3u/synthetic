@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="demo",Demo
+https://example.com/demo.ts

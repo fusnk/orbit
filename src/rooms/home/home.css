@@ -1,0 +1,1660 @@
+/* Sections are spaced by the design's 44px section gap. */
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+  padding: 4px 0 72px;
+  /* Settles in each time it's shown, like title pages (opacity only: a
+     transform would make Home the frame for its fixed overlays meanwhile). */
+  animation: view-in var(--duration-enter) var(--ease);
+}
+
+@keyframes view-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Takes no space when empty, so the section gap stays even. */
+.cw-slot {
+  display: contents;
+}
+
+/* ── Hero: a rounded card inset from the page edges ───────────────────── */
+
+.hero {
+  position: relative;
+  /* Grows with wide windows (so the art isn't cropped to a strip), within the window's height. */
+  height: clamp(440px, min(64vh, 40vw), 820px);
+  margin: 0 var(--page-gutter);
+  overflow: clip; /* not `hidden`: that can be scrolled by focus, shifting the art */
+  border-radius: var(--radius-xl);
+  background: var(--color-panel);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 40px 80px -40px rgba(0, 0, 0, 0.9);
+  isolation: isolate;
+}
+
+/* The art, trailer and shade together: no box of its own, except where the
+   cinematic banner fades it into the page. */
+.hero-media {
+  display: contents;
+}
+
+.hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Wide windows crop the art's top and bottom; keep the upper part, where faces usually are. */
+  object-position: 50% 25%;
+  opacity: 0;
+  transition: opacity var(--duration-hero) var(--ease);
+}
+
+.hero-art.loaded.active {
+  opacity: 1;
+}
+
+/* Ken Burns: the featured art drifts slowly. Only the shown slide moves; the
+   others are paused where they are, so a slide fading out never snaps back. */
+.hero-art.loaded:not(.art-blurred) {
+  transform-origin: 50% 30%;
+  /* Stepped at about 30 a second (see art-drift in styles.css). */
+  animation: art-drift 28s steps(84) infinite alternate;
+  animation-play-state: paused;
+}
+
+.hero-art.loaded.active:not(.art-blurred) {
+  animation-play-state: running;
+}
+
+/* Under a playing trailer it holds still and fades out: the trailer's edges are
+   see-through under the cinematic fade, and the art must not show through them. */
+.hero:has(.hero-trailer.playing) .hero-art {
+  opacity: 0;
+  /* Only once the trailer has faded fully in, so a slow start never shows a black banner. */
+  transition-delay: var(--duration-hero);
+  animation-play-state: paused;
+}
+
+:root[data-motion='reduce'] .hero-art,
+:root[data-effects='reduced'] .hero-art {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .hero-art {
+    animation: none;
+  }
+}
+
+/* The featured title's trailer (Settings → Video), over the artwork and under the shade. */
+.hero-trailer {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 25%;
+  /* Cropped past the frame's edges: trailers burn a network's logo into a
+     corner, which otherwise sits under the title bar's buttons. A crop of the
+     picture, not a transform, so the element (and its fade or rounded frame)
+     stays the banner's size. */
+  object-view-box: inset(9% 11.5% 14% 11.5%);
+  opacity: 0;
+  transition: opacity var(--duration-hero) var(--ease);
+  pointer-events: none;
+}
+
+.hero-trailer.playing {
+  opacity: 1;
+}
+
+/* Its speaker button sits in the end corner, level with the dots, which move over for it. */
+.hero .trailer-sound {
+  inset-inline-end: 28px;
+  bottom: 18px;
+}
+
+.hero:has(.trailer-sound):not(:has(.trailer-sound[hidden])) .hero-dots {
+  inset-inline-end: calc(28px + var(--control-chip) + 12px);
+}
+
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+/* A neutral scrim behind the text, for contrast. The art's colour stays in
+   the art (and the page's one faint ambient wash, styles.css). */
+.hero .hero-shade {
+  background:
+    linear-gradient(90deg, rgba(11, 10, 9, 0.92) 0%, rgba(11, 10, 9, 0.5) 38%, transparent 66%),
+    linear-gradient(0deg, rgba(11, 10, 9, 0.85) 0%, transparent 45%);
+}
+
+/* A soft, offset shadow, not an art-coloured glow: the card should sit on the page, not light it. */
+.hero {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 28px 56px -32px rgba(0, 0, 0, 0.75);
+}
+
+:root[data-theme='light'] .hero {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 24px 48px -30px color-mix(in srgb, var(--base-text) 45%, transparent);
+}
+
+/* AMOLED keeps the page's own pixels off, and Reduce visual effects skips the big soft shadow. */
+:root[data-true-black='true'] .hero,
+:root[data-effects='reduced'] .hero {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.hero-content {
+  position: absolute;
+  inset-inline-start: var(--hero-inset);
+  bottom: 52px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 560px;
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: #d8d2cb;
+}
+
+.hero-badge {
+  padding: 4px var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+}
+
+/* Bebas Neue (tracking 1) is narrow, so it keeps its larger size and open spacing; the others tighten. */
+.hero-title {
+  font-family: var(--font-display);
+  font-size: calc(var(--font-size-hero) + (clamp(64px, 7vw, 104px) - var(--font-size-hero)) * var(--font-display-tracking));
+  font-weight: var(--font-hero-weight);
+  line-height: calc(0.95 - 0.05 * var(--font-display-tracking));
+  letter-spacing: calc(-0.03em + 0.11em * var(--font-display-tracking));
+  text-wrap: balance;
+  /* A name with no break in it (some addons send file names) wraps inside the banner instead of running past it. */
+  overflow-wrap: anywhere;
+  color: #fff;
+}
+
+.hero-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+  color: #cdc7c0;
+  text-wrap: pretty;
+}
+
+.hero .hero-actions {
+  margin-top: var(--space-1);
+}
+
+.hero-dots {
+  position: absolute;
+  inset-inline-end: 28px;
+  bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.45);
+  transition:
+    width 300ms var(--ease),
+    background 300ms var(--ease);
+}
+
+.hero-dot[aria-current='true'] {
+  width: 28px;
+  background: var(--color-accent);
+}
+
+.hero-dot:hover:not([aria-current='true']) {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* The Arc bar's ring timer, count and arrows: only with that menu (below). */
+.hero-timer {
+  display: none;
+}
+
+/* ── Cinematic banner (Settings → Appearance → Home banner) ────────────
+   Full width and behind the menu: the title bar floats over Home, the art
+   fades into the page on the left and bottom, and the rows rise over it. */
+
+:root[data-hero='cinematic'] #app:has(.home.view-shown) > .titlebar {
+  position: absolute;
+  inset: 0 0 auto;
+}
+
+/* On light themes the bar's own items are dark, which is lost on the art
+   behind them: light, with a soft shadow, until Home scrolls (rows then fade
+   out under the bar onto the page). The cinematic menu has its own light wash. */
+:root[data-hero='cinematic'][data-theme='light']:not([data-nav='cinematic']) #app:has(> .outlet > .home.view-shown):not(:has(> .outlet.scrolled)) > .titlebar :is(.wordmark, .back-button, .settings-button, .caption-button) {
+  --color-text: #f4f2ef;
+  --color-text-muted: color-mix(in srgb, #f4f2ef 85%, transparent);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+}
+
+:root[data-hero='cinematic'][data-theme='light']:not([data-nav='cinematic']) #app:has(> .outlet > .home.view-shown):not(:has(> .outlet.scrolled)) > .titlebar .wordmark {
+  color: var(--color-text);
+}
+
+/* Rows scrolled up fade out before they reach the floating menu. */
+:root[data-hero='cinematic'] .outlet.scrolled:has(> .home.view-shown) {
+  mask-image: linear-gradient(180deg, transparent 0, transparent calc(var(--header-height) - 8px), #000 calc(var(--header-height) + 32px));
+}
+
+:root[data-hero='cinematic'] .home {
+  padding-top: 0;
+}
+
+:root[data-hero='cinematic'] .hero-slot {
+  /* The next section starts over the banner's faded bottom. */
+  margin-bottom: -96px;
+}
+
+/* (.cw-slot is display: contents, so its rail is lifted directly.) */
+:root[data-hero='cinematic'] .home > :not(.hero-slot),
+:root[data-hero='cinematic'] .cw-slot > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* The text sits in the flow (not pinned from the bottom), so a short window
+   makes the banner taller rather than pushing the text under the menu. */
+:root[data-hero='cinematic'] .hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: auto;
+  min-height: clamp(500px, 70vh, 820px);
+  padding: calc(var(--header-height) + var(--space-6)) 0 168px;
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Shaded toward the page's own colour, so it suits the theme and tint (on
+   light themes toward near-black, since the banner's text is white). At the
+   bottom the art itself fades out, in gentle steps, rather than being
+   painted over: the page's glow and wallpaper then show through evenly and
+   there's no edge where the banner ends. */
+:root[data-hero='cinematic'] .hero {
+  --hero-fade: var(--color-bg);
+}
+
+:root[data-hero='cinematic'][data-theme='light'] .hero {
+  --hero-fade: #0b0a09;
+}
+
+:root[data-hero='cinematic'] .hero-shade {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.65) 0, rgba(0, 0, 0, 0.2) var(--header-height), transparent calc(var(--header-height) + 72px)),
+    linear-gradient(90deg, color-mix(in srgb, var(--hero-fade) 95%, transparent) 0%, color-mix(in srgb, var(--hero-fade) 78%, transparent) 26%, color-mix(in srgb, var(--hero-fade) 25%, transparent) 55%, transparent 75%);
+}
+
+/* The fade is on a layer that never moves, as on the Showcase title page. A
+   mask is drawn in its own element's space, so on the drifting (scaled) art
+   it moved with the art, past the banner's clipped bottom: the art was cut
+   off there still partly opaque, a hard line where the banner ends. */
+:root[data-hero='cinematic'] .hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  isolation: isolate;
+  mask-image: linear-gradient(0deg, transparent 0%, rgba(0, 0, 0, 0.12) 8%, rgba(0, 0, 0, 0.4) 18%, rgba(0, 0, 0, 0.75) 30%, #000 44%);
+}
+
+:root[data-hero='cinematic'] .hero-content {
+  position: relative;
+  inset-inline-start: auto;
+  bottom: auto;
+  margin-inline-start: max(var(--page-gutter), 5vw);
+  max-width: min(600px, 46vw);
+}
+
+:root[data-hero='cinematic'] .hero-dots {
+  inset-inline-end: max(var(--page-gutter), 5vw);
+  bottom: 140px;
+}
+
+:root[data-hero='cinematic'] .hero .trailer-sound {
+  inset-inline-end: max(var(--page-gutter), 5vw);
+  bottom: 128px;
+}
+
+:root[data-hero='cinematic'] .hero:has(.trailer-sound):not(:has(.trailer-sound[hidden])) .hero-dots {
+  inset-inline-end: calc(max(var(--page-gutter), 5vw) + var(--control-chip) + 12px);
+}
+
+/* "Rows overlap the banner" (Settings → Appearance): the first row rises
+   further, its heading and most of its cards over the art, so Home reads as
+   one scene. The banner keeps its text, dots and sound button clear above
+   the row, and its art fades out over the row's height (fully by the cards'
+   middle on light themes, whose headings are dark), so the row stays legible.
+   Only margins, padding and the mask change: the banner and the rows keep
+   their order on the page, so focus and Up/Down move as before. */
+:root[data-hero='cinematic'][data-hero-overlap='on'] .home {
+  --hero-overlap: clamp(170px, 22vh, 230px);
+}
+
+:root[data-hero='cinematic'][data-hero-overlap='on'] .hero-slot {
+  margin-bottom: calc(-1 * (var(--hero-overlap) + var(--section-gap)));
+}
+
+:root[data-hero='cinematic'][data-hero-overlap='on'] .hero {
+  padding-bottom: calc(var(--hero-overlap) + 64px);
+}
+
+:root[data-hero='cinematic'][data-hero-overlap='on'] .hero-dots {
+  bottom: calc(var(--hero-overlap) + 36px);
+}
+
+:root[data-hero='cinematic'][data-hero-overlap='on'] .hero .trailer-sound {
+  bottom: calc(var(--hero-overlap) + 24px);
+}
+
+:root[data-hero='cinematic'][data-hero-overlap='on'] .hero-media {
+  mask-image: linear-gradient(0deg, transparent 0, rgba(0, 0, 0, 0.12) calc(var(--hero-overlap) * 0.45), rgba(0, 0, 0, 0.42) var(--hero-overlap), rgba(0, 0, 0, 0.8) calc(var(--hero-overlap) + 90px), #000 calc(var(--hero-overlap) + 180px));
+}
+
+:root[data-hero='cinematic'][data-hero-overlap='on'][data-theme='light'] .hero-media {
+  mask-image: linear-gradient(0deg, transparent 0, transparent calc(var(--hero-overlap) * 0.5), rgba(0, 0, 0, 0.35) var(--hero-overlap), #000 calc(var(--hero-overlap) + 170px));
+}
+
+/* ── "Show what's next" (Home builder; the Dashboard layout) ────────────
+   The featured titles listed beside the banner text, with the title's logo,
+   age rating and known picture quality. All of it is in the banner either
+   way and only shown with the option on, so the usual banner is untouched. */
+
+.hero-queue,
+.hero-badges {
+  display: none;
+}
+
+.home.hero-next .hero {
+  height: clamp(420px, min(52vh, 34vw), 640px);
+}
+
+/* Its text (with the badges) can be taller than the card on a short window:
+   in the flow and kept off the top edge, the card grows rather than cutting it off. */
+:root[data-hero='card'] .home.hero-next .hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: auto;
+  min-height: clamp(420px, min(52vh, 34vw), 640px);
+  padding: var(--space-8) 0 52px;
+}
+
+:root[data-hero='card'] .home.hero-next .hero-content {
+  position: relative;
+  inset-inline-start: auto;
+  bottom: auto;
+  margin-inline-start: var(--hero-inset);
+}
+
+:root[data-hero='cinematic'] .home.hero-next .hero {
+  height: auto;
+  min-height: clamp(460px, 58vh, 720px);
+}
+
+.home.hero-next .hero-badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.home.hero-next .hero-badges:empty {
+  display: none;
+}
+
+/* Outlined, so they read as facts about the picture rather than buttons. */
+.hero-quality {
+  padding: 2px 6px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(236, 232, 227, 0.55);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  color: #ece8e3;
+}
+
+/* Rendered (1px, unseen) until it has loaded, so its lazy load starts; then it takes the name's place. */
+.home .hero-logo {
+  position: absolute;
+  display: block;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.home .hero-title.has-logo .hero-logo {
+  position: static;
+  width: auto;
+  height: auto;
+  opacity: 1;
+  max-width: min(440px, 100%);
+  max-height: 132px;
+  object-fit: contain;
+  object-position: 0 100%;
+  filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.5));
+}
+
+:root[dir='rtl'] .home .hero-title.has-logo .hero-logo {
+  object-position: 100% 100%;
+}
+
+:root[data-effects='reduced'] .home .hero-logo {
+  filter: none;
+}
+
+/* The name stays in the heading for screen readers while the logo shows it. */
+.home .hero-title.has-logo .hero-name {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Beside the text from 1280px wide; narrower windows keep the dots. */
+@media (min-width: 1280px) {
+  .home.hero-next .hero-queue {
+    position: absolute;
+    z-index: 1;
+    inset-inline-end: 28px;
+    bottom: 44px;
+    display: flex;
+    flex-direction: column;
+    width: 340px;
+    /* Never up under the title bar: picks that don't fit scroll inside the panel. */
+    max-height: calc(100% - 44px - 64px);
+  }
+
+  :root[data-hero='cinematic'] .home.hero-next .hero-queue {
+    inset-inline-end: max(var(--page-gutter), 5vw);
+    bottom: 160px;
+    max-height: calc(100% - 160px - 64px);
+  }
+
+  /* The card's text stops short of the list: a menu at the side (Couch) leaves the banner narrower than
+     the window, and the list sat over the end of the description. */
+  :root[data-hero='card'] .home.hero-next .hero-content {
+    max-width: min(560px, calc(100% - var(--hero-inset) - 340px - 28px - var(--space-6)));
+  }
+
+  .home.hero-next .hero-dots {
+    display: none;
+  }
+
+  /* Below the list of picks, which takes the dots' place. */
+  .home.hero-next .hero .trailer-sound {
+    bottom: 8px;
+  }
+
+  :root[data-hero='cinematic'] .home.hero-next .hero .trailer-sound {
+    bottom: 120px;
+  }
+
+  /* Clear of a row that overlaps the banner. */
+  :root[data-hero='cinematic'][data-hero-overlap='on'] .home.hero-next .hero-queue {
+    bottom: calc(var(--hero-overlap) + 64px);
+    max-height: calc(100% - var(--hero-overlap) - 64px - 64px);
+  }
+
+  :root[data-hero='cinematic'][data-hero-overlap='on'] .home.hero-next .hero .trailer-sound {
+    bottom: calc(var(--hero-overlap) + 16px);
+  }
+}
+
+/* A glass panel over the art. The banner stays dark in either theme (its
+   text is light), so the panel does too. */
+.hero-queue {
+  gap: 6px;
+  padding: 12px 6px 6px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-glass) 60%, transparent);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 24px 60px -24px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(24px) saturate(1.3);
+  color: #f4f2ef;
+}
+
+:root[data-theme='light'] .hero-queue {
+  background: rgba(14, 12, 11, 0.5);
+}
+
+/* Reduce visual effects: no blur behind it, so a solid panel. */
+:root[data-effects='reduced'] .hero-queue {
+  background: var(--color-glass);
+  backdrop-filter: none;
+}
+
+:root[data-effects='reduced'][data-theme='light'] .hero-queue {
+  background: #161412;
+}
+
+.hero-queue-head {
+  margin: 0;
+  padding-inline: 12px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: rgba(236, 232, 227, 0.7);
+}
+
+.hero-queue-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  /* Room for the focus ring, which the scrolling would otherwise cut off. */
+  padding: 3px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+.hero-queue-item {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding-block: 6px;
+  padding-inline: 12px 8px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: inherit;
+  text-align: start;
+  transition:
+    background var(--duration-hover) var(--ease),
+    box-shadow var(--duration-hover) var(--ease);
+}
+
+/* The pick on show: an accent bar at its start and a tinted row. */
+.hero-queue-item::before {
+  position: absolute;
+  inset-block: 12px;
+  inset-inline-start: 2px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--color-accent);
+  opacity: 0;
+  transform: scaleY(0.4);
+  transition:
+    opacity var(--duration-hover) var(--ease),
+    transform var(--duration-hover) var(--ease);
+  content: '';
+}
+
+.hero-queue-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hero-queue-item[aria-current='true'] {
+  background: color-mix(in srgb, var(--color-accent) 20%, rgba(255, 255, 255, 0.06));
+}
+
+.hero-queue-item[aria-current='true']::before {
+  opacity: 1;
+  transform: none;
+}
+
+.hero-queue-item:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.hero-queue-num {
+  flex: none;
+  min-width: 2ch;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  /* 0.64, not lower: the queue's panel takes the theme's colour, and 0.5 fell under 4.5:1 on Premiere's, Aurora's and Couch's. */
+  color: rgba(236, 232, 227, 0.64);
+}
+
+.hero-queue-item[aria-current='true'] .hero-queue-num {
+  /* Lifted toward the light text the queue always uses (it sits on dark glass in every theme): a deep accent (Aurora's violet) fell under 4.5:1. */
+  color: color-mix(in srgb, var(--color-accent-hi, var(--color-accent)) 50%, rgb(236, 232, 227));
+}
+
+.hero-queue-thumb {
+  position: relative;
+  flex: none;
+  width: 104px;
+  aspect-ratio: 16 / 9;
+  overflow: clip;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hero-queue-thumb-name {
+  position: absolute;
+  inset: 0;
+  display: none;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  align-content: center;
+  overflow: hidden;
+  padding: 0 6px;
+  font-size: var(--font-size-2xs);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+  color: rgba(236, 232, 227, 0.9);
+}
+
+.hero-queue-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.hero-queue-name {
+  overflow: hidden;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  line-height: 1.35;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  /* Its own direction (dir="auto") sets where it's cut; it still lines up with the page's. */
+  text-align: match-parent;
+  color: rgba(244, 242, 239, 0.84);
+}
+
+.hero-queue-item:is(:hover, :focus-visible, [aria-current='true']) .hero-queue-name {
+  color: #fff;
+}
+
+.hero-queue-year {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(236, 232, 227, 0.72);
+}
+
+/* ── Spotlight banner (Settings → Appearance → Home banner) ─────────────
+   A tall card inset in the page, led by the title's logo: the logo, a line
+   of facts and the buttons at the bottom start, the eyebrow ("#1 in
+   Movies", "Picked for you") as a small chip in the bottom end corner, and
+   the trailer's speaker in the top end corner. One title at a time: the
+   description and the "what's next" panel stay out of it (the dots switch
+   titles instead), so the art has the card to itself. Sides are logical,
+   so right to left mirrors all of it. */
+
+/* Only Spotlight shows its line of facts; the others keep their own meta. */
+.hero-facts {
+  display: none;
+}
+
+:root[data-hero='spotlight'] .hero,
+:root[data-hero='spotlight'] .home.hero-next .hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  /* Grows past this rather than clipping the text when the window is short. */
+  height: auto;
+  min-height: clamp(460px, 78vh, 900px);
+  padding: var(--space-14) var(--hero-inset) var(--space-12);
+  border-radius: calc(var(--radius-xl) + 8px);
+}
+
+/* Gentle: darkest only under the text, so most of the art shows as it is.
+   (Mirrored right to left by styles.css, like every banner shade.) */
+:root[data-hero='spotlight'] .hero .hero-shade {
+  background:
+    linear-gradient(0deg, rgba(11, 10, 9, 0.82) 0%, rgba(11, 10, 9, 0.45) 26%, transparent 52%),
+    linear-gradient(90deg, rgba(11, 10, 9, 0.6) 0%, rgba(11, 10, 9, 0.2) 34%, transparent 58%);
+}
+
+:root[data-hero='spotlight'] .hero-art,
+:root[data-hero='spotlight'] .hero-trailer {
+  object-position: 50% 20%;
+}
+
+/* In the flow, so the chip below is placed against the card itself. */
+:root[data-hero='spotlight'] .hero-content {
+  position: static;
+  gap: var(--space-5);
+  max-width: min(640px, 58%);
+}
+
+:root[data-hero='spotlight'] .hero .hero-desc,
+:root[data-hero='spotlight'] .hero .hero-meta:not(.hero-facts) {
+  display: none;
+}
+
+:root[data-hero='spotlight'] .hero-facts {
+  display: flex;
+  gap: var(--space-2);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  color: #ece8e3;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+:root[data-hero='spotlight'] .hero-facts .meta-dot {
+  color: rgba(236, 232, 227, 0.6);
+}
+
+:root[data-effects='reduced'][data-hero='spotlight'] .hero-facts {
+  text-shadow: none;
+}
+
+/* The logo leads: larger than the other styles', within the text's column. */
+:root[data-hero='spotlight'] .home .hero-title.has-logo .hero-logo {
+  max-width: min(540px, 100%);
+  max-height: clamp(110px, 22vh, 210px);
+}
+
+/* The eyebrow as a quiet chip in the bottom end corner. */
+:root[data-hero='spotlight'] .hero-eyebrow {
+  position: absolute;
+  z-index: 1;
+  inset-inline-end: var(--space-8);
+  bottom: var(--space-12);
+  letter-spacing: 0.08em;
+}
+
+:root[data-hero='spotlight'] .hero-badge {
+  padding: 6px var(--space-3);
+  border-radius: var(--radius-full);
+  background: rgba(11, 10, 9, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  color: #f4f2ef;
+  unicode-bidi: plaintext;
+}
+
+:root[data-hero='spotlight'] .hero-badge:empty {
+  display: none;
+}
+
+/* Dots centred along the bottom edge, clear of the text and the chip. */
+:root[data-hero='spotlight'] .home .hero-dots,
+:root[data-hero='spotlight'] .home .hero:has(.trailer-sound):not(:has(.trailer-sound[hidden])) .hero-dots {
+  display: flex;
+  inset-inline: 0;
+  bottom: var(--space-5);
+  width: max-content;
+  margin-inline: auto;
+}
+
+/* The trailer's speaker in the top end corner. */
+:root[data-hero='spotlight'] .home .hero .trailer-sound {
+  top: var(--space-6);
+  bottom: auto;
+  inset-inline-end: var(--space-6);
+}
+
+:root[data-hero='spotlight'] .home .hero-queue {
+  display: none;
+}
+
+/* Narrow windows: the chip moves above the logo rather than into the buttons' way. */
+@media (max-width: 899px) {
+  :root[data-hero='spotlight'] .hero-content {
+    max-width: 100%;
+  }
+
+  :root[data-hero='spotlight'] .hero-eyebrow {
+    position: static;
+    align-self: flex-start;
+  }
+}
+
+/* ── Orbit's card: the picks as a strip of frames ───────────────────────
+   On the card banner (Orbit's own), the featured titles sit as small
+   frames in the card's bottom end corner in place of the dots: the one on
+   show outlined in the accent, the rest dimmed, each a button that shows
+   its title. It's the "what's next" list drawn small, so it only appears
+   on a card wide enough to keep it clear of the text (a container query,
+   so a sidebar or a large scale counts); narrower, the dots come back. The
+   Arc bar keeps its ring, and "Show what's next" keeps its full list. */
+
+:root[data-hero='card'] .home .hero {
+  container-type: inline-size;
+}
+
+@container (min-width: 1100px) {
+  :root[data-hero='card']:not([data-nav='arc']) .home:not(.hero-next) .hero-queue {
+    position: absolute;
+    z-index: 1;
+    inset-inline-end: var(--space-6);
+    bottom: var(--space-6);
+    display: flex;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  :root[data-hero='card']:not([data-nav='arc']) .home:not(.hero-next) :is(.hero-queue-head, .hero-queue-num, .hero-queue-text, .hero-dots) {
+    display: none;
+  }
+
+  :root[data-hero='card']:not([data-nav='arc']) .home:not(.hero-next) .hero-queue-list {
+    flex-direction: row;
+    gap: var(--space-2);
+    overflow: visible;
+  }
+
+  :root[data-hero='card']:not([data-nav='arc']) .home:not(.hero-next) .hero-queue-item {
+    padding: 0;
+    border-radius: 8px;
+    background: none;
+  }
+
+  :root[data-hero='card']:not([data-nav='arc']) .home:not(.hero-next) .hero-queue-item::before {
+    display: none;
+  }
+
+  :root[data-hero='card']:not([data-nav='arc']) .home:not(.hero-next) .hero-queue-thumb {
+    width: 84px;
+    border-radius: 8px;
+    opacity: 0.55;
+    outline: 1px solid rgba(255, 255, 255, 0.18);
+    outline-offset: -1px;
+    transition:
+      opacity var(--duration-hover) var(--ease),
+      outline-color var(--duration-hover) var(--ease);
+  }
+
+  /* A pick with no artwork (none, or it didn't load) says its name in its frame, rather than leaving a blank box. */
+  :root[data-hero='card']:not([data-nav='arc']) .home:not(.hero-next) .hero-queue-thumb:not(:has(.art)) .hero-queue-thumb-name {
+    display: -webkit-box;
+  }
+
+  :root[data-hero='card']:not([data-nav='arc']) .home:not(.hero-next) .hero-queue-item:is(:hover, :focus-visible) .hero-queue-thumb {
+    opacity: 0.9;
+  }
+
+  :root[data-hero='card']:not([data-nav='arc']) .home:not(.hero-next) .hero-queue-item[aria-current='true'] .hero-queue-thumb {
+    opacity: 1;
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* The speaker above the frames rather than over them. */
+  :root[data-hero='card']:not([data-nav='arc']) .home:not(.hero-next) .hero .trailer-sound {
+    bottom: calc(var(--space-6) + 47px + var(--space-4));
+  }
+}
+
+/* ── Carousel banner (Settings → Appearance → Home banner) ──────────────
+   A streaming service's front window: one wide slide at a time with the
+   titles either side peeking in, dimmed, at the page's edges (a click on
+   one shows it), and the dots centred under it. Moving on slides the row
+   along rather than crossfading in place, and it's instant with Reduce
+   motion (--duration-hero is 0 then). The art holds still: a drifting
+   image would grow out of its rounded frame. The text's shade fades toward
+   the page's own colour, so a tinted theme grades the art with its hue.
+   Sides are logical and the slides' offsets follow the reading direction,
+   so right to left mirrors all of it. */
+
+:root[data-hero='carousel'] .hero {
+  --peek: clamp(40px, 8vw, 160px);
+  --slide-gap: var(--space-4);
+  /* The art leads: a title a size down from the other banners'. */
+  --font-size-hero: clamp(44px, 4.4vw, 72px);
+  --dots-room: 40px;
+  --slide-dir: 1;
+  --hero-fade: var(--color-bg);
+  height: calc(clamp(440px, min(62vh, 40vw), 820px) + var(--dots-room));
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+:root[dir='rtl'][data-hero='carousel'] .hero {
+  --slide-dir: -1;
+}
+
+:root[data-hero='carousel'][data-theme='light'] .hero {
+  --hero-fade: #0b0a09;
+}
+
+:root[data-hero='carousel'] .hero :is(.hero-art, .hero-trailer, .hero-shade) {
+  top: 0;
+  bottom: auto;
+  inset-inline: var(--peek) auto;
+  width: calc(100% - 2 * var(--peek));
+  height: calc(100% - var(--dots-room));
+  clip-path: inset(0 round var(--radius-xl));
+}
+
+:root[data-hero='carousel'] .hero .hero-art {
+  z-index: -4;
+  animation: none;
+  transition:
+    opacity var(--duration-hero) var(--ease),
+    translate var(--duration-hero) var(--ease-drawer);
+}
+
+/* Without landscape art the blurred poster stays within its frame. */
+:root[data-hero='carousel'] .hero .hero-art.art-blurred {
+  transform: none;
+}
+
+:root[data-hero='carousel'] .hero .hero-art.active {
+  z-index: -2;
+}
+
+:root[data-hero='carousel'] .hero .hero-art:is(.prev, .next) {
+  z-index: -3;
+  cursor: pointer;
+}
+
+:root[data-hero='carousel'] .hero .hero-art.loaded:is(.prev, .next) {
+  opacity: 0.38;
+}
+
+:root[data-hero='carousel'] .hero .hero-art.next {
+  translate: calc(var(--slide-dir) * (100% + var(--slide-gap))) 0;
+}
+
+:root[data-hero='carousel'] .hero .hero-art.prev {
+  translate: calc(var(--slide-dir) * (-100% - var(--slide-gap))) 0;
+}
+
+:root[data-hero='carousel'] .hero .hero-shade {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--hero-fade) 94%, transparent) 0%, color-mix(in srgb, var(--hero-fade) 60%, transparent) 32%, transparent 62%),
+    linear-gradient(0deg, color-mix(in srgb, var(--hero-fade) 85%, transparent) 0%, transparent 44%);
+}
+
+:root[data-hero='carousel'] .hero-content {
+  inset-inline-start: calc(var(--peek) + var(--space-12));
+  bottom: calc(var(--dots-room) + var(--space-10));
+  max-width: min(520px, 44%);
+}
+
+:root[data-hero='carousel'] .hero-desc {
+  -webkit-line-clamp: 2;
+}
+
+:root[data-hero='carousel'] .hero-dots,
+:root[data-hero='carousel'] .hero:has(.trailer-sound):not(:has(.trailer-sound[hidden])) .hero-dots {
+  inset-inline: 0;
+  bottom: 14px;
+  width: max-content;
+  margin-inline: auto;
+}
+
+/* Under the slide, on the page: the dots take the page's colours. */
+:root[data-hero='carousel'] .hero-dot:not([aria-current='true']) {
+  background: color-mix(in srgb, var(--color-text) 28%, transparent);
+}
+
+:root[data-hero='carousel'] .hero-dot:hover:not([aria-current='true']) {
+  background: color-mix(in srgb, var(--color-text) 60%, transparent);
+}
+
+:root[data-hero='carousel'] .hero .trailer-sound {
+  top: var(--space-5);
+  bottom: auto;
+  inset-inline-end: calc(var(--peek) + var(--space-5));
+}
+
+@media (min-width: 1280px) {
+  :root[data-hero='carousel'] .home.hero-next .hero-queue {
+    inset-inline-end: calc(var(--peek) + var(--space-6));
+    bottom: calc(var(--dots-room) + var(--space-6));
+    max-height: calc(100% - var(--dots-room) - var(--space-12));
+  }
+
+  /* Beside the list, not on its corner where the slide's own top corner put it (the list is 340px wide). */
+  :root[data-hero='carousel'] .home.hero-next .hero .trailer-sound {
+    inset-inline-end: calc(var(--peek) + var(--space-6) + 340px + var(--space-3));
+  }
+}
+
+/* ── Split banner (Settings → Appearance → Home banner) ─────────────────
+   The art as a framed picture on the end side and the text beside it, on
+   the page itself and centred on the picture's height, lined up with the
+   rows below. Nothing is painted over the art but a light fade under its
+   dots. On a light theme the text keeps a dark panel of its own, as the
+   banner's text is light everywhere. The art holds still in its frame.
+   Sides are logical, so right to left mirrors all of it. */
+
+:root[data-hero='split'] .hero {
+  --split-art: 58%;
+  --split-pad: 0px;
+  /* A narrower column than the other banners': titles step down a size. */
+  --font-size-hero: clamp(44px, 4.4vw, 76px);
+  display: flex;
+  align-items: center;
+  height: auto;
+  min-height: clamp(420px, min(58vh, 36vw), 760px);
+  padding-block: var(--space-10);
+  background: transparent;
+  box-shadow: none;
+}
+
+:root[data-hero='split'][data-theme='light'] .hero {
+  --split-pad: var(--space-10);
+  background: #100e14;
+}
+
+:root[data-hero='split'] .hero :is(.hero-art, .hero-trailer, .hero-shade) {
+  inset-block: 0;
+  inset-inline: auto 0;
+  width: var(--split-art);
+  height: 100%;
+  clip-path: inset(0 round var(--radius-xl));
+}
+
+:root[data-hero='split'] .hero .hero-art {
+  animation: none;
+}
+
+:root[data-hero='split'] .hero .hero-art.art-blurred {
+  transform: none;
+}
+
+:root[data-hero='split'] .hero .hero-shade {
+  background: linear-gradient(0deg, rgba(11, 10, 9, 0.55) 0%, transparent 22%);
+}
+
+:root[data-hero='split'] .hero-content {
+  position: relative;
+  inset: auto;
+  margin-inline-start: var(--split-pad);
+  max-width: calc(100% - var(--split-art) - var(--split-pad) - var(--space-10));
+}
+
+/* The trailer's speaker in the picture's top end corner, clear of its dots. */
+:root[data-hero='split'] .hero .trailer-sound {
+  top: var(--space-5);
+  bottom: auto;
+  inset-inline-end: var(--space-5);
+}
+
+:root[data-hero='split'] .hero:has(.trailer-sound):not(:has(.trailer-sound[hidden])) .hero-dots {
+  inset-inline-end: 28px;
+}
+
+/* ── Half-width rows (Home builder; the Dashboard layout) ──────────────
+   Two half-width rows in a row share a line. Only a Home with such a pair
+   lays its rows out this way (the rest keep their usual column), and below
+   1280px they stack again. */
+
+@media (min-width: 1280px) {
+  .home-rails.paired {
+    flex-flow: row wrap;
+    column-gap: 0;
+  }
+
+  .home-rails.paired > .home-row:not([hidden]) {
+    display: block;
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  /* A row whose content hid itself (an empty rail, nothing to continue) takes no line, and its partner fills it. */
+  .home-rails.paired > .home-row:not(:has(> :not([hidden], :empty))) {
+    display: none;
+  }
+
+  /* As specific as the full-width rule above, and after it, so it wins. Each
+     half is sized to half the line exactly, so the next pair can't squeeze
+     onto it (flex fills lines greedily) and starts a line of its own. */
+  .home-rails.paired > .home-row.half-start:not([hidden]),
+  .home-rails.paired > .home-row.half-end:not([hidden]) {
+    flex: 1 1 calc(50% - 1px);
+  }
+
+  /* A row beside the status tiles takes the line but for the tiles (at most three of them). */
+  .home-rails.paired > .home-row.half-start:not([hidden]):has(+ .home-row > .status-tiles),
+  .home-rails.paired > .home-row:has(> .status-tiles) + .home-row.half-end:not([hidden]) {
+    flex: 1 1 calc(100% - 560px);
+  }
+
+  /* One page gutter between the halves, split between them. */
+  .home-rails.paired > .half-start :is(.rail-header, .rail-track, .status-tiles) {
+    padding-inline-end: calc(var(--page-gutter) / 2);
+  }
+
+  .home-rails.paired > .half-end :is(.rail-header, .rail-track, .status-tiles) {
+    padding-inline-start: calc(var(--page-gutter) / 2);
+  }
+
+  /* Status tiles keep their own width beside the row they pair with… */
+  .home-rails.paired > .home-row:is(.half-start, .half-end):not([hidden]):has(> .status-tiles) {
+    flex: 0 0 auto;
+  }
+
+  /* …lined up with the cards (below the row's heading), */
+  .home-rails.paired > :is(.half-start, .half-end) > .status-tiles {
+    padding-top: calc(var(--control-chip) + 14px + 6px);
+  }
+
+  /* …and beside them Continue Watching's stills are a little smaller, so more fit. */
+  .home-rails.paired > .half-start[data-row='continue'] .continue-card {
+    width: 264px;
+  }
+}
+
+/* ── First-run welcome card ───────────────────────────────────────────── */
+
+.welcome {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: 0 var(--page-gutter);
+  padding-block: 14px;
+  padding-inline: 18px 14px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-glass) 70%, transparent);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  animation: page-in var(--duration-enter) var(--ease);
+}
+
+/* Reduce visual effects: no blur behind it, so solid glass. */
+:root[data-effects='reduced'] .welcome {
+  background: var(--color-glass);
+}
+
+.welcome[hidden] {
+  display: none;
+}
+
+.welcome-mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--color-accent) 22%, transparent);
+  color: var(--color-accent-text);
+}
+
+.welcome-mark .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.welcome-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.welcome-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.welcome-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+}
+
+.welcome-dismiss {
+  display: grid;
+  place-items: center;
+  width: var(--control-chip);
+  height: var(--control-chip);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-faint);
+}
+
+.welcome-dismiss:hover {
+  background: var(--color-surface-overlay);
+  color: #fff;
+}
+
+/* Hero while catalogs load: the text block's shape. */
+.hero-skeleton {
+  width: min(520px, 80%);
+}
+
+.hero-skeleton .eyebrow-bar {
+  width: 120px;
+  height: 20px;
+}
+
+.hero-skeleton .title-bar {
+  width: 420px;
+  max-width: 100%;
+  height: 84px;
+}
+
+.hero-skeleton .meta-bar {
+  width: 300px;
+  height: 16px;
+}
+
+.hero-skeleton .desc-bar {
+  width: 100%;
+  height: 54px;
+}
+
+.hero-skeleton .pill {
+  width: 130px;
+  height: var(--control-primary);
+  border-radius: var(--radius-full);
+}
+
+.hero-slot:empty {
+  display: none;
+}
+
+/* Without a banner (Home couldn't load its rows) the greeting leads the page: it keeps its place
+   instead of pulling up under the title bar or the offline banner. */
+.hero-slot:empty + .home-greeting {
+  margin-top: 0;
+}
+
+/* Home's error box (state-message.ts) sits inside the page's gutter, as the rows do. */
+.home-rails > .grid-message {
+  margin-inline: var(--page-gutter);
+}
+
+.home-rails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+.home-rails .rail[hidden] {
+  display: none;
+}
+
+/* A Home row (Settings → Home rows): invisible to layout, so the rails keep
+   the page's spacing; hidden rows take no space. */
+.home-row {
+  display: contents;
+}
+
+.home-row[hidden] {
+  display: none;
+}
+
+/* Slots holding several rails (Letterboxd, Because you watched…, services) space them like the page. */
+.letterboxd-slot,
+.for-you-slot,
+.streaming-slot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
+.letterboxd-slot:empty,
+.for-you-slot:empty,
+.streaming-slot:empty {
+  display: none;
+}
+
+/* "Edit Home" at the very end: a quiet way into the Home builder, out of the hero's way. */
+.home-footer {
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--page-gutter);
+}
+
+.home-footer[hidden] {
+  display: none;
+}
+
+.home-edit {
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.home-edit:hover:not(:disabled) {
+  color: var(--color-text);
+}
+
+/* "Good evening, Sam": quiet, between the banner and the rows, closer to the rows than a section's gap. */
+.home-greeting {
+  overflow: hidden;
+  margin-block: calc(var(--section-gap) * -0.5) calc(var(--section-gap) * -0.4);
+  margin-inline: var(--page-gutter);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Mood chips: thin-bordered pills; the picked one is filled (styles.css .chip[aria-pressed]). Flat, no glow. */
+/* One row that scrolls sideways when it doesn't fit, like a rail: arrow keys
+   and the gamepad bring the focused chip into view (spatial.ts). The block
+   padding keeps the focus ring and a lifted chip from being clipped; the
+   margin takes that room back, so the row sits where it did. */
+.mood-chips {
+  flex-wrap: nowrap;
+  margin-block: -6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 6px var(--page-gutter);
+  scroll-padding-inline: var(--page-gutter);
+  scrollbar-width: none;
+}
+
+.mood-chips::-webkit-scrollbar {
+  display: none;
+}
+
+/* A size up from other chips: the row answers the big question above it. */
+.mood-chip {
+  flex: none;
+  gap: var(--space-2);
+  height: 46px;
+  padding-inline: 18px;
+  font-size: var(--font-size-md);
+  border: 1px solid var(--color-border-strong);
+  background: transparent;
+  white-space: nowrap;
+}
+
+.mood-chip[aria-pressed='true'] {
+  border-color: transparent;
+}
+
+/* Glass (the tinted pill at the top, nav-layouts.css): the chips are frosted
+   like the pill, and the picked one is its raised glass chip. The lift is
+   shorter than the pill's, so the row's padding holds it. */
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .mood-chip {
+  border: 0;
+  background: color-mix(in srgb, var(--color-glass) 47%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--base-text) 32%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--base-text) 22%, transparent),
+    0 3px 6px -3px rgb(0 0 0 / 0.6);
+  backdrop-filter: blur(28px) saturate(1.55);
+}
+
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .mood-chip:not([aria-pressed='true']):hover {
+  background: color-mix(in srgb, color-mix(in srgb, var(--color-glass) 47%, transparent), var(--base-text) 10%);
+}
+
+:root[data-nav='dock'][data-nav-place^='top'][data-tint='on']:not([data-effects='reduced'], [data-theme='light']) .mood-chip[aria-pressed='true'] {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--base-text) 24%, transparent),
+      color-mix(in srgb, color-mix(in srgb, var(--color-accent) 30%, var(--base-text)) 10%, transparent)
+    ),
+    color-mix(in srgb, var(--color-glass) 47%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--base-text) 52%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--base-text) 24%, transparent),
+    0 3px 6px -3px rgb(0 0 0 / 0.8);
+  color: var(--color-text);
+}
+
+.mood-chip .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.mood-chips-results:empty {
+  display: none;
+}
+
+.mood-chips-results,
+.only-on-results {
+  margin-block-start: var(--space-2);
+}
+
+/* "Only on…": the picked service's tile is outlined in the accent, flat. */
+.only-on-tile {
+  border: 1px solid transparent;
+}
+
+.only-on-tile[aria-pressed='true'] {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface-raised));
+}
+
+.only-on-row .accent-name {
+  color: var(--color-accent-text);
+}
+
+/* Card tags ("New episode", "New season"): a flat accent tag in the artwork's corner, in place of "New". */
+.card-tag {
+  position: absolute;
+  z-index: 1;
+  top: 8px;
+  inset-inline-start: 8px;
+  max-inline-size: calc(100% - 16px);
+  overflow: hidden;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+  font-size: var(--font-size-2xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.frame:has(.card-tag) .new-tag {
+  display: none;
+}
+
+/* One badge in that corner: a page's own ("This one", "2 new") comes first. Every badge but "New"
+   by name, not `:not(.new-tag)`: a :not() inside :has() costs a restyle on every change to the page
+   (has-rules.test.ts). */
+.frame:has(.poster-badge.page-tag, .poster-badge.coming-tag, .poster-badge.episode-badge) .card-tag {
+  display: none;
+}
+
+/* The latest episode under a landscape card: "S14.E19 · Oct 2". */
+.card-episode {
+  color: var(--color-accent-text);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rows below the fold aren't laid out until they come near the screen: Home
+   holds thousands of cards, and laying them all out at once froze the window
+   for about 0.2 s every time Home was shown again. The remembered size keeps
+   the scroll height (and Back's scroll position) steady. */
+.home-rails > .home-row > * {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px;
+}
+
+/* Within a screen and a half of the view (index.ts): drawn ahead, so a fast scroll never meets a blank row. */
+.home-rails > .home-row > .near {
+  content-visibility: visible;
+}
+
+/* ── Arc bar's banner controls (the Orbit Arc Look) ──────────────────────
+   In the dots' place: the slide's time as a ring that fills (hero.ts sets
+   --hero-elapsed, 0 to 1, while the banner counts toward the next slide),
+   "2 / 5", and previous and next, which show while the banner is pointed at
+   or holds focus (they stay focusable, so a keyboard or remote reveals them).
+   While the trailer plays its speaker carries the ring. The ring holds still
+   when the banner does: on hover, focus, a trailer, or with Reduce motion,
+   where nothing rotates and the ring is only its track. */
+
+@property --hero-elapsed {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+:root[data-nav='arc'] .hero {
+  transition: --hero-elapsed 250ms linear;
+}
+
+:root[data-nav='arc'] .hero.hero-timer-reset {
+  transition: none;
+}
+
+:root[data-nav='arc'] .hero-dot {
+  display: none;
+}
+
+:root[data-nav='arc'] .hero-dots {
+  gap: 0;
+  /* As tall as the buttons now, centred where the dots were (level with the speaker). */
+  translate: 0 calc(50% - 4px);
+}
+
+:root[data-nav='arc'] .hero-timer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* Previous and next, then the count and the ring at the banner's edge; mirrored in Arabic and Hebrew, arrows too. */
+:root[data-nav='arc'] .hero-timer > .hero-step:nth-child(2) {
+  margin-inline-end: var(--space-1);
+}
+
+:root[dir='rtl'][data-nav='arc'] .hero-step {
+  rotate: 180deg;
+}
+
+.hero-step {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(14, 13, 12, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  color: #f4f2ef;
+  opacity: 0;
+  transition:
+    opacity var(--duration-hover) var(--ease),
+    background var(--duration-fast) var(--ease);
+}
+
+.hero-step .icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+.hero:is(:hover, :focus-within) .hero-step {
+  opacity: 1;
+}
+
+.hero-step:hover {
+  background: rgba(40, 38, 36, 0.8);
+}
+
+.hero-count {
+  padding-inline: var(--space-2);
+  color: #f4f2ef;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.hero-count-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The ring: an accent arc over a faint track, cut from a disc (the track's
+   width is the mask's step). The speaker's ring is the same, around it. */
+.hero-ring,
+:root[data-nav='arc'] .hero .trailer-sound::before {
+  background: conic-gradient(var(--color-accent) calc(var(--hero-elapsed) * 1turn), rgba(255, 255, 255, 0.32) 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  border-radius: 50%;
+}
+
+.hero-ring {
+  width: 26px;
+  height: 26px;
+  margin-inline-start: 2px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+:root[data-nav='arc'] .hero:has(.trailer-sound):not(:has(.trailer-sound[hidden])) .hero-ring {
+  display: none;
+}
+
+:root[data-nav='arc'] .hero .trailer-sound {
+  background: rgba(14, 13, 12, 0.5);
+  box-shadow: none;
+  overflow: visible;
+}
+
+:root[data-nav='arc'] .hero .trailer-sound::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  pointer-events: none;
+}

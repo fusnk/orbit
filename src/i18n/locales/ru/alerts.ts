@@ -1,0 +1,30 @@
+import type { alerts as source } from '../en/alerts';
+import type { Catalog } from '../types';
+
+export const alerts: Catalog<typeof source> = {
+  'alerts.bell.label': 'Новые серии',
+  'alerts.bell.unread.one': 'Новые серии: {count} непрочитанная',
+  'alerts.bell.unread.few': 'Новые серии: {count} непрочитанные',
+  'alerts.bell.unread.many': 'Новые серии: {count} непрочитанных',
+  'alerts.bell.unread.other': 'Новые серии: {count} непрочитанной',
+  'alerts.panel.heading': 'Новые серии',
+  'alerts.panel.mark-read': 'Отметить все прочитанными',
+  'alerts.panel.empty': 'Пока ничего нового. Здесь появятся новые серии сериалов, за которыми вы следите.',
+  'alerts.panel.play': 'Смотреть',
+  'alerts.panel.play-label': 'Смотреть {show} S{season}E{episode}',
+  'alerts.panel.aired': 'Вышла {date}',
+  'alerts.toast.episode': 'Вышла S{season}E{episode} «{title}»',
+  'alerts.toast.grouped-title': 'Новые серии',
+  'alerts.toast.grouped.one': '{count} новая серия сериалов, за которыми вы следите: {shows}',
+  'alerts.toast.grouped.few': '{count} новые серии сериалов, за которыми вы следите: {shows}',
+  'alerts.toast.grouped.many': '{count} новых серий сериалов, за которыми вы следите: {shows}',
+  'alerts.toast.grouped.other': '{count} новой серии сериалов, за которыми вы следите: {shows}',
+  'alerts.settings.enabled': 'Оповещения о новых сериях',
+  'alerts.settings.enabled-hint': 'Колокольчик в заголовке окна показывает серии, вышедшие с вашего последнего визита. Проверка при запуске и каждые несколько часов.',
+  'alerts.settings.toasts': 'Показывать уведомления на рабочем столе',
+  'alerts.settings.toasts-hint': 'Системное уведомление о каждой новой серии (одно на все, если их вышло сразу несколько), даже когда Orbit работает в фоне.',
+  'alerts.settings.scope': 'Оповещать о',
+  'alerts.settings.scope-hint': 'Сериалы, которые вы смотрите, — это сериалы из истории; библиотека добавляет все сохранённые сериалы.',
+  'alerts.settings.scope-watching': 'Сериалах, которые я смотрю',
+  'alerts.settings.scope-library': 'Всём в моей библиотеке',
+};

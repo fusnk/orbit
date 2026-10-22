@@ -1,0 +1,27 @@
+import type { jellyfin as source } from '../en/jellyfin';
+
+export const jellyfin: Record<keyof typeof source, string> = {
+  'jellyfin.settings.intro': 'Speel af vanaf je eigen Jellyfin-server. Films en afleveringen die erop staan krijgen een Jellyfin-bron, en de rijen ervan kunnen op Home. Orbit bewaart een aanmeldtoken van de server, nooit je wachtwoord.',
+  'jellyfin.settings.server': 'Serveradres',
+  'jellyfin.settings.server-placeholder': 'http://192.168.1.10:8096',
+  'jellyfin.settings.username': 'Gebruikersnaam',
+  'jellyfin.settings.password': 'Wachtwoord',
+  'jellyfin.settings.fields-hint': 'Het adres waarop je Jellyfin in een browser opent. Vereist Jellyfin 10.9 of nieuwer.',
+  'jellyfin.settings.connect': 'Koppelen',
+  'jellyfin.settings.connecting': 'Koppelen…',
+  'jellyfin.settings.server-label': 'Server',
+  'jellyfin.settings.connected-as': 'Gekoppeld als {user} op {server}',
+  'jellyfin.settings.connected': 'Gekoppeld aan {server}.',
+  'jellyfin.settings.connected-first': 'Gekoppeld aan {server}. ‘Recent toegevoegd’ staat nu op Home; voeg meer Jellyfin-rijen toe via Instellingen → Home & bibliotheek → Rijen op Home.',
+  'jellyfin.settings.disconnect': 'Ontkoppelen',
+  'jellyfin.settings.disconnected': 'Ontkoppeld en afgemeld bij de server.',
+  'jellyfin.settings.insecure': 'Niet beveiligd',
+  'jellyfin.settings.insecure-title': 'Deze server gebruikt onversleuteld http, dus je aanmelding en video’s gaan onversleuteld over het netwerk. Thuis prima; gebruik https via internet.',
+  'jellyfin.rows.kind': 'Jellyfin',
+  'jellyfin.rows.resume': 'Verder kijken',
+  'jellyfin.rows.latest': 'Recent toegevoegd',
+  'jellyfin.rows.label': 'Jellyfin: {row}',
+  'jellyfin.rows.not-connected': 'Koppel eerst een Jellyfin-server via Instellingen → Accounts & diensten.',
+  'jellyfin.rows.libraries-failed': 'De bibliotheken van de server konden niet worden geladen.',
+  'jellyfin.source.origin': 'Jellyfin · {server}',
+};

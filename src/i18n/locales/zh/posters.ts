@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': "海报上的评分",
+  'posters.ratings-hint': "在海报上显示 IMDb、TMDB 和 Letterboxd 评分，来自 Orbit 已掌握的影片信息。简洁模式显示一个评分，完整模式全部显示。",
+  'posters.ratings-minimal': "简洁",
+  'posters.ratings-full': "完整",
+  'posters.provider': "海报来源",
+  'posters.provider-hint': "海报从哪里获取。RPDB 会在海报上绘制评分，需要你自己的 RPDB 密钥（ratingposterdb.com）。RPDB 没有某部影片的海报时，Orbit 会显示常规海报并附上自己的评分。对之后显示的海报生效。",
+  'posters.provider-orbit': "Orbit（内置）",
+  'posters.rpdb.key': "RPDB 密钥",
+  'posters.rpdb.key-hint': "你在 ratingposterdb.com 获取的密钥。它保存在系统钥匙串中，只会发送给 RPDB。",
+  'posters.rpdb.key-placeholder': "t1-…",
+  'posters.rpdb.checking': "正在向 RPDB 验证…",
+  'posters.rpdb.connected': "RPDB 密钥已保存。海报将从 RPDB 获取。",
+  'posters.rpdb.saved': "已保存",
+  'posters.rpdb.removed': "RPDB 密钥已移除。",
+  'posters.rpdb.key-format': "这看起来不像 RPDB 密钥。密钥以 t0-、t1-、t2- 等开头。",
+  'posters.rpdb.refused': "RPDB 不接受这个密钥。",
+  'posters.rpdb.busy': "RPDB 目前请求过多。请稍后再试。",
+  'posters.rpdb.unreachable': "无法连接 RPDB 来验证密钥。",
+  'posters.rpdb.style': "RPDB 海报样式",
+  'posters.rpdb.style-hint': "RPDB 绘制哪些评分。免费密钥只包含默认样式；其他样式需要 RPDB 付费套餐。",
+  'posters.rpdb.style-default': "默认",
+  'posters.rpdb.style-certs': "分级",
+  'posters.rpdb.style-mc': "Metacritic",
+  'posters.rpdb.style-rt': "烂番茄",
+  'posters.rpdb.style-textless': "无标题文字",
+  'posters.description': "评分：{scores}",
+  'posters.score': "{site} {value}",
+  'posters.score-of-5': "{site} {value}（满分 5）",
+};

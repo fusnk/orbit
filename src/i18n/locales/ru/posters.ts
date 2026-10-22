@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'Рейтинги на постерах',
+  'posters.ratings-hint': 'Оценки IMDb, TMDB и Letterboxd прямо на обложке, из того, что Orbit уже знает о фильме. «Минимум» показывает одну оценку, «Все» — все сразу.',
+  'posters.ratings-minimal': 'Минимум',
+  'posters.ratings-full': 'Все',
+  'posters.provider': 'Источник постеров',
+  'posters.provider-hint': 'Откуда берутся постеры. RPDB рисует рейтинги на своих постерах и требует ваш собственный ключ RPDB (ratingposterdb.com). Если у RPDB нет постера, Orbit покажет обычный со своими рейтингами. Применяется к постерам, отрисованным после изменения.',
+  'posters.provider-orbit': 'Orbit (встроенный)',
+  'posters.rpdb.key': 'Ключ RPDB',
+  'posters.rpdb.key-hint': 'Ваш ключ с ratingposterdb.com. Хранится в системной связке ключей и отправляется только в RPDB.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'Проверка в RPDB…',
+  'posters.rpdb.connected': 'Ключ RPDB сохранён. Постеры будут загружаться из RPDB.',
+  'posters.rpdb.saved': 'Сохранено',
+  'posters.rpdb.removed': 'Ключ RPDB удалён.',
+  'posters.rpdb.key-format': 'Это не похоже на ключ RPDB. Ключи начинаются с t0-, t1-, t2- и так далее.',
+  'posters.rpdb.refused': 'RPDB не принял этот ключ.',
+  'posters.rpdb.busy': 'RPDB сейчас перегружен запросами. Повторите попытку чуть позже.',
+  'posters.rpdb.unreachable': 'Не удалось связаться с RPDB для проверки ключа.',
+  'posters.rpdb.style': 'Стиль постеров RPDB',
+  'posters.rpdb.style-hint': 'Какие рейтинги рисует RPDB. Бесплатным ключам доступен только стиль «По умолчанию», остальным нужен платный тариф RPDB.',
+  'posters.rpdb.style-default': 'По умолчанию',
+  'posters.rpdb.style-certs': 'Возрастные рейтинги',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'Без текста названия',
+  'posters.description': 'Рейтинги: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} из 5',
+};

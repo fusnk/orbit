@@ -1,0 +1,60 @@
+/** English strings for the command palette (Ctrl+K): the source every translation follows. */
+export const palette = {
+  'palette.label': 'Command palette',
+  'palette.placeholder': 'Search titles, settings, addons and actions',
+  // Group headings
+  'palette.group.recent': 'Recent',
+  'palette.group.suggested': 'Suggested',
+  'palette.group.yours': 'Your stuff',
+  'palette.group.titles': 'Titles',
+  'palette.group.settings': 'Settings',
+  'palette.group.addons': 'Addons',
+  'palette.group.actions': 'Actions',
+  // Titles from addons, while typing
+  'palette.titles.searching': 'Searching your addons…',
+  'palette.titles.none': 'No titles found',
+  'palette.titles.none-can-search': 'None of your addons can search',
+  'palette.titles.failed': 'Your addons couldn’t search right now',
+  'palette.search-all': 'Search all results for “{query}”',
+  'palette.no-match': 'Nothing here matches “{query}”',
+  // Where a title of yours was found
+  'palette.from.continue': 'Continue watching',
+  'palette.from.library': 'In your library',
+  'palette.from.queue': 'In your queue',
+  'palette.from.downloads': 'Downloaded',
+  'palette.from.watched': 'Watched',
+  'palette.from.list': 'List',
+  // What a result is
+  'palette.kind.page': 'Page',
+  'palette.kind.shortcut': 'Shortcut · {key}',
+  'palette.kind.addon': 'Addon',
+  'palette.kind.category': 'Settings',
+  'palette.kind.setting': 'Settings · {category}',
+  'palette.setting-hidden': '“{setting}” shows once you change “{parent}”.',
+  'palette.kind.movie': 'Movie',
+  'palette.kind.series': 'Series',
+  'palette.kind.title': 'Title',
+  // Actions
+  'palette.action.profile': 'Switch profile',
+  'palette.action.shortcuts': 'Keyboard shortcuts',
+  'palette.action.install-addon': 'Install an addon…',
+  'palette.action.addon-updates': 'Check addons for updates',
+  // The key hints along the bottom
+  'palette.hint.move': 'Move',
+  'palette.hint.open': 'Open',
+  'palette.hint.groups': 'Next group',
+  'palette.hint.close': 'Close',
+  // Other words people may type for each Settings category
+  'palette.keywords.general': 'language startup open close window tray scale zoom motion effects accessibility alerts notifications backup restore diagnostics logs import trakt letterboxd',
+  'palette.keywords.playback': 'autoplay next episode resume skip intro trailer',
+  'palette.keywords.addons': 'install store extensions plugins sources quality torrents avoid prefer',
+  'palette.keywords.downloads': 'offline storage folder quality',
+  'palette.keywords.appearance': 'theme colours colors accent font dark light wallpaper ambient logo looks',
+  'palette.keywords.shortcuts': 'keyboard hotkeys keys remap',
+  'palette.keywords.home-library': 'anime home rows watched continue spoilers story arcs library metadata',
+  'palette.keywords.subtitles': 'captions language forced sync hearing impaired lyrics font size colour color',
+  'palette.keywords.picture-sound': 'picture video hardware decoding hdr audio sound language passthrough volume',
+  'palette.keywords.accounts': 'stremio jellyfin plex letterboxd discord streaming services sync account debrid tmdb integrations iptv live tv channels m3u xtream guide',
+  // Settings → Shortcuts
+  'palette.shortcut': 'Command palette',
+};

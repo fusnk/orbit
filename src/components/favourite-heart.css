@@ -1,0 +1,21 @@
+/* The favourite-episode heart (favourite-heart.ts). Each place sizes and
+   colours it to sit with its neighbours; these are the shared basics. */
+.favourite-heart {
+  display: grid;
+  flex: none;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+}
+
+.favourite-heart:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.favourite-heart[aria-pressed='true'] {
+  /* As the title page's "liked" heart (my-rating.css). */
+  color: #ff6b5e;
+}

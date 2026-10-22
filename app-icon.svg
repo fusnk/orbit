@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Orbit app icon, redrawn as a vector from the brand sheet's icon tile:
+       a white ring with a coral moon at about half past one, on a near-black
+       tile with a soft warm glow. Proportions measured from the sheet. -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1513"/>
+      <stop offset="1" stop-color="#0b0a09"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="474" cy="542" r="430" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#e5484d" stop-opacity="0.34"/>
+      <stop offset="0.55" stop-color="#e5484d" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#e5484d" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="230" fill="url(#tile)"/>
+  <rect width="1024" height="1024" rx="230" fill="url(#glow)"/>
+  <circle cx="474" cy="542" r="220" fill="none" stroke="#ffffff" stroke-width="98"/>
+  <circle cx="760" cy="290" r="79" fill="#e5484d"/>
+</svg>

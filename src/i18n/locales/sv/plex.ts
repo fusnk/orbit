@@ -1,0 +1,30 @@
+import type { plex as source } from '../en/plex';
+import type { Catalog } from '../types';
+
+export const plex: Catalog<typeof source> = {
+  'plex.settings.intro': 'Spela upp från en Plex Media Server på ditt Plex-konto. Filmer och avsnitt som finns där får en Plex-källa, och dess rader kan visas på Hem. Du loggar in på Plex egen sida, så Orbit ser aldrig ditt lösenord.',
+  'plex.settings.connect': 'Anslut med Plex',
+  'plex.settings.connect-hint': 'Öppnar Plex inloggningssida i din webbläsare. Tillåt Orbit där och kom sedan tillbaka hit.',
+  'plex.settings.opening': 'Öppnar Plex i din webbläsare…',
+  'plex.settings.waiting': 'Logga in på Plex i webbläsaren och tillåt Orbit. Väntar…',
+  'plex.settings.open-again': 'Öppna inloggningssidan igen',
+  'plex.settings.cancel': 'Avbryt',
+  'plex.settings.choose': 'Välj vilken server som ska användas:',
+  'plex.settings.shared': '{server} (delad med dig)',
+  'plex.settings.reaching': 'Ansluter till {server}…',
+  'plex.settings.server-label': 'Server',
+  'plex.settings.connected-as': 'Ansluten som {user} på {server}',
+  'plex.settings.connected': 'Ansluten till {server}.',
+  'plex.settings.connected-first': 'Ansluten till {server}. ”Nyligen tillagt” finns nu på Hem; lägg till fler Plex-rader i Inställningar → Hem & bibliotek → Rader på Hem.',
+  'plex.settings.disconnect': 'Koppla från',
+  'plex.settings.disconnected': 'Frånkopplad, och Orbit har glömt sin Plex-inloggning. För att återkalla den även hos Plex, ta bort Orbit under Authorized Devices på plex.tv.',
+  'plex.settings.insecure': 'Inte säker',
+  'plex.settings.insecure-title': 'Orbit når den här servern via vanlig http, så inloggningen och videorna skickas okrypterade. Okej hemma; slå på säkra anslutningar i Plex för användning över internet.',
+  'plex.rows.kind': 'Plex',
+  'plex.rows.resume': 'Fortsätt titta',
+  'plex.rows.latest': 'Nyligen tillagt',
+  'plex.rows.label': 'Plex: {row}',
+  'plex.rows.not-connected': 'Anslut en Plex-server i Inställningar → Konton & tjänster först.',
+  'plex.rows.libraries-failed': 'Kunde inte ladda serverns bibliotek.',
+  'plex.source.origin': 'Plex · {server}',
+};

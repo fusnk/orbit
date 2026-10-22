@@ -1,0 +1,77 @@
+/* ── Slider (see slider.ts): label, track, value ───────────────────────── */
+
+.slider {
+  display: grid;
+  grid-template-columns: minmax(84px, auto) 1fr 3.5ch;
+  gap: var(--space-3);
+  align-items: center;
+  min-width: 0;
+}
+
+.slider-label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.slider-value {
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.slider-control {
+  --at: 0.5;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  touch-action: none;
+}
+
+.slider-control:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.slider-track {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 4px;
+  margin-inline: 8px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--color-text) 22%, transparent);
+}
+
+.slider-fill {
+  --from: 0;
+  --to: 0;
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--from) * 100%);
+  width: calc((var(--to) - var(--from)) * 100%);
+  border-radius: 2px;
+  background: var(--color-accent);
+}
+
+.slider-knob {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--at) * 100%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-text);
+  transform: translate(-50%, -50%);
+}
+
+/* Adjusting with the keyboard (Enter): the knob grows and takes the accent, so it's clear arrows now change it. */
+.slider-control[data-adjusting='true'] .slider-knob {
+  width: 18px;
+  height: 18px;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 30%, transparent);
+}

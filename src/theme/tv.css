@@ -1,0 +1,44 @@
+/* TV mode (looks.ts startTvMode sets data-tv): the Couch setup, seen from a
+   sofa. Couch's 150% scale makes the type big; this adds what a scale can't.
+   Logical properties only, so right-to-left mirrors it. Nothing here moves,
+   so reduced motion has nothing to hold still. */
+
+:root[data-tv='on'] {
+  /* The TV player's ring (3px gap, 3px ring) for browsing too. The ring is the
+     text colour, not the accent: it's the one colour sure to stand out from
+     the background whatever accent the person picks. A flat ring, no glow. */
+  --focus-ring: var(--focus-ring-contrast);
+  /* Many TVs crop the picture's edges (overscan); everything stays this far in. */
+  --tv-safe-block: 4vh;
+  --tv-safe-inline: 4vw;
+}
+
+/* The menu's own focus is a thin accent ring elsewhere. */
+:root[data-tv='on'] .nav-item:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* High-contrast themes drop box-shadows and draw the (normally transparent) outline instead: as thick as the ring. */
+@media (forced-colors: active) {
+  :root[data-tv='on'] :focus-visible {
+    outline-width: 3px;
+    outline-offset: 3px;
+  }
+}
+
+/* ── Safe area: the frame steps in; the wallpaper and glow still fill the screen ── */
+
+:root[data-tv='on'] #app {
+  padding-block: var(--tv-safe-block);
+  padding-inline: var(--tv-safe-inline);
+}
+
+/* The sidebar and rail are fixed to the window, so they step in by hand. */
+:root[data-tv='on']:is([data-nav='sidebar'], [data-nav='rail']) .nav {
+  inset-block: calc(var(--header-height) + var(--tv-safe-block)) calc(var(--space-4) + var(--tv-safe-block));
+  inset-inline-start: calc(var(--space-3) + var(--tv-safe-inline));
+}
+
+:root[data-tv='on']:is([data-nav='sidebar'], [data-nav='rail'])[data-nav-side='end'] .nav {
+  inset-inline: auto calc(var(--space-3) + var(--tv-safe-inline));
+}

@@ -1,0 +1,27 @@
+import type { jellyfin as source } from '../en/jellyfin';
+
+export const jellyfin: Record<keyof typeof source, string> = {
+  'jellyfin.settings.intro': 'Lisez depuis votre propre serveur Jellyfin. Les films et épisodes qu’il contient reçoivent une source Jellyfin, et ses rangées peuvent aller sur l’accueil. Orbit conserve un jeton de connexion du serveur, jamais votre mot de passe.',
+  'jellyfin.settings.server': 'Adresse du serveur',
+  'jellyfin.settings.server-placeholder': 'http://192.168.1.10:8096',
+  'jellyfin.settings.username': 'Nom d’utilisateur',
+  'jellyfin.settings.password': 'Mot de passe',
+  'jellyfin.settings.fields-hint': 'L’adresse à laquelle vous ouvrez Jellyfin dans un navigateur. Nécessite Jellyfin 10.9 ou plus récent.',
+  'jellyfin.settings.connect': 'Connecter',
+  'jellyfin.settings.connecting': 'Connexion…',
+  'jellyfin.settings.server-label': 'Serveur',
+  'jellyfin.settings.connected-as': 'Connecté en tant que {user} sur {server}',
+  'jellyfin.settings.connected': 'Connecté à {server}.',
+  'jellyfin.settings.connected-first': 'Connecté à {server}. « Ajouts récents » est maintenant sur l’accueil ; ajoutez d’autres rangées Jellyfin dans Réglages → Accueil et bibliothèque → Rangées de l’accueil.',
+  'jellyfin.settings.disconnect': 'Déconnecter',
+  'jellyfin.settings.disconnected': 'Déconnecté, et la session sur le serveur est fermée.',
+  'jellyfin.settings.insecure': 'Non sécurisé',
+  'jellyfin.settings.insecure-title': 'Ce serveur utilise http sans chiffrement : votre connexion et vos vidéos circulent en clair. Sans souci à la maison ; utilisez https via internet.',
+  'jellyfin.rows.kind': 'Jellyfin',
+  'jellyfin.rows.resume': 'Reprendre la lecture',
+  'jellyfin.rows.latest': 'Ajouts récents',
+  'jellyfin.rows.label': 'Jellyfin : {row}',
+  'jellyfin.rows.not-connected': 'Connectez d’abord un serveur Jellyfin dans Réglages → Comptes et services.',
+  'jellyfin.rows.libraries-failed': 'Impossible de charger les bibliothèques du serveur.',
+  'jellyfin.source.origin': 'Jellyfin · {server}',
+};

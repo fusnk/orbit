@@ -1,0 +1,5 @@
+# cargo audit (CI security job). Same exception as deny.toml, same reason:
+# ringbuf 0.4's double free needs an element whose Drop panics; its only user,
+# librqbit-utp 0.7, stores u8. Remove when librqbit moves to ringbuf >= 0.5.2.
+[advisories]
+ignore = ["RUSTSEC-2026-0293"]

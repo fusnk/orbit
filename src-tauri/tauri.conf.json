@@ -1,0 +1,90 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "Orbit",
+  "version": "0.1.0",
+  "identifier": "io.github.fusnk.orbit",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://127.0.0.1:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "windows": [
+      {
+        "label": "main",
+        "create": false,
+        "title": "Orbit",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 960,
+        "minHeight": 600,
+        "center": true,
+        "decorations": false,
+        "transparent": true,
+        "backgroundColor": "#0b0d12"
+      }
+    ],
+    "security": {
+      "freezePrototype": true,
+      "csp": {
+        "default-src": "'self'",
+        "script-src": "'self'",
+        "style-src": "'self'",
+        "img-src": "'self' data: blob: https: http://jellyfin-art.localhost jellyfin-art: http://plex-art.localhost plex-art: http://rpdb-art.localhost rpdb-art:",
+        "font-src": "'self'",
+        "connect-src": "ipc: http://ipc.localhost",
+        "media-src": "'self' https://*.googlevideo.com",
+        "object-src": "'none'",
+        "base-uri": "'none'",
+        "form-action": "'none'",
+        "frame-src": "'none'"
+      },
+      "devCsp": {
+        "default-src": "'self'",
+        "script-src": "'self'",
+        "style-src": "'self' 'unsafe-inline'",
+        "img-src": "'self' data: blob: https: http://jellyfin-art.localhost jellyfin-art: http://plex-art.localhost plex-art: http://rpdb-art.localhost rpdb-art:",
+        "font-src": "'self'",
+        "connect-src": "ipc: http://ipc.localhost ws://127.0.0.1:1420",
+        "media-src": "'self' https://*.googlevideo.com",
+        "object-src": "'none'",
+        "base-uri": "'none'",
+        "form-action": "'none'",
+        "frame-src": "'none'"
+      }
+    }
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["stremio", "orbit"]
+      }
+    },
+    "updater": {
+      "pubkey": "REPLACE_WITH_UPDATER_PUBLIC_KEY (see docs/RELEASING.md)",
+      "endpoints": ["https://github.com/fusnk/orbit/releases/latest/download/latest.json"],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "publisher": "fusnk",
+    "resources": {
+      "../public/fonts/*": "fonts/",
+      "../LICENSE": "licenses/LICENSE.txt",
+      "../THIRD-PARTY-NOTICES.txt": "licenses/THIRD-PARTY-NOTICES.txt"
+    },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

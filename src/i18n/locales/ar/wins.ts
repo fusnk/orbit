@@ -1,0 +1,75 @@
+import type { wins as source } from '../en/wins';
+import type { Catalog } from '../types';
+
+/** Arabic strings for the Nuvio-requested extras. */
+export const wins: Catalog<typeof source> = {
+  // Discover filters: a range of years, runtime, cast and director (rooms/explore/filter-bar.ts)
+  'explore.filters.year-from': 'من',
+  'explore.filters.year-to': 'إلى',
+  'explore.filters.runtime': 'المدة',
+  'explore.filters.runtime-min': 'على الأقل',
+  'explore.filters.runtime-max': 'على الأكثر',
+  'explore.filters.minutes': '{count} د',
+  'explore.filters.cast': 'طاقم التمثيل',
+  'explore.filters.director': 'الإخراج أو الطاقم',
+  'explore.filters.person-search': 'البحث عن أشخاص: {what}',
+  'explore.filters.person-placeholder': 'اكتب اسمًا',
+  'explore.filters.person-none': 'لم يُعثر على أحد',
+  'explore.filters.person-clear': 'إزالة {name}',
+  // Settings → Playback → Rewind cache (rooms/settings/player.ts)
+  'settings.player.rewind': 'ذاكرة الترجيع',
+  'settings.player.rewind-hint': 'مقدار الفيديو الذي يبقى في الذاكرة ليكون الرجوع فوريًا. «أكثر» يستخدم حتى نحو 600 ميغابايت من الذاكرة أثناء التشغيل، و«الأقصى» حتى نحو 1.5 غيغابايت. يُطبَّق من الفيديو التالي.',
+  'settings.player.rewind-standard': 'عادي',
+  'settings.player.rewind-more': 'أكثر',
+  'settings.player.rewind-most': 'الأقصى',
+  // Settings → Subtitles: opacity, box and outline colours (rooms/settings/subtitles.ts)
+  'subs.style.opacity': 'عتامة النص',
+  'subs.style.box-colour': 'لون المربع',
+  'subs.style.box-opacity': 'عتامة المربع',
+  'subs.style.box-opacity-hint': 'زوايا المربع حادة: لا يستطيع المشغّل رسم زوايا مستديرة.',
+  'subs.style.outline-colour': 'لون الحدود',
+  'player.subtitle-style.black': 'أسود',
+  'player.subtitle-style.grey': 'رمادي',
+  'player.subtitle-style.navy': 'كحلي',
+  // Addons: health, counts and refreshing one manifest (rooms/addons/index.ts)
+  'addons.health.no-answer': 'لم يستجب',
+  'addons.health.count': '{installed} · {enabled}',
+  'addons.health.installed.one': 'إضافة مثبّتة واحدة ({count})',
+  'addons.health.installed.other': '{count} إضافة مثبّتة',
+  'addons.health.installed.zero': 'لا إضافات مثبّتة ({count})',
+  'addons.health.installed.two': 'إضافتان مثبّتتان ({count})',
+  'addons.health.installed.few': '{count} إضافات مثبّتة',
+  'addons.health.installed.many': '{count} إضافة مثبّتة',
+  'addons.health.enabled.one': 'إضافة مفعّلة واحدة ({count})',
+  'addons.health.enabled.other': '{count} إضافة مفعّلة',
+  'addons.health.enabled.zero': 'لا إضافات مفعّلة ({count})',
+  'addons.health.enabled.two': 'إضافتان مفعّلتان ({count})',
+  'addons.health.enabled.few': '{count} إضافات مفعّلة',
+  'addons.health.enabled.many': '{count} إضافة مفعّلة',
+  'addons.health.refresh': 'تحديث الإضافة',
+  'addons.health.refreshing': 'جارٍ تحديث {name}…',
+  'addons.health.refreshed': 'تم تحديث {name}.',
+  'addons.health.unchanged': 'استجابت {name}: لم يتغيّر شيء.',
+  'addons.health.refresh-failed': 'لم تردّ {name}. يواصل Orbit استخدام ما كان لديه.',
+  // Source preferences: minimum size (rooms/settings/playback.ts, rooms/detail/streams.ts)
+  'sources.rules.min-size': 'الحد الأدنى للحجم',
+  'sources.rules.min-size-hint': 'للأفلام؛ وللحلقات ثلثه. الملفات الأصغر، وغالبًا ما تكون مزيفة أو مصوَّرة في السينما، تأتي بعد كل المصادر الأخرى لكنها لا تُخفى أبدًا. لا يتأثر ما لا يذكر حجمه.',
+  'titles.why.under-size': 'أقل من حدّك الأدنى البالغ {size} غيغابايت',
+  // Searching collections (rooms/collections/overview.ts, page.ts)
+  'collections.search.label': 'البحث عن مجموعة',
+  'collections.search.placeholder': 'البحث عن مجموعة',
+  'collections.search.none': 'لا توجد مجموعة مطابقة',
+  'collections.search.none-detail': 'يشمل البحث الأسماء والمجموعات.',
+  'collections.search.titles-label': 'البحث عن عنوان في هذه المجموعة',
+  'collections.search.titles-placeholder': 'البحث عن عنوان',
+  'collections.search.no-titles': 'لا يوجد عنوان مطابق',
+  // Release Radar → Export to calendar (rooms/library/calendar.ts)
+  'radar.export': 'تصدير إلى التقويم (.ics)',
+  'radar.export.hint': 'يحفظ ما يعرضه الرادار في ملف يمكن لأي تطبيق تقويم استيراده.',
+  'radar.export.name': 'رادار الإصدارات في Orbit',
+  // Automatic skips after a delay (rooms/player/skip-controller.ts, rooms/settings/playback.ts)
+  'playerplus.skip.auto-in': '{label} خلال {seconds}',
+  'playerplus.settings.skip-delay': 'الانتظار قبل التخطي التلقائي',
+  'playerplus.settings.skip-delay-hint': 'للمقاطع المضبوطة على «تلقائي»: يعدّ زر التخطي تنازليًا أولًا. اضغط أي مفتاح لإيقافه ومتابعة المشاهدة.',
+  'playerplus.settings.skip-delay-none': 'فورًا',
+};

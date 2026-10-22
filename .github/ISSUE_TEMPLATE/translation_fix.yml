@@ -1,0 +1,77 @@
+# JSON-compatible YAML: validated with Python's built-in JSON parser.
+{
+  "name": "Translation fix",
+  "description": "Point out wrong, awkward or missing text in a language.",
+  "title": "[Translation]: ",
+  "body": [
+    {
+      "type": "markdown",
+      "attributes": {
+        "value": "You can also fix it yourself in a pull request: docs/TRANSLATING.md explains where each language's text lives and how to check it."
+      }
+    },
+    {
+      "type": "dropdown",
+      "id": "language",
+      "attributes": {
+        "label": "Language",
+        "options": [
+          "Arabic",
+          "Chinese (Simplified)",
+          "Czech",
+          "Dutch",
+          "English",
+          "French",
+          "German",
+          "Hebrew",
+          "Indonesian",
+          "Italian",
+          "Japanese",
+          "Korean",
+          "Polish",
+          "Portuguese",
+          "Russian",
+          "Spanish",
+          "Swedish",
+          "Turkish",
+          "Ukrainian"
+        ]
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "where",
+      "attributes": {
+        "label": "Where it shows",
+        "description": "The page or menu, for example \"Settings → Playback\". A screenshot helps, with private information removed."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "current",
+      "attributes": {
+        "label": "What it says now"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "suggested",
+      "attributes": {
+        "label": "What it should say",
+        "description": "And why, if it isn't obvious (wrong meaning, too long, too formal…)."
+      },
+      "validations": {
+        "required": true
+      }
+    }
+  ]
+}

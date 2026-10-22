@@ -1,0 +1,28 @@
+import type { playertools as source } from '../en/playertools';
+
+export const playertools: Record<keyof typeof source, string> = {
+  'playertools.speed.custom': "Personnalisée",
+  'playertools.speed.custom-label': "Vitesse personnalisée",
+  'playertools.speed.slower': "Plus lent (−0,05×)",
+  'playertools.speed.faster': "Plus rapide (+0,05×)",
+  'playertools.subs.try-another': "Essayer d’autres sous-titres",
+  'playertools.subs.try-another-detail': "Meilleure correspondance suivante en {language}",
+  'playertools.subs.cycled': "Sous-titres {position} sur {total} · {source}",
+  'playertools.subs.no-other': "Aucun autre sous-titre à essayer",
+  'playertools.paste.action': "Coller des sous-titres…",
+  'playertools.paste.detail': "Texte SRT ou WebVTT",
+  'playertools.paste.title': "Coller des sous-titres",
+  'playertools.paste.hint': "Collez le texte d’un fichier SRT ou WebVTT. Il n’est ajouté qu’à cette vidéo.",
+  'playertools.paste.field': "Texte des sous-titres",
+  'playertools.paste.placeholder': "1\n00:00:01,000 --> 00:00:03,000\nBonjour !",
+  'playertools.paste.add': "Ajouter les sous-titres",
+  'playertools.paste.cancel': "Annuler",
+  'playertools.paste.empty': "Collez d’abord du texte de sous-titres.",
+  'playertools.paste.too-big': "Cela fait plus de 2 Mo de texte.",
+  'playertools.paste.bad': "Cela ne ressemble pas à des sous-titres SRT ou WebVTT.",
+  'playertools.paste.added': "Sous-titres collés ajoutés",
+  'playertools.paste.name': "Sous-titres collés",
+  'playertools.caps.setting': "Corriger les sous-titres en MAJUSCULES",
+  'playertools.caps.hint': "Les lignes écrites entièrement en majuscules sont remises en casse normale. S’applique aux sous-titres des add-ons, aux fichiers que vous ajoutez et au texte collé, pas aux sous-titres intégrés au fichier vidéo. Les noms perdent aussi leurs majuscules.",
+  'playertools.caps.error': "Impossible d’appliquer le réglage des MAJUSCULES",
+};

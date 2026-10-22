@@ -1,0 +1,44 @@
+# JSON-compatible YAML: validated with Python's built-in JSON parser.
+{
+  "name": "Feature request",
+  "description": "Suggest something Orbit could do, or do better.",
+  "title": "[Feature]: ",
+  "body": [
+    {
+      "type": "markdown",
+      "attributes": {
+        "value": "Orbit bundles no content and no content addons, so requests to add a source or a content addon can't be taken."
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "problem",
+      "attributes": {
+        "label": "What you're trying to do",
+        "description": "The problem, not yet the solution. For example: \"I watch with a controller and can't reach X\"."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "idea",
+      "attributes": {
+        "label": "What would help",
+        "description": "How it could work in Orbit. A sketch or an example from another app is welcome."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "input",
+      "id": "os",
+      "attributes": {
+        "label": "Operating system and input",
+        "placeholder": "For example: Windows 11, mouse and keyboard; or a TV remote"
+      }
+    }
+  ]
+}

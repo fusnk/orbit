@@ -1,0 +1,27 @@
+import type { jellyfin as source } from '../en/jellyfin';
+
+export const jellyfin: Record<keyof typeof source, string> = {
+  'jellyfin.settings.intro': 'Reproduce desde tu propio servidor Jellyfin. Las películas y episodios que tenga reciben una fuente Jellyfin, y sus filas pueden ir en Inicio. Orbit guarda un token de inicio de sesión del servidor, nunca tu contraseña.',
+  'jellyfin.settings.server': 'Dirección del servidor',
+  'jellyfin.settings.server-placeholder': 'http://192.168.1.10:8096',
+  'jellyfin.settings.username': 'Usuario',
+  'jellyfin.settings.password': 'Contraseña',
+  'jellyfin.settings.fields-hint': 'La dirección con la que abres Jellyfin en el navegador. Requiere Jellyfin 10.9 o posterior.',
+  'jellyfin.settings.connect': 'Conectar',
+  'jellyfin.settings.connecting': 'Conectando…',
+  'jellyfin.settings.server-label': 'Servidor',
+  'jellyfin.settings.connected-as': 'Conectado como {user} en {server}',
+  'jellyfin.settings.connected': 'Conectado a {server}.',
+  'jellyfin.settings.connected-first': 'Conectado a {server}. «Añadido recientemente» ya está en Inicio; añade más filas de Jellyfin en Ajustes → Inicio y biblioteca → Filas de Inicio.',
+  'jellyfin.settings.disconnect': 'Desconectar',
+  'jellyfin.settings.disconnected': 'Desconectado, y se cerró la sesión en el servidor.',
+  'jellyfin.settings.insecure': 'No seguro',
+  'jellyfin.settings.insecure-title': 'Este servidor usa http sin cifrar, así que tu inicio de sesión y los vídeos viajan sin cifrar. Está bien en casa; usa https por internet.',
+  'jellyfin.rows.kind': 'Jellyfin',
+  'jellyfin.rows.resume': 'Seguir viendo',
+  'jellyfin.rows.latest': 'Añadido recientemente',
+  'jellyfin.rows.label': 'Jellyfin: {row}',
+  'jellyfin.rows.not-connected': 'Primero conecta un servidor Jellyfin en Ajustes → Cuentas y servicios.',
+  'jellyfin.rows.libraries-failed': 'No se pudieron cargar las bibliotecas del servidor.',
+  'jellyfin.source.origin': 'Jellyfin · {server}',
+};

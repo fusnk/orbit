@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'Oceny na plakatach',
+  'posters.ratings-hint': 'Oceny z IMDb, TMDB i Letterboxd na grafice, z tego, co Orbit już wie o każdym tytule. Minimalne pokazują jedną ocenę, Pełne – wszystkie.',
+  'posters.ratings-minimal': 'Minimalne',
+  'posters.ratings-full': 'Pełne',
+  'posters.provider': 'Źródło plakatów',
+  'posters.provider-hint': 'Skąd pochodzą plakaty. RPDB rysuje oceny na swoich plakatach i wymaga Twojego klucza RPDB (ratingposterdb.com). Gdy RPDB nie ma plakatu tytułu, Orbit pokazuje zwykły z własnymi ocenami. Dotyczy plakatów rysowanych później.',
+  'posters.provider-orbit': 'Orbit (wbudowane)',
+  'posters.rpdb.key': 'Klucz RPDB',
+  'posters.rpdb.key-hint': 'Twój klucz z ratingposterdb.com. Jest przechowywany w pęku kluczy systemu i wysyłany tylko do RPDB.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'Sprawdzanie w RPDB…',
+  'posters.rpdb.connected': 'Zapisano klucz RPDB. Plakaty będą pochodzić z RPDB.',
+  'posters.rpdb.saved': 'Zapisano',
+  'posters.rpdb.removed': 'Usunięto klucz RPDB.',
+  'posters.rpdb.key-format': 'To nie wygląda na klucz RPDB. Klucze zaczynają się od t0-, t1-, t2- itd.',
+  'posters.rpdb.refused': 'RPDB nie przyjął tego klucza.',
+  'posters.rpdb.busy': 'RPDB otrzymuje teraz zbyt wiele zapytań. Spróbuj ponownie za chwilę.',
+  'posters.rpdb.unreachable': 'Nie udało się połączyć z RPDB, aby sprawdzić klucz.',
+  'posters.rpdb.style': 'Styl plakatów RPDB',
+  'posters.rpdb.style-hint': 'Jakie oceny rysuje RPDB. Darmowe klucze obejmują tylko Domyślny; inne style wymagają płatnego poziomu RPDB.',
+  'posters.rpdb.style-default': 'Domyślny',
+  'posters.rpdb.style-certs': 'Kategorie wiekowe',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'Bez tekstu tytułu',
+  'posters.description': 'Oceny: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} na 5',
+};

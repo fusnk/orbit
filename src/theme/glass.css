@@ -1,0 +1,335 @@
+/* The Glass theme's material (palette.ts THEME_STYLES; engine.ts sets
+   data-theme-style). Every rule is keyed on :root[data-theme-style='glass'],
+   so no other theme changes.
+
+   Glass only reads as glass with something behind it, so the page gets a
+   static field of colour (.ambient, below). On it, the floating layer is live
+   glass: a backdrop blur that also lifts the colour (saturate) and caps how
+   bright anything behind can get (brightness), a see-through tint, a faint
+   lit top, a 1px rim bright at the top-left and dim at the bottom-right, an
+   inner highlight and shadow, a soft drop shadow and a 3.5% grain that keeps
+   the soft gradients from banding.
+
+   Where it goes, and why only there:
+   - Live glass on small floating surfaces: the nav, drawers, menus, popovers,
+     toasts, quick settings, the alerts panel, the palette, dialogs, the hero
+     queue and the frosted buttons. A backdrop blur re-renders whatever is
+     under it every time that changes, and its cost grows with the area, so
+     only small, mostly still surfaces get it.
+   - Cards, posters, rows and lists are content and there are dozens of them:
+     no glass, at most a lit edge on hover or focus. No glass on glass either.
+   - Player controls are plates (tint, lit top, rim, no blur): mpv draws the
+     video natively beneath the WebView, so a blur there samples nothing.
+   - Android draws everything as plates: its WebView is slow at backdrop
+     blurs and masks, and a TV has no pointer for the sheen.
+
+   Nothing here moves on its own: an earlier audit found an idle animation
+   cost a third of a CPU core. The sheen follows the pointer only while it is
+   over a surface (glass.ts), and never with reduced motion.
+
+   Text contrast on every surface is checked against the worst backdrop (a
+   white poster, dimmed by the blur's brightness) in glass.test.ts, which reads
+   the alpha and brightness tokens from this file. */
+
+:root[data-theme-style='glass'] {
+  /* The material. Change these to retune it. */
+  --glass-blur: 22px;
+  --glass-sat: 1.8;
+  /* Caps the backdrop's brightness, so light text on the glass stays legible over a white poster. */
+  --glass-bright: 0.46;
+  /* Tint opacity: the nav is clearer (short, bold labels); panels hold body text; Clear buttons sit over artwork. */
+  --glass-nav-alpha: 50%;
+  --glass-panel-alpha: 80%;
+  --glass-clear-alpha: 34%;
+  /* The lit top and the pointer's sheen (white, as alpha). */
+  --glass-fill: 0.06;
+  --glass-sheen: 0.1;
+  --glass-rim-hi: rgb(255 255 255 / 0.42);
+  --glass-rim-lo: rgb(255 255 255 / 0.06);
+  --glass-inner:
+    inset 0 1px 0 rgb(255 255 255 / 0.16),
+    inset 0 -1px 0 rgb(0 0 0 / 0.28),
+    inset 0 0 24px rgb(255 255 255 / 0.03);
+  /* The rim as box-shadows, for surfaces that scroll (a ::before would scroll away with their content). */
+  --glass-edge:
+    inset 1px 1px 0 rgb(255 255 255 / 0.16),
+    inset -1px -1px 0 rgb(255 255 255 / 0.05),
+    inset 0 0 0 1px rgb(255 255 255 / 0.05);
+  --glass-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.65), 0 2px 6px -2px rgb(0 0 0 / 0.3);
+  --glass-panel-shadow: 0 40px 90px -30px rgb(0 0 0 / 0.75), 0 2px 8px -2px rgb(0 0 0 / 0.35);
+  /* One small tile of white grain, about 3.5% on average; painted once, never animated. */
+  --glass-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .07 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* Player plates: the player is dark in every theme (its text is white). */
+  --glass-plate: rgb(12 17 27 / 0.78);
+
+  /* Every other surface that uses the glass colour turns see-through too. */
+  --color-glass: color-mix(in oklab, var(--color-panel) var(--glass-panel-alpha), transparent);
+  /* The page behind: a static field of three soft lights, one of them the accent. */
+  --glass-field:
+    radial-gradient(42% 52% at 8% 4%, oklch(0.42 0.11 255 / 0.55), transparent 72%),
+    radial-gradient(38% 46% at 92% 14%, color-mix(in oklab, var(--color-accent) 30%, transparent), transparent 70%),
+    radial-gradient(56% 50% at 72% 104%, oklch(0.4 0.1 300 / 0.42), transparent 72%),
+    radial-gradient(40% 40% at 18% 92%, oklch(0.38 0.08 200 / 0.3), transparent 70%);
+}
+
+/* A person's own theme with this style and light colours: frosted white glass, denser, as dark text needs. */
+:root[data-theme-style='glass'][data-theme='light'] {
+  --glass-bright: 1.06;
+  --glass-nav-alpha: 74%;
+  --glass-panel-alpha: 84%;
+  --glass-clear-alpha: 40%;
+  --glass-fill: 0.4;
+  --glass-sheen: 0.3;
+  --glass-rim-hi: rgb(255 255 255 / 0.9);
+  --glass-rim-lo: rgb(255 255 255 / 0.25);
+  --glass-inner: inset 0 1px 0 rgb(255 255 255 / 0.8), inset 0 -1px 0 rgb(0 0 0 / 0.06);
+  --glass-edge: inset 1px 1px 0 rgb(255 255 255 / 0.7), inset 0 0 0 1px color-mix(in srgb, var(--base-text) 10%, transparent);
+  --glass-shadow: 0 18px 40px -20px color-mix(in srgb, var(--base-text) 35%, transparent);
+  --glass-panel-shadow: var(--shadow-overlay);
+  --glass-field:
+    radial-gradient(42% 52% at 8% 4%, color-mix(in oklab, var(--color-accent) 22%, transparent), transparent 72%),
+    radial-gradient(50% 50% at 80% 100%, oklch(0.85 0.06 300 / 0.5), transparent 72%);
+}
+
+/* ── Something to see through ──
+   Shown on every page, not only under a banner. Static: painted once, so it
+   costs nothing per frame; only the art's wash on top changes, with the
+   banner (ambient.ts). The person's wallpaper, when on, is the backdrop
+   instead. Reduce visual effects, a true-black theme and the player (the
+   video shows through the page) still hide it, as styles.css does. */
+
+:root[data-theme-style='glass']:not([data-effects='reduced'], [data-true-black='true'], .player-open) .ambient {
+  display: block;
+  opacity: 1;
+  background: var(--glass-noise), var(--glass-field);
+  background-size: 128px 128px, auto, auto, auto, auto;
+}
+
+:root[data-theme-style='glass'] .ambient[data-art] {
+  background:
+    var(--glass-noise),
+    radial-gradient(60% 40% at 50% 0%, oklch(0.42 0.08 var(--ambient-hue) / 0.42), transparent 70%),
+    var(--glass-field);
+  background-size: 128px 128px, auto, auto, auto, auto, auto;
+}
+
+:root[data-theme-style='glass'][data-wallpaper='on'] .ambient:not([data-art]) {
+  display: none;
+}
+
+:root[data-theme-style='glass'][data-wallpaper='on'] .ambient[data-art] {
+  background: radial-gradient(60% 40% at 50% 0%, oklch(0.42 0.08 var(--ambient-hue) / 0.42), transparent 70%);
+}
+
+/* ── Live glass ── */
+
+:root[data-theme-style='glass'] .nav {
+  --glass-alpha: var(--glass-nav-alpha);
+}
+
+:root[data-theme-style='glass'] :is(.drawer, .menu, .quick-panel, .alerts-panel, .palette, .genre-panel, .settings-reset-dialog, .local-drop-box, .toast, .hero-queue) {
+  --glass-alpha: var(--glass-panel-alpha);
+}
+
+:root[data-theme-style='glass'] .button.glass {
+  --glass-alpha: var(--glass-clear-alpha);
+}
+
+:root[data-theme-style='glass'] :is(.nav, .drawer, .menu, .quick-panel, .alerts-panel, .palette, .genre-panel, .settings-reset-dialog, .local-drop-box, .toast, .hero-queue, .button.glass) {
+  background:
+    radial-gradient(120% 90% at var(--glass-lx, 18%) var(--glass-ly, 0%), rgb(255 255 255 / var(--glass-sheen)), transparent 60%),
+    var(--glass-noise),
+    linear-gradient(180deg, rgb(255 255 255 / var(--glass-fill)), rgb(255 255 255 / 0) 45%),
+    color-mix(in oklab, var(--color-panel) var(--glass-alpha), transparent);
+  background-size: auto, 128px 128px, auto, auto;
+  box-shadow: var(--glass-edge), var(--glass-inner), var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat)) brightness(var(--glass-bright));
+}
+
+:root[data-theme-style='glass'] :is(.drawer, .palette, .settings-reset-dialog, .local-drop-box) {
+  box-shadow: var(--glass-edge), var(--glass-inner), var(--glass-panel-shadow);
+}
+
+/* The frosted buttons over artwork: clear, dark glass with a white label. */
+:root[data-theme-style='glass'] .button.glass {
+  color: #fff;
+}
+
+:root[data-theme-style='glass'] .button.glass:hover:not(:disabled) {
+  --glass-fill: 0.2;
+}
+
+/* The focus ring outside the glass, never the rim brightening (that's not a focus signal). */
+:root[data-theme-style='glass'] .button.glass:focus-visible {
+  box-shadow: var(--focus-ring), var(--glass-inner);
+}
+
+/* The rim as a gradient border (masked ::before), on the surfaces that don't scroll. */
+:root[data-theme-style='glass'] :is(.nav, .toast, .palette, .alerts-panel) {
+  isolation: isolate;
+  box-shadow: var(--glass-inner), var(--glass-shadow);
+}
+
+:root[data-theme-style='glass'] :is(.nav, .toast, .palette, .alerts-panel)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--glass-rim-hi), var(--glass-rim-lo) 40%, var(--glass-rim-lo) 70%, color-mix(in srgb, var(--glass-rim-hi) 40%, transparent));
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+:root[data-theme-style='glass'] .palette {
+  box-shadow: var(--glass-inner), var(--glass-panel-shadow);
+}
+
+/* Inactive pages' names: a step from the text, not muted (muted can't hold 4.5:1 through clear glass over a white poster). */
+:root[data-theme-style='glass'] .nav-item:not(.active) {
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-text-muted));
+}
+
+/* The current page: a brighter lens inside the bar, not a second blur (no glass on glass). */
+:root[data-theme-style='glass']:not([data-nav='sidebar'], [data-nav='rail'], [data-nav='arc']) .nav-indicator {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0.06)), color-mix(in srgb, var(--color-accent) 14%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.38),
+    inset 0 0 0 1px rgb(255 255 255 / 0.1),
+    0 4px 12px -6px rgb(0 0 0 / 0.5);
+}
+
+/* ── Content: no glass, a lit edge on hover or focus ── */
+
+:root[data-theme-style='glass']:not([data-effects='reduced']) .card:is(:hover, :focus-visible) .frame {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    inset 0 0 0 1px color-mix(in srgb, var(--color-text) 38%, transparent),
+    0 20px 32px -14px rgba(0, 0, 0, 0.8);
+}
+
+/* ── Player: plates, no blur (mpv's video can't be sampled) ── */
+
+:root[data-theme-style='glass'].player-open * {
+  backdrop-filter: none !important;
+}
+
+/* Drawers and menus opened over the video: denser, as nothing blurred sits behind them. */
+:root[data-theme-style='glass'].player-open {
+  --glass-panel-alpha: 88%;
+}
+
+:root[data-theme-style='glass'] .player[data-controls-bg='blur']:not([data-layout='floating']) .player-top {
+  background: linear-gradient(0deg, rgb(255 255 255 / 0.04), rgb(255 255 255 / 0) 60%), var(--glass-plate);
+  box-shadow:
+    inset 0 -1px 0 rgb(255 255 255 / 0.14),
+    0 10px 30px -18px rgb(0 0 0 / 0.6);
+}
+
+:root[data-theme-style='glass'] .player[data-controls-bg='blur'] .player-bottom {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0) 55%), var(--glass-plate);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.2),
+    inset 0 2px 12px rgb(255 255 255 / 0.03),
+    0 -10px 30px -18px rgb(0 0 0 / 0.6);
+}
+
+:root[data-theme-style='glass'] :is(.player-panel, .next-up:not(.takeover), .still-watching, .skip-segment, .source-chip, .speed-pill, .seek-bubble, .cheat-card, .lock-panel, .dock-tab, .surf-card, .surf-panel, .volume-popup) {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0) 45%), var(--glass-plate);
+}
+
+:root[data-theme-style='glass'] :is(.player-panel, .next-up:not(.takeover), .still-watching, .skip-segment, .source-chip, .speed-pill, .seek-bubble, .cheat-card, .lock-panel, .dock-tab, .surf-card, .surf-panel, .volume-popup):not(:focus-visible) {
+  box-shadow:
+    inset 1px 1px 0 rgb(255 255 255 / 0.18),
+    inset -1px -1px 0 rgb(255 255 255 / 0.05),
+    inset 0 0 0 1px rgb(255 255 255 / 0.06),
+    inset 0 -1px 0 rgb(0 0 0 / 0.3),
+    0 24px 60px -24px rgb(0 0 0 / 0.85);
+}
+
+/* ── Plates everywhere on Android ── */
+
+:root[data-theme-style='glass'][data-platform='android'] {
+  --glass-nav-alpha: 86%;
+  --glass-panel-alpha: 90%;
+  --glass-clear-alpha: 70%;
+  --glass-noise: none;
+}
+
+:root[data-theme-style='glass'][data-platform='android'] * {
+  backdrop-filter: none !important;
+}
+
+:root[data-theme-style='glass'][data-platform='android'] :is(.nav, .toast, .palette, .alerts-panel) {
+  box-shadow: var(--glass-edge), var(--glass-inner), var(--glass-shadow);
+}
+
+:root[data-theme-style='glass'][data-platform='android'] :is(.nav, .toast, .palette, .alerts-panel)::before {
+  display: none;
+}
+
+/* ── Less transparency: near-solid, the rim kept, so the theme still reads as glass ── */
+
+/* Orbit's own Reduce visual effects (styles.css already drops every backdrop blur). */
+:root[data-theme-style='glass'][data-effects='reduced'] {
+  --glass-nav-alpha: 92%;
+  --glass-panel-alpha: 92%;
+  --glass-clear-alpha: 80%;
+  --glass-noise: none;
+  --glass-shadow: 0 6px 16px -8px rgb(0 0 0 / 0.6);
+  --glass-panel-shadow: var(--shadow-overlay);
+}
+
+/* Windows' Transparency effects off. */
+@media (prefers-reduced-transparency: reduce) {
+  :root[data-theme-style='glass'] {
+    --glass-nav-alpha: 92%;
+    --glass-panel-alpha: 92%;
+    --glass-clear-alpha: 80%;
+  }
+
+  :root[data-theme-style='glass'] * {
+    backdrop-filter: none !important;
+  }
+}
+
+/* Increase contrast: near-solid, with an edge in the text colour. */
+@media (prefers-contrast: more) {
+  :root[data-theme-style='glass'] {
+    --glass-nav-alpha: 97%;
+    --glass-panel-alpha: 97%;
+    --glass-clear-alpha: 92%;
+    --glass-fill: 0;
+    --glass-sheen: 0;
+    --glass-noise: none;
+    --glass-rim-hi: var(--color-text);
+    --glass-rim-lo: var(--color-border-strong);
+    --glass-edge: inset 0 0 0 1px var(--color-text);
+  }
+
+  :root[data-theme-style='glass'] .nav-item:not(.active) {
+    color: var(--color-text);
+  }
+}
+
+/* High-contrast themes: system colours and a real border, no painted light. */
+@media (forced-colors: active) {
+  /* The repeated class outranks the rule above that shows it. */
+  :root[data-theme-style='glass'] .ambient.ambient.ambient {
+    display: none;
+  }
+
+  :root[data-theme-style='glass'] :is(.nav, .toast, .palette, .alerts-panel)::before {
+    display: none;
+  }
+
+  :root[data-theme-style='glass'] :is(.nav, .drawer, .menu, .quick-panel, .alerts-panel, .palette, .genre-panel, .settings-reset-dialog, .local-drop-box, .toast, .hero-queue, .button.glass) {
+    border: 1px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+    backdrop-filter: none;
+  }
+}

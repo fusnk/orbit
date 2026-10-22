@@ -1,0 +1,1598 @@
+/* My Library takes Movies / TV Shows' layout (discover.css): the title row
+   with its actions at the end, the featured banner, the floating filter strip
+   that sticks while the view under it scrolls. The views keep the gutter. */
+.library {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0 72px;
+}
+
+/* Collections and Pick for me, where Discover has Surprise Me. */
+.library-head-actions {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.library-body {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: var(--space-6) var(--page-gutter) 0;
+}
+
+/* ── The strip: the views; on the title grids, a line of dropdowns, sort and the name ── */
+
+.library-bar[hidden],
+.library-bar-anchor[hidden],
+.library-bar .source-button[hidden] {
+  display: none;
+}
+
+/* Many views: in a narrow window they scroll, as the title page's tabs do,
+   rather than wrapping their names onto a second line. */
+.library-tabs {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.library-bar .segment {
+  flex: none;
+  white-space: nowrap;
+}
+
+.library-bar .source-button {
+  flex: none;
+}
+
+.library-bar-filters {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: var(--space-3);
+}
+
+/* The name field ends the row and gives way first in a narrow window. */
+.library-bar .library-search {
+  flex: 0 1 220px;
+  min-width: 160px;
+}
+
+/* The genre dropdown's slot (redrawn alone as genres are found) takes no box of its own. */
+.library-genre-slot {
+  display: contents;
+}
+
+/* A long genre name doesn't stretch its dropdown; the menu shows it whole. Wide enough for the sort in German or
+   Russian ("Сортировка: Недавно добавленные"), which 14em cut short. */
+.library-pick-value {
+  max-width: 18em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A short window (or a large interface scale) can't spare the room for a
+   stuck strip of two rows: it scrolls away with the page. */
+@media (max-height: 560px) {
+  .discover-bar.library-bar {
+    position: relative;
+    top: auto;
+  }
+}
+
+.segment-count {
+  margin-inline-start: 4px;
+}
+
+/* ── Featured banner: how far into the title you are ── */
+
+.featured-progress {
+  display: block;
+  inline-size: min(320px, 100%);
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ── Nothing yet: the banner's place holds the invitation ──
+   The same frame as the banner, on Discover's accent-washed strip instead of
+   artwork, so it reads as the page's start rather than an error box. */
+.library-welcome {
+  display: flex;
+  align-items: center;
+  height: auto;
+  min-height: clamp(280px, 18vw, 380px);
+  padding: var(--space-8) 48px;
+  background: var(--strip-wash), var(--color-surface);
+  box-shadow:
+    var(--strip-ring),
+    0 24px 48px -28px rgba(0, 0, 0, 0.6);
+}
+
+.library-welcome[hidden] {
+  display: none;
+}
+
+.library-welcome-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 640px;
+}
+
+.library-welcome-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(36px, 2.4vw + 18px, 56px);
+  font-weight: var(--font-display-weight);
+  line-height: 1;
+  letter-spacing: calc(-0.02em + 0.08em * var(--font-display-tracking));
+  text-wrap: balance;
+}
+
+.library-welcome-body {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.library-welcome .hero-actions {
+  margin-top: var(--space-2);
+}
+
+.library-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Section names in the rows' voice (styles.css .rail-heading). */
+.library-heading {
+  font-family: var(--font-display);
+  font-size: calc(19px + 0.2vw + 6px * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.01em + 0.04em * var(--font-display-tracking));
+  line-height: 1.1;
+}
+
+/* An empty view: Discover's accent-washed strip, an invitation rather than a box. */
+.library-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 48px;
+  border-radius: var(--radius-xl);
+  background: var(--strip-wash), var(--color-surface);
+  box-shadow: var(--strip-ring);
+}
+
+.library-empty-title {
+  font-family: var(--font-display);
+  font-size: calc(26px + 8px * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.01em + 0.04em * var(--font-display-tracking));
+  line-height: 1.1;
+}
+
+.library-empty .muted {
+  max-width: 560px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.library-empty .hero-actions {
+  margin-top: var(--space-2);
+}
+
+/* Rails bring their own gutter; let them run edge to edge like on Home. */
+.library .rail {
+  margin-inline: calc(-1 * var(--page-gutter));
+}
+
+/* ── Calendar tab ─────────────────────────────────────────────────────── */
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.calendar-upcoming {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.calendar-upcoming-item,
+.calendar-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  text-align: start;
+}
+
+.calendar-upcoming-item {
+  padding: var(--space-3) var(--space-4);
+}
+
+.calendar-upcoming-item:hover,
+.calendar-chip:hover {
+  background: var(--color-surface-overlay);
+}
+
+.calendar-when {
+  color: var(--color-accent);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.calendar-show {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-ep {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendar-header .library-heading {
+  margin: 0;
+}
+
+/* ── Queue tab ── */
+
+.library-queue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.library-queue-header .library-heading {
+  margin: 0;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.calendar-weekdays span {
+  color: var(--color-text-faint);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.calendar-day {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 108px;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.calendar-day.outside {
+  opacity: 0.4;
+}
+
+.calendar-day.past .calendar-chip {
+  opacity: 0.6;
+}
+
+/* Today: the accent's wash and rim, as on Discover's strips. */
+.calendar-day.today {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--color-accent) 18%, transparent), transparent 70%), var(--color-surface);
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.calendar-date {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-day.today .calendar-date {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.calendar-chip {
+  overflow: hidden;
+  padding: 4px 6px;
+  font-size: var(--font-size-xs);
+}
+
+.calendar-chip .calendar-show {
+  font-size: var(--font-size-xs);
+}
+
+/* A button, bare: it reads as a note until it's focused or hovered. */
+.calendar-more {
+  padding: 2px 4px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text-faint);
+  font-size: var(--font-size-xs);
+  text-align: start;
+}
+
+.calendar-more:hover {
+  color: var(--color-text);
+}
+
+.calendar-more:focus-visible,
+.calendar-upcoming-item:focus-visible,
+.calendar-chip:focus-visible,
+.calendar-film:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* Filters: episodes / films, and which film releases. */
+.calendar-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Film releases: poster, when, name and the release type. */
+.calendar-films {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.calendar-film {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  text-align: start;
+}
+
+.calendar-film:hover {
+  background: var(--color-surface-overlay);
+}
+
+.calendar-film-poster {
+  flex: none;
+  inline-size: 48px;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-overlay);
+  object-fit: cover;
+}
+
+.calendar-film-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.calendar-film-text .calendar-show {
+  max-inline-size: 100%;
+}
+
+.calendar-when.out {
+  color: var(--color-success);
+}
+
+.calendar-tag {
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-overlay);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.calendar-tag.cinema {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+.calendar-chip-film {
+  align-items: flex-start;
+}
+
+.calendar-chip-film .calendar-tag {
+  padding: 0 5px;
+  font-size: var(--font-size-2xs);
+}
+
+/* ── Release Radar (the Calendar tab's top): header, featured, This week, Coming soon ──
+   The accent marks only today's column, the chips and the featured "when";
+   no glows. */
+.radar {
+  gap: var(--space-5);
+}
+
+.radar-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+/* Layout (Radar / Upcoming), then the overview's scopes. */
+.radar-head-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.radar-titles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.radar-eyebrow {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.radar-heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 42px);
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.01em + 0.05em * var(--font-display-tracking));
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.radar-sub {
+  margin: 0;
+  max-inline-size: 62ch;
+  color: var(--color-text-muted);
+}
+
+.radar-note {
+  margin: 0;
+}
+
+/* Try again, or Connect TMDB, under the Radar's notes. */
+.radar-note-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.radar-count {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 22px;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-overlay);
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+}
+
+/* Featured: a wide card over the release's backdrop, text on the start side. */
+.radar-featured {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-block-size: clamp(260px, 26vw, 380px);
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-raised);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.radar-featured-art {
+  position: absolute;
+  inset: 0;
+}
+
+.radar-featured-image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* Darkens the start side and the bottom so the text reads on any backdrop. */
+.radar-featured-art::after {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, color-mix(in srgb, var(--color-bg) 92%, transparent) 0%, color-mix(in srgb, var(--color-bg) 55%, transparent) 45%, transparent 75%),
+    linear-gradient(to top, color-mix(in srgb, var(--color-bg) 70%, transparent), transparent 55%);
+  content: '';
+}
+
+.radar-featured-art:dir(rtl)::after {
+  background:
+    linear-gradient(to left, color-mix(in srgb, var(--color-bg) 92%, transparent) 0%, color-mix(in srgb, var(--color-bg) 55%, transparent) 45%, transparent 75%),
+    linear-gradient(to top, color-mix(in srgb, var(--color-bg) 70%, transparent), transparent 55%);
+}
+
+.radar-featured-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  max-inline-size: min(560px, 100%);
+  padding: var(--space-6);
+}
+
+.radar-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.radar-chip {
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--color-bg) 60%, transparent);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+  color: var(--color-text);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.radar-chip.accent {
+  background: var(--color-accent-strong);
+  box-shadow: none;
+  color: var(--color-accent-contrast);
+}
+
+.radar-featured-name {
+  max-inline-size: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text);
+  text-align: start;
+}
+
+.radar-featured-name:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.radar-featured-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 2.8vw, 40px);
+  font-weight: var(--font-display-weight);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.radar-featured-logo {
+  display: block;
+  max-inline-size: min(360px, 100%);
+  max-block-size: 110px;
+  object-fit: contain;
+  object-position: left bottom;
+}
+
+.radar-featured-logo:dir(rtl) {
+  object-position: right bottom;
+}
+
+.radar-featured-line {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.radar-featured-when {
+  margin: var(--space-2) 0 0;
+  color: var(--color-accent);
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: var(--font-display-weight);
+  line-height: 1.1;
+}
+
+.radar-featured-date {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.radar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-start: var(--space-3);
+}
+
+/* This week: a column per day. */
+.radar-week .library-heading,
+.radar-later .library-heading {
+  margin-block-end: var(--space-3);
+}
+
+/* A strip of seven: it scrolls sideways when the page is too narrow for seven readable columns. */
+.radar-days {
+  display: grid;
+  grid-auto-columns: minmax(150px, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding-block-end: 2px;
+  scrollbar-width: thin;
+}
+
+.radar-day {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-inline-size: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.radar-day.today {
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.radar-day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.radar-day-name {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.radar-day.today .radar-day-name {
+  color: var(--color-accent);
+}
+
+.radar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-inline-size: 0;
+  padding: 4px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--color-text);
+  text-align: start;
+}
+
+.radar-row:hover {
+  background: var(--color-surface-overlay);
+}
+
+.radar-row:focus-visible,
+.radar-more:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.radar-row-poster {
+  flex: none;
+  inline-size: 34px;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-overlay);
+  object-fit: cover;
+}
+
+.radar-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-inline-size: 0;
+}
+
+.radar-row-name {
+  overflow: hidden;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.radar-row-code {
+  display: flex;
+  flex-wrap: wrap;
+  white-space: nowrap;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.radar-out {
+  padding: 0 5px;
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+  color: var(--color-text);
+  font-size: var(--font-size-2xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.radar-none {
+  color: var(--color-text-faint);
+  font-size: var(--font-size-xs);
+}
+
+.radar-more {
+  align-self: flex-start;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.radar-more:hover {
+  color: var(--color-text);
+}
+
+/* Upcoming: a list per group, a row per series and day. */
+.upcoming {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.upcoming-group .library-heading {
+  margin-block-end: var(--space-3);
+}
+
+.upcoming-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-inline-size: 760px;
+}
+
+.upcoming-row {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.upcoming-row .radar-row-poster {
+  inline-size: 40px;
+}
+
+.upcoming-row .radar-row-text {
+  flex: 1;
+}
+
+.upcoming-new {
+  flex: none;
+}
+
+.upcoming-when {
+  flex: none;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.upcoming-group.today .upcoming-row:not(:focus-visible) {
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+/* Later: the month grid, its month beside the heading. */
+.radar-later {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  scroll-margin-block-start: var(--space-6);
+}
+
+.radar-month {
+  margin-inline-start: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+}
+
+/* Rating from the featured card, in a drawer. */
+.radar-rate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+}
+
+.radar-rate-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+}
+
+.radar-rate-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ── Filters and sort ── */
+
+/* The filters sit on Discover's accent-washed strip: a toolbar, not loose controls. */
+.library-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--radius-lg);
+  background: var(--strip-wash), var(--color-surface);
+  box-shadow: var(--strip-ring);
+}
+
+.library-filters-gap {
+  flex: 1;
+}
+
+.library-search {
+  width: 220px;
+}
+
+.library-pick {
+  gap: 6px;
+}
+
+.library-pick .icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+.library-pick[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+.library-filters .button[hidden] {
+  display: none;
+}
+
+.library-results {
+  display: contents;
+}
+
+.library-none {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* History keeps its "nothing matches" line and hides it while entries show. */
+.library-none[hidden] {
+  display: none;
+}
+
+/* ── Stats tab ── */
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.stats-bar .button[hidden] {
+  display: none;
+}
+
+.stats-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-3);
+}
+
+.stats-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--strip-wash), var(--color-surface);
+  box-shadow: var(--strip-ring);
+}
+
+/* Numbers in the display face, like Search's ranks. */
+.stats-tile-value {
+  font-family: var(--font-display);
+  font-size: calc(40px + 8px * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.02em + 0.04em * var(--font-display-tracking));
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats-tile-label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+/* Hours per month: a left-to-right timeline in every language. */
+.stats-chart {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  list-style: none;
+}
+
+.stats-chart-month {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.stats-chart-value,
+.stats-chart-label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.stats-chart-value {
+  min-height: 1.4em;
+}
+
+.stats-chart-track {
+  display: flex;
+  align-items: flex-end;
+  width: min(36px, 100%);
+  height: 160px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+}
+
+.stats-chart-fill {
+  width: 100%;
+  min-height: 0;
+  border-radius: inherit;
+  background: var(--color-accent);
+}
+
+.stats-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 28px;
+}
+
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* One set of columns for every genre: per row, "1 title" is narrower than "7 titles", which moved that row's bar. */
+.stats-list:has(> .stats-genre) {
+  display: grid;
+  grid-template-columns: minmax(90px, 0.6fr) 1fr auto;
+  column-gap: var(--space-3);
+}
+
+.stats-genre {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  font-weight: 700;
+}
+
+.stats-meter {
+  height: 8px;
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+}
+
+.stats-meter-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-accent);
+}
+
+.stats-count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.stats-show {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: start;
+}
+
+.stats-show:hover {
+  background: var(--color-surface-raised);
+}
+
+.stats-show:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.stats-show-art {
+  position: relative;
+  flex: none;
+  width: 40px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: oklch(0.35 0.06 var(--hue));
+}
+
+.stats-show-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stats-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.stats-fact {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.stats-fact dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.stats-fact dd {
+  margin: 4px 0 0;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+/* "Your year in Orbit" drawer. */
+.year-review {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-6);
+}
+
+.review-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+.year-review .muted {
+  margin: 0;
+}
+
+.review-canvas {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-overlay);
+}
+
+.review-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+/* Says when hours include typical lengths (stats.ts `estimated`). */
+.stats-note {
+  margin: calc(-1 * var(--space-2)) 0 var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.stats-genres-note {
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-sm);
+}
+
+/* ── My cloud (cloud.ts) ── */
+
+.cloud-problems:empty {
+  display: none;
+}
+
+.cloud-problem {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.cloud-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-block-start: var(--space-4);
+}
+
+.cloud-note {
+  margin: var(--space-4) 0;
+}
+
+.cloud-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  inline-size: 100%;
+  min-block-size: 52px;
+  padding-block: 8px;
+  padding-inline: 12px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: inherit;
+  text-align: start;
+}
+
+.cloud-row:hover {
+  background: var(--color-surface-raised);
+}
+
+.cloud-row:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.cloud-row.error .cloud-row-detail {
+  color: var(--color-danger-text);
+}
+
+.cloud-badge {
+  flex: none;
+  min-inline-size: 84px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-surface-overlay);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.cloud-row-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-inline-size: 0;
+}
+
+.cloud-row-name {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cloud-row-detail {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* The whole row's width, under its text. */
+.cloud-progress {
+  flex-basis: 100%;
+  block-size: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--color-surface-overlay);
+}
+
+.cloud-progress-fill {
+  display: block;
+  block-size: 100%;
+  background: var(--color-accent);
+}
+
+.cloud-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-block-size: 0;
+}
+
+.cloud-drawer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.cloud-drawer-title {
+  margin: 0;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+
+.cloud-drawer-head p {
+  margin: 4px 0 0;
+}
+
+.cloud-drawer-status:empty {
+  display: none;
+}
+
+.cloud-drawer-status {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.cloud-drawer-footer:empty {
+  display: none;
+}
+
+.cloud-drawer-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-block-start: var(--space-2);
+}
+
+.cloud-drawer-footer .button {
+  gap: 6px;
+}
+
+/* My Library → History: a compact list, days as headings. */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Days as the rows' voice, a size down: "Today", "Yesterday", "Saturday". */
+.history-day-label {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: calc(16px + 4px * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.01em + 0.04em * var(--font-display-tracking));
+  color: var(--color-text);
+}
+
+.history-day-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-entry {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.history-entry:hover {
+  background: var(--color-surface-raised);
+}
+
+.history-poster {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--color-panel);
+  color: var(--color-text-faint);
+}
+
+.history-poster .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.history-poster-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.history-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.history-name,
+.history-sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-name {
+  font-weight: 600;
+}
+
+.history-sub {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.history-time {
+  flex: none;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.history-sentinel {
+  height: 1px;
+}
+
+/* My Library → Favourite episodes (favourites.ts): each show's hearted
+   episodes as stills, the show's name a link to its page. */
+.fav-episodes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.fav-episodes-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.fav-episodes-heading {
+  margin: 0;
+}
+
+.fav-episodes-show {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  margin-inline-start: -6px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.fav-episodes-show:hover {
+  background: var(--color-surface-raised);
+}
+
+.fav-episodes-show .icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-faint);
+}
+
+/* Mirrored for right-to-left text, where "onward" points left. */
+:dir(rtl) .fav-episodes-show .icon {
+  scale: -1 1;
+}
+
+.fav-episodes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: var(--space-5);
+}
+
+.fav-episode-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--control-chip);
+  align-items: start;
+  gap: var(--space-2);
+}
+
+.fav-episode {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  text-align: start;
+}
+
+.fav-episode-still {
+  aspect-ratio: 16 / 9;
+  margin-block-end: 4px;
+}
+
+.fav-episode:focus-visible {
+  box-shadow: none;
+}
+
+.fav-episode:focus-visible .fav-episode-still {
+  box-shadow: var(--focus-ring);
+}
+
+.fav-episode-play {
+  position: absolute;
+  inset-inline-start: 10px;
+  bottom: 10px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(11, 10, 9, 0.66);
+  color: #f4f2ef;
+  transition:
+    background var(--duration-hover) var(--ease),
+    color var(--duration-hover) var(--ease);
+}
+
+.fav-episode:is(:hover, :focus-visible) .fav-episode-play {
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+}
+
+.fav-episode-play .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.fav-episode-name,
+.fav-episode-show {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fav-episode-name {
+  font-weight: 600;
+  unicode-bidi: plaintext;
+}
+
+.fav-episode-show {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* Separate hit areas let arrows reach the heart beside the card. */
+.fav-episode-heart {
+  width: var(--control-chip);
+  height: var(--control-chip);
+  /* Beside the still, on the page: the page's own colours. */
+  background: color-mix(in srgb, var(--base-bg) 66%, transparent);
+  color: var(--color-text);
+}
+
+.fav-episode-heart .icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Film-release filters use the same quiet selected surface as the adjacent segments. */
+:root .calendar-filters .chips > .chip[aria-pressed='true'] {
+  background: var(--color-surface-overlay);
+  color: var(--color-text);
+}
+:root .calendar-filters .chips > .chip[aria-pressed='true']:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-surface-overlay) 85%, var(--color-text) 15%);
+}

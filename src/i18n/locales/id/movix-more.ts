@@ -1,0 +1,68 @@
+import type { movixMore as source } from '../en/movix-more';
+import type { Catalog } from '../types';
+
+/** Indonesian strings for the Movix-inspired additions. */
+export const movixMore: Catalog<typeof source> = {
+  // Settings → Playback → Next episode: when Next Up appears and its style (rooms/settings/next-up-rows.ts)
+  'movix.next-up.when': 'Kapan Berikutnya muncul',
+  'movix.next-up.when-hint': 'Untuk episode yang kredit akhirnya tidak diketahui. Jika diketahui, Berikutnya muncul bersama kredit.',
+  'movix.next-up.when-percent': 'Di bagian episode',
+  'movix.next-up.when-before-end': 'Sebelum akhir',
+  'movix.next-up.amount': 'Muncul pada',
+  'movix.next-up.amount-hint': 'Seberapa jauh dalam episode, atau berapa menit sebelum berakhir. Menit sebelum akhir tidak pernah sebelum pertengahan.',
+  'movix.next-up.style': 'Gaya Berikutnya',
+  'movix.next-up.style-hint': 'Kartu kecil di sudut, atau panel di sisi gambar.',
+  'movix.next-up.style-card': 'Kartu',
+  'movix.next-up.style-panel': 'Panel',
+  // Exact air times from TVmaze: the setting and "Out today at 21:00" (catalog/air-times.ts, rooms/settings/general.ts)
+  'movix.air.setting': 'Cari jam tayang yang tepat',
+  'movix.air.setting-hint': 'Menanyakan TVmaze, panduan TV gratis, kapan episode baru tayang: Radar Rilis menampilkan “Tayang hari ini pukul 21:00”, peringatan datang saat episode tayang, dan putar otomatis menunggu hingga rilis. Hanya mengirim ID IMDb atau TheTVDB acara itu.',
+  'movix.air.today': 'Tayang hari ini pukul {time}',
+  'movix.air.tomorrow': 'Tayang besok pukul {time}',
+  'movix.air.date': 'Tayang {date} pukul {time}',
+  // Episode reminders: "Remind me" on an upcoming episode, and the notification (rooms/detail/reminder-button.ts, library/reminders.ts)
+  'movix.remind.set': 'Ingatkan saya',
+  'movix.remind.current': 'Pengingat: {when}',
+  'movix.remind.on-day': 'Pada hari tayang',
+  'movix.remind.days-before.one': '{count} hari sebelumnya',
+  'movix.remind.days-before.other': '{count} hari sebelumnya',
+  'movix.remind.none': 'Tanpa pengingat',
+  'movix.remind.saved': 'Anda akan diingatkan tentang episode baru {name}: {when}.',
+  'movix.remind.removed': 'Tidak ada lagi pengingat untuk {name}.',
+  'movix.remind.full': 'Pengingat hanya bisa untuk maksimal {count} serial. Hapus satu untuk menambahkan {name}.',
+  'movix.remind.today': '{code} tayang hari ini.',
+  'movix.remind.today-at': '{code} tayang hari ini pukul {time}.',
+  'movix.remind.tomorrow': '{code} tayang besok.',
+  'movix.remind.tomorrow-at': '{code} tayang besok pukul {time}.',
+  'movix.remind.in-days.one': '{code} tayang dalam {count} hari.',
+  'movix.remind.in-days.other': '{code} tayang dalam {count} hari.',
+  // A film’s end screen: the next film in its franchise, offered first (rooms/player/end-screen.ts)
+  'movix.end.next-in': 'Berikutnya di {name}',
+  // Lists: description, sort, export and import of one list (rooms/lists/lists.ts)
+  'movix.lists.sort': 'Urutkan menurut',
+  'movix.lists.sort-added': 'Tanggal ditambahkan',
+  'movix.lists.sort-title': 'Judul',
+  'movix.lists.sort-year': 'Tahun',
+  'movix.lists.sort-rating': 'Rating',
+  'movix.lists.description': 'Deskripsi',
+  'movix.lists.add-description': 'Tambah deskripsi',
+  'movix.lists.edit-description': 'Edit deskripsi',
+  'movix.lists.export': 'Ekspor daftar',
+  'movix.lists.import': 'Impor daftar',
+  'movix.lists.imported.one': '“{name}” diimpor dengan {count} judul.',
+  'movix.lists.imported.other': '“{name}” diimpor dengan {count} judul.',
+  'movix.lists.skipped.one': '{count} judul dalam file tidak bisa dibaca dan dilewati.',
+  'movix.lists.skipped.other': '{count} judul dalam file tidak bisa dibaca dan dilewati.',
+  'movix.lists.file-too-large': 'File itu terlalu besar untuk sebuah daftar.',
+  'movix.lists.file-not-list': 'File itu bukan daftar yang diekspor dari Orbit.',
+  'movix.lists.file-empty': 'File daftar itu tidak berisi judul yang bisa dibaca Orbit.',
+  'errors.lists.description': 'Deskripsi daftar maksimal {max} karakter, dalam satu baris.',
+  // Settings → General → Comfort → Reduce visual effects → Auto: what it decided and why (rooms/settings/appearance.ts)
+  'movix.effects.auto-off': 'Mati otomatis: perangkat ini menangani efek dengan baik.',
+  'movix.effects.auto-tv': 'Aktif otomatis: ini adalah TV.',
+  'movix.effects.auto-cores.one': 'Aktif otomatis: perangkat ini memiliki {count} inti prosesor.',
+  'movix.effects.auto-cores.other': 'Aktif otomatis: perangkat ini memiliki {count} inti prosesor.',
+  'movix.effects.auto-memory': 'Aktif otomatis: perangkat ini memiliki memori {memory}.',
+  'movix.effects.auto-frames.one': 'Aktif otomatis: antarmuka berjalan di sini pada {count} bingkai per detik.',
+  'movix.effects.auto-frames.other': 'Aktif otomatis: antarmuka berjalan di sini pada {count} bingkai per detik.',
+};

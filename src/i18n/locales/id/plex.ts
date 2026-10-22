@@ -1,0 +1,30 @@
+import type { plex as source } from '../en/plex';
+import type { Catalog } from '../types';
+
+export const plex: Catalog<typeof source> = {
+  'plex.settings.intro': 'Putar dari Plex Media Server di akun Plex Anda. Film dan episode yang ada di server mendapat sumber Plex, dan barisnya dapat ditampilkan di Beranda. Anda masuk di halaman Plex sendiri, jadi Orbit tidak pernah melihat kata sandi Anda.',
+  'plex.settings.connect': 'Hubungkan dengan Plex',
+  'plex.settings.connect-hint': 'Membuka halaman masuk Plex di browser Anda. Izinkan Orbit di sana, lalu kembali ke sini.',
+  'plex.settings.opening': 'Membuka Plex di browser Anda…',
+  'plex.settings.waiting': 'Masuk ke Plex di browser Anda dan izinkan Orbit. Menunggu…',
+  'plex.settings.open-again': 'Buka lagi halaman masuk',
+  'plex.settings.cancel': 'Batal',
+  'plex.settings.choose': 'Pilih server yang akan digunakan:',
+  'plex.settings.shared': '{server} (dibagikan dengan Anda)',
+  'plex.settings.reaching': 'Menghubungkan ke {server}…',
+  'plex.settings.server-label': 'Server',
+  'plex.settings.connected-as': 'Terhubung sebagai {user} di {server}',
+  'plex.settings.connected': 'Terhubung ke {server}.',
+  'plex.settings.connected-first': 'Terhubung ke {server}. “Baru ditambahkan” kini ada di Beranda; tambahkan baris Plex lainnya di Pengaturan → Beranda & Pustaka → Baris Beranda.',
+  'plex.settings.disconnect': 'Putuskan',
+  'plex.settings.disconnected': 'Terputus, dan Orbit telah melupakan data masuk Plex-nya. Untuk mencabutnya juga di Plex, hapus Orbit di bagian Authorized Devices di plex.tv.',
+  'plex.settings.insecure': 'Tidak aman',
+  'plex.settings.insecure-title': 'Orbit menjangkau server ini melalui http biasa, jadi data masuk dan videonya dikirim tanpa enkripsi. Tidak masalah di rumah; aktifkan koneksi aman di Plex untuk penggunaan melalui internet.',
+  'plex.rows.kind': 'Plex',
+  'plex.rows.resume': 'Lanjutkan Menonton',
+  'plex.rows.latest': 'Baru ditambahkan',
+  'plex.rows.label': 'Plex: {row}',
+  'plex.rows.not-connected': 'Hubungkan server Plex di Pengaturan → Akun & Layanan terlebih dahulu.',
+  'plex.rows.libraries-failed': 'Tidak dapat memuat pustaka server.',
+  'plex.source.origin': 'Plex · {server}',
+};

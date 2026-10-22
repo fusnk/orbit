@@ -1,0 +1,266 @@
+/* Settings → General (general.ts): one column of short groups, and the
+   "More …" disclosures (disclosure.ts). Logical properties only, so
+   right-to-left mirrors it; sizes in the theme's tokens, so every Look and
+   interface scale carry over. */
+
+/* Rows of one height, so values and switches line up down the page. */
+.general-page .setting-row {
+  min-height: 72px;
+  padding-block: var(--space-3);
+}
+
+/* "Open to": a picture of each page, at most a comfortable card's width. */
+.open-to-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 280px));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+/* Chosen: an accent edge and a filled check. Focus is the shared ring (a
+   shadow), so a focused card and the chosen one never look alike. */
+.open-to-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: 6px 6px var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: start;
+  transition:
+    background-color var(--duration-hover) var(--ease),
+    border-color var(--duration-hover) var(--ease);
+}
+
+.open-to-card:hover {
+  background: var(--color-surface-raised);
+}
+
+.open-to-card[aria-pressed='true'] {
+  border-color: var(--color-accent);
+}
+
+.open-to-name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-inline: 6px 2px;
+  font-size: var(--font-size-ui);
+  font-weight: 600;
+}
+
+.open-to-check {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--color-border-strong);
+}
+
+.open-to-check .icon {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.5;
+  opacity: 0;
+}
+
+.open-to-card[aria-pressed='true'] .open-to-check {
+  background: var(--color-accent);
+  box-shadow: none;
+  color: var(--color-accent-contrast);
+}
+
+.open-to-card[aria-pressed='true'] .open-to-check .icon {
+  opacity: 1;
+}
+
+/* The page in miniature, in the theme's colours: a menu bar, then Home's
+   banner and row, or My Library's title, filters and posters. */
+.open-to-picture {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  aspect-ratio: 16 / 9;
+  padding: 7px 9px;
+  overflow: hidden;
+  border-radius: calc(var(--radius-lg) - 6px);
+  background: var(--color-bg);
+}
+
+.open-to-bar {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 6px;
+}
+
+.open-to-logo {
+  position: absolute;
+  inset-inline-start: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--color-text-muted);
+}
+
+.open-to-tab {
+  width: 14px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--color-text-faint);
+  opacity: 0.6;
+}
+
+.open-to-hero {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 4px;
+  background: linear-gradient(105deg, color-mix(in srgb, var(--color-accent) 40%, var(--color-bg)), var(--color-surface-raised) 75%);
+}
+
+.open-to-line {
+  width: 30%;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--color-text-muted);
+}
+
+.open-to-line.wide {
+  width: 45%;
+  height: 6px;
+  background: var(--color-text);
+}
+
+.open-to-line.title {
+  flex: none;
+  width: 32%;
+  height: 6px;
+  background: var(--color-text);
+}
+
+.open-to-pill {
+  width: 16%;
+  height: 7px;
+  margin-top: 2px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+}
+
+.open-to-row,
+.open-to-chips {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}
+
+.open-to-row {
+  height: 24%;
+}
+
+.open-to-tile {
+  flex: 1;
+  border-radius: 3px;
+  background: var(--color-surface-raised);
+}
+
+.open-to-chip {
+  width: 12%;
+  height: 5px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+}
+
+.open-to-chip:first-child {
+  background: var(--color-accent);
+}
+
+.open-to-grid {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+  min-height: 0;
+}
+
+.open-to-poster {
+  aspect-ratio: 2 / 3;
+  border-radius: 3px;
+  background: var(--color-surface-raised);
+}
+
+/* "More notification options", "More general settings": a quiet bar whose
+   text lines up with the rows; its hover and focus bleed past them a little. */
+.settings-disclosure {
+  border-top: 1px solid var(--color-border);
+}
+
+.settings-pane .general-page > .settings-disclosure {
+  margin-top: var(--space-8);
+}
+
+/* Inside a group the row above already draws the line. */
+.settings-group .settings-disclosure {
+  border-top: 0;
+}
+
+.settings-disclosure-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: calc(100% + 2 * var(--space-2));
+  min-height: 56px;
+  margin-inline: calc(-1 * var(--space-2));
+  padding-inline: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--font-size-ui);
+  font-weight: 600;
+  text-align: start;
+  transition: background-color var(--duration-hover) var(--ease);
+}
+
+.settings-group .settings-disclosure-toggle {
+  min-height: 48px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.settings-disclosure-toggle:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.settings-disclosure-toggle .icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+  transition: transform var(--duration-hover) var(--ease);
+}
+
+.settings-disclosure-toggle[aria-expanded='true'] .icon {
+  transform: rotate(180deg);
+}
+
+.settings-disclosure-body[hidden] {
+  display: none;
+}
+
+.settings-disclosure-body {
+  padding-bottom: var(--space-2);
+}

@@ -1,0 +1,30 @@
+import type { alerts as source } from '../en/alerts';
+import type { Catalog } from '../types';
+
+export const alerts: Catalog<typeof source> = {
+  'alerts.bell.label': 'Нові серії',
+  'alerts.bell.unread.one': 'Нові серії: {count} непрочитана',
+  'alerts.bell.unread.few': 'Нові серії: {count} непрочитані',
+  'alerts.bell.unread.many': 'Нові серії: {count} непрочитаних',
+  'alerts.bell.unread.other': 'Нові серії: {count} непрочитаної',
+  'alerts.panel.heading': 'Нові серії',
+  'alerts.panel.mark-read': 'Позначити всі прочитаними',
+  'alerts.panel.empty': 'Поки нічого нового. Тут з’являться нові серії серіалів, за якими ви стежите.',
+  'alerts.panel.play': 'Дивитися',
+  'alerts.panel.play-label': 'Дивитися {show} S{season}E{episode}',
+  'alerts.panel.aired': 'Вийшла {date}',
+  'alerts.toast.episode': 'Вийшла S{season}E{episode} «{title}»',
+  'alerts.toast.grouped-title': 'Нові серії',
+  'alerts.toast.grouped.one': '{count} нова серія серіалів, за якими ви стежите: {shows}',
+  'alerts.toast.grouped.few': '{count} нові серії серіалів, за якими ви стежите: {shows}',
+  'alerts.toast.grouped.many': '{count} нових серій серіалів, за якими ви стежите: {shows}',
+  'alerts.toast.grouped.other': '{count} нової серії серіалів, за якими ви стежите: {shows}',
+  'alerts.settings.enabled': 'Сповіщення про нові серії',
+  'alerts.settings.enabled-hint': 'Дзвіночок у заголовку вікна показує серії, що вийшли після вашого останнього візиту. Перевірка під час запуску й кожні кілька годин.',
+  'alerts.settings.toasts': 'Показувати сповіщення на робочому столі',
+  'alerts.settings.toasts-hint': 'Системне сповіщення про кожну нову серію (одне на всі, якщо їх вийшло одразу кілька), навіть коли Orbit працює у фоні.',
+  'alerts.settings.scope': 'Сповіщати про',
+  'alerts.settings.scope-hint': 'Серіали, які ви дивитеся, — це серіали з історії; бібліотека додає всі збережені серіали.',
+  'alerts.settings.scope-watching': 'Серіали, які я дивлюся',
+  'alerts.settings.scope-library': 'Усе в моїй бібліотеці',
+};

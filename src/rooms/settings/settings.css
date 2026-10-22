@@ -1,0 +1,2365 @@
+/* Categories short enough not to scroll would otherwise sit wider by the
+   scrollbar's lane, so the page shifts sideways on switching. Only here: a
+   full-width banner elsewhere must reach the window's edge. */
+.outlet:has(> .settings) {
+  scrollbar-gutter: stable;
+  /* The page's width, not the window's, decides when the categories go above
+     it: a sidebar nav takes ~200px of a narrow window. */
+  container: settings-page / inline-size;
+}
+
+.settings {
+  display: grid;
+  grid-template-columns: 272px minmax(0, 1fr);
+  gap: var(--space-12);
+  max-width: 1280px;
+  /* Centred on wide windows rather than leaving the right half empty. */
+  margin: 0 auto;
+  padding-inline: var(--page-gutter);
+}
+
+/* The sidebar stays in view while a long category scrolls (so the save line
+   is seen), scrolling on its own when the window is too short for it. The
+   inline padding keeps focus rings inside its scroll box. */
+.settings-sidebar {
+  position: sticky;
+  top: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  align-self: start;
+  /* Less the page's bottom padding (.room) too: taller, it's pushed up under
+     the title bar at the end of a long category. */
+  max-height: calc(100dvh - var(--header-height) - var(--space-5) - var(--space-12));
+  margin-inline: -4px;
+  padding: 0 4px var(--space-4);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  /* Only when it's being used: a bar beside the categories at all times is noise. */
+  scrollbar-color: transparent transparent;
+}
+
+.settings-sidebar:hover,
+.settings-sidebar:focus-within {
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+/* A size down from other pages' names: the column is narrow ("Einstellungen").
+   Still clearly above the category's title beside it (.settings-title), in
+   the Look's heading face; Bebas Neue (tracking 1) is narrow, so it goes larger. */
+.settings-sidebar .page-title {
+  margin-block: 0 var(--space-3);
+  margin-inline: 14px 0;
+  font-size: calc(36px + 12px * var(--font-display-tracking));
+  overflow-wrap: break-word;
+}
+
+/* A one-word name as long as "Einstellungen" or "Configurações" is set smaller
+   to fit the column whole (index.ts), rather than hyphenated. */
+.settings-sidebar .page-title.long {
+  font-size: calc(28px + 8px * var(--font-display-tracking));
+}
+
+/* Whose settings these are, as a card: avatar, name, one line about the
+   connected services (sync), Switch, then the library's counts as a row of
+   four under a hairline. */
+.settings-profile {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  margin-block-end: var(--space-3);
+  padding: 12px 12px 8px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.settings-profile[hidden] {
+  display: none;
+}
+
+.settings-profile .avatar {
+  width: 40px;
+  height: 40px;
+  font-size: 17px;
+}
+
+.settings-profile-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.settings-profile-name {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The services share one line (its tooltip lists them all). */
+.settings-profile-status {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+  color: var(--color-text-faint);
+  font-size: 12px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-profile-status[hidden] {
+  display: none;
+}
+
+.settings-profile-status li {
+  display: inline;
+}
+
+.settings-profile-status li + li::before {
+  content: ' · ';
+}
+
+.settings-profile-switch {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-muted);
+  transition:
+    background-color var(--duration-hover) var(--ease),
+    color var(--duration-hover) var(--ease);
+}
+
+.settings-profile-switch:hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.settings-profile-switch .icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* The profile's library at a glance: four even columns, the count over its
+   name, each a link to that view. */
+.settings-profile-stats {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2px;
+  padding-block-start: 8px;
+  border-block-start: 1px solid var(--color-border);
+}
+
+.settings-profile-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+  padding: 4px 2px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-faint);
+  font-size: 11px;
+  font-weight: 600;
+  transition:
+    background-color var(--duration-hover) var(--ease),
+    color var(--duration-hover) var(--ease);
+}
+
+.settings-profile-stat:hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text-muted);
+}
+
+.settings-stat-value {
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Up to two lines ("Hours / watched"), so the names read whole in the narrow
+   columns; a longer one ("Beobachtungsliste") is hyphenated, then cut short,
+   and the tooltip says where it goes. */
+.settings-stat-label {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  hyphens: auto;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* "Search settings": a quiet field-like button that opens the palette on Settings. */
+.settings-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  margin-block-end: var(--space-3);
+  padding-inline: 14px 8px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  color: var(--color-text-faint);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: start;
+  transition:
+    background-color var(--duration-hover) var(--ease),
+    color var(--duration-hover) var(--ease);
+}
+
+.settings-search:hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text-muted);
+}
+
+/* Its resting outline would otherwise replace the focus ring. */
+.settings-search:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.settings-search .icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.settings-search-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-search-key {
+  flex: none;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  /* Muted, not faint: faint keeps 4.5:1 on the page and panels, not on a raised chip. */
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+}
+
+.settings-search-key[hidden] {
+  display: none;
+}
+
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* A category: its icon in a small tile tinted with the accent, its name,
+   and under it what it's set to now (nav-summary.ts), cut to one line. The
+   sidebar scrolls when they don't all fit. */
+.settings-nav-item {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--color-text-muted);
+  text-align: start;
+  transition:
+    background-color var(--duration-hover) var(--ease),
+    color var(--duration-hover) var(--ease);
+}
+
+/* The open category's bar on the start edge (right, right to left). */
+.settings-nav-item::before {
+  position: absolute;
+  inset-block: 12px;
+  inset-inline-start: 0;
+  width: 3px;
+  border-start-end-radius: 3px;
+  border-end-end-radius: 3px;
+  background: var(--color-accent);
+  opacity: 0;
+  transform: scaleY(0.4);
+  transition:
+    opacity var(--duration-hover) var(--ease),
+    transform var(--duration-hover) var(--ease);
+  content: '';
+}
+
+.settings-nav-tile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  color: color-mix(in srgb, var(--color-accent) 65%, var(--color-text));
+  transition:
+    background-color var(--duration-hover) var(--ease),
+    color var(--duration-hover) var(--ease);
+}
+
+.settings-nav-tile .icon {
+  width: 17px;
+  height: 17px;
+}
+
+.settings-nav-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.settings-nav-label,
+.settings-nav-summary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-nav-label {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* Holds its line while it's read, so the names don't shift when it arrives. */
+.settings-nav-summary {
+  min-height: 1.3em;
+  color: var(--color-text-faint);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.settings-nav-item:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.settings-nav-item:hover .settings-nav-tile {
+  background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+}
+
+/* The open category: a soft wash of the accent, the bar, and its tile filled. */
+.settings-nav-item.active {
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+}
+
+.settings-nav-item.active::before {
+  opacity: 1;
+  transform: none;
+}
+
+.settings-nav-item.active .settings-nav-tile {
+  background: var(--color-accent-strong);
+  color: var(--color-accent-contrast);
+}
+
+.settings-nav-item:is(:hover, .active) .settings-nav-summary {
+  color: var(--color-text-muted);
+}
+
+/* "Changes save automatically", swapped for a moment with "Saved" after a change. */
+.settings-save {
+  position: relative;
+  display: grid;
+  margin-block: var(--space-3) 0;
+  margin-inline: 14px 0;
+  font-size: 12px;
+}
+
+.settings-save-idle,
+.settings-save-done {
+  grid-area: 1 / 1;
+  /* Going back to the footnote: unhurried. */
+  transition:
+    opacity var(--duration-enter) var(--ease),
+    transform var(--duration-enter) var(--ease);
+}
+
+.settings-save-idle {
+  color: var(--color-text-faint);
+}
+
+.settings-save-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(3px);
+}
+
+.settings-save-done .icon {
+  width: 15px;
+  height: 15px;
+  color: var(--color-accent);
+  stroke-width: 2.5;
+}
+
+.settings-save[data-state='saved'] .settings-save-idle {
+  opacity: 0;
+  transition-duration: var(--duration-fast);
+}
+
+.settings-save[data-state='saved'] .settings-save-done {
+  opacity: 1;
+  transform: none;
+  transition-duration: var(--duration-fast);
+}
+
+.settings .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The category's title (and the search beside it) sits level with "Settings". */
+.settings-pane {
+  padding-top: calc(6px * var(--font-display-tracking));
+  max-width: 960px;
+}
+
+/* The category's title, "Search settings" at the far end, the line saying
+   what's in it under them. */
+.settings-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-1) var(--space-6);
+  margin-block-end: var(--space-8);
+}
+
+/* The category's name in the display face, a clear step below "Settings"
+   (scoped to its header: `.room h2` would otherwise win). */
+.settings-head .settings-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: calc(24px + 8px * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.01em + 0.04em * var(--font-display-tracking));
+  line-height: 1.15;
+}
+
+/* At least 260px, wider for a longer name ("Einstellungen durchsuchen" and Strg+K didn't fit). */
+.settings-head .settings-search {
+  min-inline-size: 260px;
+  max-inline-size: 360px;
+  margin: 0;
+}
+
+.settings-lede {
+  grid-column: 1 / -1;
+  max-width: 62ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* A narrow pane (a small window, a large interface scale): the search goes under the title. */
+@container (max-width: 560px) {
+  .settings-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-head .settings-search {
+    inline-size: 100%;
+  }
+}
+
+/* Settings → General → About Orbit. */
+.about-section {
+  margin-top: var(--space-10);
+}
+
+.about-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  margin-top: var(--space-3);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.about-legal {
+  margin-top: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-lg);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.about-legal-heading {
+  margin: 0 0 var(--space-2);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+.about-legal p {
+  margin: 0;
+  max-width: 80ch;
+}
+
+.about-legal p + p {
+  margin-top: var(--space-2);
+}
+
+.about-mark {
+  flex: none;
+  width: 84px;
+  height: 84px;
+  overflow: visible;
+}
+
+.about-track {
+  fill: none;
+  stroke: var(--color-border-strong);
+  stroke-width: 4;
+}
+
+/* The moon goes once round its track a minute: there if you look, never asking to be. */
+.about-mark .wordmark-orbit {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  animation: about-orbit 60s linear infinite;
+}
+
+@keyframes about-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reduce motion: the mark rests as the logo draws it. */
+:root[data-motion='reduce'] .about-mark .wordmark-orbit {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .about-mark .wordmark-orbit {
+    animation: none;
+  }
+}
+
+.about-facts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.about-name {
+  margin-block-end: 2px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.about-version {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.about-version[hidden] {
+  display: none;
+}
+
+.about-line {
+  color: var(--color-text-faint);
+  font-size: var(--font-size-sm);
+}
+
+.about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-start: var(--space-2);
+}
+
+/* Narrow windows (or a large zoom): the categories go above the page as a wrapping row. */
+@container settings-page (max-width: 820px) {
+  .settings {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .settings-sidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .settings-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  /* As a row of chips: the name and its tile only, no bar. */
+  .settings-nav-item {
+    min-height: 0;
+    height: 38px;
+    padding-block: 0;
+    padding-inline: 4px 12px;
+  }
+
+  .settings-nav-item::before,
+  .settings-nav-summary {
+    display: none;
+  }
+
+  .settings-nav-tile {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+
+  .settings-pane {
+    padding-top: 0;
+  }
+}
+
+/* A setting: text on the left, its control on the right. */
+.setting-row {
+  position: relative;
+  /* Keeps the wash below (::before) behind the row's own content only. */
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-6);
+  padding: 18px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.setting-row[hidden] {
+  display: none;
+}
+
+.setting-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.setting-label {
+  font-size: var(--font-size-ui);
+  font-weight: 600;
+}
+
+.setting-hint {
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  color: var(--color-text-faint);
+}
+
+.swatches {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--swatch);
+}
+
+.swatch[aria-pressed='true'] {
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-text);
+}
+
+.swatch:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.addons-panel h2 {
+  margin: var(--space-8) 0 var(--space-2);
+  font-size: 16px;
+}
+
+.addons-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: var(--space-8) 0 var(--space-2);
+}
+
+.addons-panel .addons-heading h2 {
+  margin: 0;
+}
+
+.addons-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.addons-linked {
+  margin: 0 0 var(--space-4);
+}
+
+.room .settings-subheading {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: calc(17px + 4px * var(--font-display-tracking));
+  font-weight: var(--font-display-weight);
+  letter-spacing: calc(-0.01em + 0.04em * var(--font-display-tracking));
+}
+
+/* A group's heading gets clear air above it wherever a panel puts it (the
+   heading itself, or the block it opens); rows within a group stay close.
+   Shortcuts space their lists with their own grid gap. */
+.settings-pane :not(.shortcuts) > * + .settings-subheading,
+.settings-pane :not(.shortcuts) > * + :has(> .settings-subheading:first-child) {
+  margin-top: var(--space-10);
+}
+
+/* A group's opening line (spoilers, sources, providers, the player notes):
+   the hints' type size, a step brighter, at a readable measure. */
+.settings-intro {
+  max-width: 64ch;
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+}
+
+/* A key field and its button, or "Connected" and Remove. */
+.provider-key {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  width: 340px;
+}
+
+.provider-key .provider-status {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.provider-message {
+  min-height: 1.4em;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Each group of settings gets clear air above it; rows within it stay close. */
+.streaming-section,
+.stremio-section,
+.debrid-section,
+.letterboxd-section,
+.discord-section {
+  margin-top: var(--space-10);
+}
+
+/* Streaming service toggles: logo and name, dimmed until picked. */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.service-tile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px 12px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-align: start;
+}
+
+.service-tile img,
+.service-tile .service-initial {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  opacity: 0.45;
+}
+
+.service-tile .service-initial {
+  display: grid;
+  place-items: center;
+  background: var(--color-surface-overlay);
+}
+
+.service-tile:hover {
+  color: var(--color-text);
+}
+
+.service-tile[aria-pressed='true'] {
+  color: var(--color-text);
+  box-shadow: inset 0 0 0 2px var(--color-text);
+}
+
+.service-tile[aria-pressed='true'] img,
+.service-tile[aria-pressed='true'] .service-initial {
+  opacity: 1;
+}
+
+.service-tile:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.room .appearance-section {
+  margin-top: var(--space-10);
+}
+
+/* Any accent: Windows' colour picker as a round swatch, plus a hex field. */
+.custom-swatch {
+  cursor: pointer;
+  background: conic-gradient(from 90deg, #e5484d, #f5a524, #46c28e, #3e9bff, #a46bf5, #e5484d);
+}
+
+.custom-swatch::-webkit-color-swatch-wrapper,
+.custom-swatch::-webkit-color-swatch {
+  padding: 0;
+  border: 0;
+  opacity: 0;
+}
+
+.swatches {
+  align-items: center;
+}
+
+/* "Theme's colour": the theme's own accent as a ring around its background,
+   set apart from the fixed colours by a little space after it. */
+.theme-swatch {
+  background: radial-gradient(circle, var(--swatch-bg) 0 42%, var(--swatch) 44%);
+  margin-inline-end: var(--space-2);
+}
+
+.hex-field {
+  flex: none;
+  width: 104px;
+  font-family: var(--font-mono);
+}
+
+.poster-settings {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+.poster-preview {
+  width: 188px;
+  pointer-events: none;
+}
+
+/* Wide enough for the largest landscape card (tokens.css --landscape-width). */
+.poster-preview:has(> .landscape-card) {
+  width: calc(188px * 1.75);
+}
+
+.wallpaper-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.home-rows-section {
+  margin-top: var(--space-10);
+}
+
+.home-rows-list {
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-row-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.home-row-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.home-row-item.off .home-row-name {
+  color: var(--color-text-faint);
+}
+
+/* Subtitle preview (Settings → Subtitles): a 16:9 dark "scene" with two sample
+   lines styled like mpv will draw them. The frame and the lines are drawn by
+   player/subtitle-preview.css (shared with the player's Subtitle style view);
+   here only its place on the page and the full-screen preview
+   (`.subtitle-preview-full`). */
+.subtitle-preview {
+  max-inline-size: 640px;
+  margin-block: var(--space-3) var(--space-2);
+}
+
+/* Both classes, so it holds over the shared frame's size whatever order the stylesheets load in. */
+.subtitle-preview.subtitle-preview-full {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  display: block;
+  aspect-ratio: auto;
+  inline-size: auto;
+  max-inline-size: none;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.subtitle-preview-full:focus-visible {
+  outline: none;
+  box-shadow: inset var(--focus-ring);
+}
+
+.subtitle-preview-close {
+  position: absolute;
+  inset-block-start: var(--space-5);
+  inset-inline-end: var(--space-5);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--color-glass);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+}
+
+/* Font picker: each choice shows its name in that font. */
+.subtitle-fonts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+.subtitle-font {
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-md);
+}
+
+.subtitle-font[aria-pressed='true'] {
+  border-color: var(--color-text);
+  color: var(--color-text);
+}
+
+.subtitle-font:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* ── Shortcuts ────────────────────────────────────────────────────────── */
+
+.shortcuts {
+  display: grid;
+  gap: var(--space-6);
+  margin-top: var(--space-2);
+}
+
+.shortcut-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin: 0;
+}
+
+.shortcut-list dt,
+.shortcut-list dd {
+  margin: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.shortcut-list dd {
+  text-align: end;
+}
+
+.shortcut-list dt {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.shortcut-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.shortcut-intro .setting-hint {
+  margin: 0;
+}
+
+.shortcut-status:empty {
+  display: none;
+}
+
+.shortcut-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  padding-block: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.shortcut-action {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.shortcut-keys {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-1);
+}
+
+.shortcut-keys.listening {
+  color: var(--color-accent);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.shortcut-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.shortcut-conflict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  grid-column: 1 / -1;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  font-size: 14px;
+}
+
+.shortcut-row kbd,
+.shortcut-list kbd {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-raised);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: pre;
+}
+
+.room .subtitle-style-intro {
+  margin-top: var(--space-4);
+}
+
+/* ── Live TV sources ──────────────────────────────────────────────────── */
+
+.tv-sources {
+  margin-bottom: var(--space-6);
+}
+
+.tv-add {
+  max-width: 640px;
+}
+
+/* Jellyfin and Plex share the form's width only while signing in: connected, theirs is a row like its neighbours'. */
+.tv-add:not(:has(.tv-fields, .hero-actions)) {
+  max-width: none;
+}
+
+.tv-fields {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.tv-fields[hidden] {
+  display: none;
+}
+
+.tv-fields .text-field {
+  width: 100%;
+}
+
+.tv-add .hero-actions {
+  margin-top: var(--space-3);
+}
+
+.tv-source-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.tv-account {
+  display: block;
+}
+
+.tv-account.warning {
+  color: var(--color-danger-text);
+}
+
+/* A source's own guides, opened under its row. */
+.tv-guides {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 640px;
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.tv-guide {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.tv-guide-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tv-guide-add {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.tv-guide-add .text-field {
+  flex: 1;
+}
+
+.tv-insecure {
+  margin-inline-start: 8px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-danger) 18%, transparent);
+  color: var(--color-danger-text);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ── Import (Settings → Library) ── */
+
+.import-status:empty {
+  display: none;
+}
+
+.import-status {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.import-status p {
+  margin: 0;
+}
+
+.import-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: var(--space-2);
+}
+
+.avoid-field {
+  width: 280px;
+}
+
+/* Stremio import: a checklist of the account's addons. */
+.stremio-import {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: var(--space-2);
+}
+
+.stremio-import:empty {
+  display: none;
+}
+
+.stremio-addon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--font-size-sm);
+}
+
+.stremio-addon-name {
+  font-weight: 700;
+}
+
+/* Appearance → Colours: theme cards, each a miniature page in its own colours. */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-2) 0 var(--space-4);
+}
+
+.theme-card {
+  display: grid;
+  /* From the top: a button centres its content, so cards with shorter hints in a row would drop their name lower. */
+  align-content: start;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color var(--duration-hover) var(--ease), background var(--duration-hover) var(--ease);
+}
+
+.theme-card:hover {
+  background: var(--color-surface-raised);
+}
+
+.theme-card[aria-pressed='true'] {
+  border-color: var(--color-accent);
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+.theme-card:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* The chosen Look wears a tick over its miniature (looks.ts): a focused card and the chosen one can't be told apart by their outlines alone. */
+.look-card {
+  position: relative;
+}
+
+.look-card-check {
+  position: absolute;
+  top: calc(var(--space-2) + 6px);
+  inset-inline-end: calc(var(--space-2) + 6px);
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.look-card-check .icon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.5;
+}
+
+.theme-card-name {
+  padding: 0 var(--space-1);
+  font-weight: 600;
+}
+
+.theme-card-wrap {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.theme-card-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.theme-card-actions .button {
+  flex: 1;
+  height: var(--control-segment);
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-xs);
+}
+
+.theme-mini {
+  position: relative;
+  display: block;
+  height: 78px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--mini-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mini-text) 10%, transparent);
+}
+
+.theme-mini > span {
+  position: absolute;
+  display: block;
+}
+
+.theme-mini-bar {
+  inset: 0 0 auto;
+  height: 12px;
+  background: var(--mini-panel);
+}
+
+.theme-mini-line {
+  top: 20px;
+  inset-inline-start: 10px;
+  width: 52%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--mini-text);
+}
+
+.theme-mini-line.short {
+  top: 31px;
+  width: 34%;
+  background: var(--mini-muted);
+}
+
+.theme-mini > .theme-mini-posters {
+  inset-inline-start: 10px;
+  bottom: 9px;
+  display: flex;
+  gap: 5px;
+}
+
+.theme-mini-posters span {
+  width: 18px;
+  height: 26px;
+  border-radius: 3px;
+  background: var(--mini-raised);
+}
+
+.theme-mini-button {
+  inset-inline-end: 10px;
+  bottom: 9px;
+  width: 30px;
+  height: 12px;
+  border-radius: 6px;
+  background: var(--mini-accent);
+}
+
+/* A theme with a style of its own (palette.ts THEME_STYLES) shows a hint of it. */
+.theme-mini[data-mini-style='crimson'] .theme-mini-line:not(.short) {
+  box-shadow: -7px 0 0 -1px var(--mini-accent);
+}
+
+:root[dir='rtl'] .theme-mini[data-mini-style='crimson'] .theme-mini-line:not(.short) {
+  box-shadow: 7px 0 0 -1px var(--mini-accent);
+}
+
+.theme-mini[data-mini-style='crimson'] .theme-mini-button {
+  background: var(--mini-text);
+}
+
+.theme-mini[data-mini-style='afterglow'] .theme-mini-button {
+  border-radius: 3px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--mini-accent) 82%, #fff), color-mix(in srgb, var(--mini-accent) 84%, #000));
+}
+
+.theme-empty {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+/* A setting whose control (a row of chips, a text field) goes under its text. */
+.setting-row.stacked {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.setting-row.stacked .text-field {
+  inline-size: 100%;
+  max-inline-size: 480px;
+}
+
+/* Appearance → Looks: a card per Look, its miniature in the Look's theme colours with
+   the nav where the Look puts it and the banner's shape. */
+.looks-section .looks-heading {
+  margin-top: 0;
+}
+
+.looks-hint {
+  margin: 0 0 var(--space-2);
+  max-width: 64ch;
+}
+
+.look-mini {
+  position: relative;
+  display: block;
+  height: 78px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--mini-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mini-text) 10%, transparent);
+}
+
+.look-mini > span {
+  position: absolute;
+  display: block;
+}
+
+.look-mini > .look-mini-nav {
+  z-index: 1;
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--mini-text) 12%, var(--mini-panel));
+}
+
+.look-mini-nav > span {
+  width: 9px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--mini-muted);
+}
+
+.look-mini-nav > span:first-child {
+  background: var(--mini-accent);
+}
+
+.look-mini-hero {
+  top: 18px;
+  inset-inline: 10px;
+  height: 24px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--mini-accent) 40%, var(--mini-raised));
+}
+
+.look-mini-logo {
+  position: absolute;
+  inset-block-end: 5px;
+  inset-inline-start: 6px;
+  width: 24px;
+  height: 5px;
+  border-radius: 2px;
+  background: var(--mini-text);
+}
+
+.look-mini > .look-mini-posters {
+  bottom: 8px;
+  inset-inline-start: 10px;
+  display: flex;
+  gap: 4px;
+}
+
+.look-mini-posters > span {
+  width: 16px;
+  height: 20px;
+  border-radius: 3px;
+  background: var(--mini-raised);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mini-text) 12%, transparent);
+}
+
+.look-mini[data-corners='sharp'] :is(.look-mini-hero, .look-mini-posters > span) {
+  border-radius: 1px;
+}
+
+.look-mini[data-corners='round'] :is(.look-mini-hero, .look-mini-posters > span) {
+  border-radius: 6px;
+}
+
+/* Where the nav sits. */
+.look-mini[data-nav='top'] .look-mini-nav,
+.look-mini[data-nav='cinematic'] .look-mini-nav {
+  top: 4px;
+  inset-inline: 0;
+  width: max-content;
+  margin-inline: auto;
+}
+
+.look-mini[data-nav='top'][data-nav-align='start'] .look-mini-nav,
+.look-mini[data-nav='cinematic'][data-nav-align='start'] .look-mini-nav {
+  margin-inline: 8px auto;
+}
+
+/* The Arc bar: bare links after the wordmark, the current one with a small arc under it. */
+.look-mini[data-nav='arc'] .look-mini-nav {
+  top: 4px;
+  inset-inline: 8px auto;
+  background: none;
+}
+
+.look-mini[data-nav='arc'] .look-mini-nav > span:first-child {
+  background: var(--mini-text);
+  box-shadow: 0 2px 0 -0.5px var(--mini-accent);
+}
+
+.look-mini[data-nav='sidebar'] .look-mini-nav,
+.look-mini[data-nav='rail'] .look-mini-nav {
+  inset-block: 6px;
+  inset-inline-start: 4px;
+  flex-direction: column;
+}
+
+.look-mini[data-nav='sidebar'] .look-mini-nav > span {
+  width: 20px;
+}
+
+.look-mini[data-nav='rail'] .look-mini-nav > span {
+  width: 5px;
+  height: 5px;
+}
+
+.look-mini[data-nav='sidebar'] :is(.look-mini-hero, .look-mini-posters) {
+  inset-inline-start: 36px;
+}
+
+.look-mini[data-nav='rail'] :is(.look-mini-hero, .look-mini-posters) {
+  inset-inline-start: 22px;
+}
+
+.look-mini[data-nav='sidebar'] .look-mini-hero,
+.look-mini[data-nav='rail'] .look-mini-hero {
+  top: 8px;
+}
+
+.look-mini[data-nav='dock'] .look-mini-nav {
+  bottom: 4px;
+  inset-inline: 0;
+  width: max-content;
+  margin-inline: auto;
+}
+
+.look-mini[data-nav='dock'] .look-mini-hero {
+  top: 8px;
+}
+
+.look-mini[data-nav='dock'] .look-mini-posters {
+  bottom: 18px;
+}
+
+/* The banner's shape: a card (above), full width behind the nav, or a tall card led by the logo. */
+.look-mini[data-hero='cinematic'] .look-mini-hero {
+  top: 0;
+  inset-inline: 0;
+  height: 40px;
+  border-radius: 0;
+}
+
+.look-mini[data-hero='cinematic'] .look-mini-nav {
+  background: color-mix(in srgb, var(--mini-bg) 55%, transparent);
+}
+
+.look-mini[data-hero='spotlight'] .look-mini-hero {
+  height: 30px;
+}
+
+.look-mini:not([data-hero='spotlight']) .look-mini-logo {
+  display: none;
+}
+
+/* Carousel: a narrower slide with its neighbours peeking in at the edges. */
+.look-mini[data-hero='carousel'] .look-mini-hero {
+  inset-inline: 18px;
+}
+
+.look-mini[data-hero='carousel'] .look-mini-hero::before,
+.look-mini[data-hero='carousel'] .look-mini-hero::after {
+  position: absolute;
+  inset-block: 3px;
+  width: 14px;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--mini-accent) 18%, var(--mini-raised));
+  content: '';
+}
+
+.look-mini[data-hero='carousel'] .look-mini-hero::before {
+  inset-inline-end: calc(100% + 4px);
+}
+
+.look-mini[data-hero='carousel'] .look-mini-hero::after {
+  inset-inline-start: calc(100% + 4px);
+}
+
+/* Split: the picture on the end side, the text's place left plain beside it. */
+.look-mini[data-hero='split'] .look-mini-hero {
+  inset-inline-start: 46%;
+}
+
+.look-mini[data-hero='split'] .look-mini-hero::before {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: calc(100% + 6px);
+  width: 22px;
+  height: 5px;
+  border-radius: 2px;
+  background: var(--mini-text);
+  box-shadow: 0 7px 0 -1px var(--mini-muted);
+  translate: 0 -50%;
+  content: '';
+}
+
+/* AniList: the two buttons, then the pasted token on its own full-width line. */
+.provider-key.anilist-controls {
+  flex-wrap: wrap;
+  width: 380px;
+}
+
+.anilist-controls .anilist-token {
+  /* Typed before Connect (Tab order), shown on its own line under both buttons. */
+  order: 1;
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+/* A narrow pane (a large interface scale at a small window): rows whose
+   controls are wider than what's left beside the label put them under it,
+   and the addon rows and shortcut lists wrap, so nothing runs past the
+   window. (After the AniList rules, whose width this overrides.) */
+@container (max-width: 560px) {
+  .setting-row:has(> .provider-key, > .avoid-field, > .tv-source-actions, > .wallpaper-control, > .swatches) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .setting-row > .wallpaper-control {
+    justify-content: flex-start;
+  }
+
+  .avoid-field {
+    width: 100%;
+  }
+
+  .provider-key,
+  .provider-key.anilist-controls {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: auto;
+  }
+
+  .tv-source-actions,
+  .about-card {
+    flex-wrap: wrap;
+  }
+
+  .addons-heading,
+  .addon-row {
+    flex-wrap: wrap;
+  }
+
+  .addon-actions {
+    flex-basis: 100%;
+    justify-content: flex-start;
+    max-width: none;
+  }
+
+  .shortcut-intro {
+    flex-wrap: wrap;
+  }
+
+  .shortcut-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .shortcut-buttons {
+    grid-column: 1 / -1;
+  }
+
+  .shortcut-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .shortcut-list dt {
+    padding-bottom: 4px;
+    border-bottom: 0;
+  }
+
+  .shortcut-list dd {
+    padding-top: 0;
+    text-align: start;
+  }
+
+  .shortcut-list kbd {
+    white-space: pre-wrap;
+  }
+}
+
+.anilist-account {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.anilist-avatar {
+  inline-size: 40px;
+  block-size: 40px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+/* ── Simple view, groups and reset (phase 2) ───────────────────────────── */
+
+/* The sidebar's two quiet groups: what anyone changes, then sources and connections. */
+.settings-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-nav-group + .settings-nav-group {
+  margin-top: var(--space-3);
+}
+
+.settings-nav-heading {
+  padding: 2px 10px 4px;
+  color: var(--color-text-faint);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* "Show all settings", at the foot of the categories beside the save line. */
+.settings-sidebar .settings-show-all {
+  justify-content: space-between;
+  margin-top: var(--space-3);
+  padding-block: 6px;
+  padding-inline: 14px 4px;
+  border-radius: 10px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.settings-sidebar .settings-show-all:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+/* A folded row: skipped like `hidden` by keyboard, controller and screen readers. */
+.settings-pane [data-folded] {
+  display: none;
+}
+
+/* "More options (n)": a quiet bar at the foot of the page, its chevron and
+   count first, then which chapters it opens; it opens the rest in place. */
+.settings-more {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  text-align: start;
+  transition:
+    background-color var(--duration-hover) var(--ease),
+    transform var(--duration-hover) var(--ease);
+}
+
+.settings-more:hover {
+  background: var(--color-surface-raised);
+}
+
+.settings-more:active {
+  transform: scale(0.995);
+}
+
+.settings-more:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.settings-more .icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+  transition: transform var(--duration-hover) var(--ease);
+}
+
+.settings-more[aria-expanded='true'] .icon {
+  transform: rotate(180deg);
+}
+
+/* "Changed": an advanced row kept in view because it differs from its default. */
+.setting-changed {
+  align-self: flex-start;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.settings-subheading + .setting-changed {
+  display: inline-block;
+  margin-block-end: var(--space-2);
+}
+
+/* Appearance's App and Player tabs. */
+.settings-tabs {
+  margin-bottom: var(--space-4);
+}
+
+/* "Reset this section", at the foot of a page. */
+.settings-reset {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+  margin-top: var(--space-10);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.settings-reset .setting-hint {
+  flex: 1 1 280px;
+  max-width: 62ch;
+  margin: 0;
+}
+
+.settings-reset-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+
+.settings-reset-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(460px, 100%);
+  max-height: calc(100dvh - 2 * var(--space-6));
+  overflow-y: auto;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-panel);
+  box-shadow:
+    inset 0 0 0 1px var(--color-border-strong),
+    var(--shadow-overlay);
+}
+
+.settings-reset-dialog .setting-hint {
+  margin: 0;
+}
+
+.room .settings-reset-title,
+.settings-reset-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.settings-reset-list {
+  margin: 0;
+  padding-inline-start: 1.2em;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.settings-reset-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* Narrow windows: each group of categories wraps as its own row under its name. */
+@container settings-page (max-width: 820px) {
+  .settings-nav {
+    flex-direction: column;
+  }
+
+  .settings-nav-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .settings-nav-heading {
+    flex-basis: 100%;
+    padding-inline: 12px;
+  }
+
+  .settings-sidebar .settings-show-all {
+    align-self: flex-start;
+    gap: var(--space-3);
+  }
+}
+
+/* Audio & Subtitles → Preferred subtitle language: the languages in order (subtitles.ts `languageList`). */
+.language-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.language-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-width: 20rem;
+}
+
+.language-list-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+}
+
+.language-list-rank {
+  min-width: 1.5em;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.language-list-controls {
+  display: flex;
+  gap: var(--space-1);
+}
+
+/* ── Rows, chapters and previews ───────────────────────────────────────── */
+
+/* A choice row's one focus stop: what's chosen now and a chevron; Enter or a
+   click opens the choices in a menu (compact.ts). Its choices stay in the
+   row, hidden, as the source of truth. */
+.setting-value {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 6px;
+  max-inline-size: 22rem;
+  min-width: 0;
+  min-height: var(--control-compact);
+  /* The chevron lines up with the switches' end edge; the pill bleeds past it. */
+  margin-inline-end: calc(-1 * var(--space-2));
+  padding-inline: var(--space-3) var(--space-2);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  transition:
+    background-color var(--duration-hover) var(--ease),
+    transform var(--duration-hover) var(--ease);
+}
+
+.setting-value:hover,
+.setting-value[aria-expanded='true'] {
+  background: var(--color-surface-raised);
+}
+
+.setting-value:active {
+  transform: scale(0.97);
+}
+
+.setting-value:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.setting-value-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.setting-value .icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+  transition: transform var(--duration-hover) var(--ease);
+}
+
+/* Open: the chevron turns towards the menu below it. */
+.setting-value[aria-expanded='true'] .icon {
+  transform: rotate(90deg);
+}
+
+:root[dir='rtl'] .setting-value .icon {
+  transform: scaleX(-1);
+}
+
+:root[dir='rtl'] .setting-value[aria-expanded='true'] .icon {
+  transform: scaleX(-1) rotate(90deg);
+}
+
+.setting-value-swatch {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong);
+}
+
+.setting-value-swatch[hidden],
+.settings-pane [data-choices][hidden] {
+  display: none;
+}
+
+/* Chips that went under their text sit beside it again once they're a value. */
+.setting-row.stacked[data-compact] {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-6);
+}
+
+/* A row with one control answers a click anywhere on its name too. */
+.setting-row[data-row-click] > .setting-text {
+  cursor: pointer;
+}
+
+/* One line of hint per row while scanning; the whole of it on the row in use
+   (screen readers always get all of it). */
+.settings-pane .setting-row:not(:focus-within) > .setting-text > .setting-hint:not([hidden]) {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+/* Opened in full, a hint keeps a readable measure: lines across the whole
+   pane are hard to take in. */
+.settings-pane .setting-row:focus-within > .setting-text > .setting-hint {
+  max-inline-size: 72ch;
+}
+
+/* From the couch only the focused row explains itself: the list stays short
+   enough to read from across the room. */
+:root[data-tv='on'] .settings-pane .setting-row:not(:focus-within) > .setting-text > .setting-hint {
+  display: none;
+}
+
+/* "More options" at the foot of a page: which chapters it opens beside it. */
+.settings-pane .settings-more {
+  margin-top: var(--space-8);
+}
+
+.settings-more-label {
+  flex: none;
+}
+
+.settings-more-where {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text-faint);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The chapters it opens, set apart from the count by a thin rule. */
+.settings-more-where::before {
+  content: '';
+  display: inline-block;
+  inline-size: 1px;
+  block-size: 0.9em;
+  margin-inline: var(--space-1) var(--space-3);
+  vertical-align: -0.1em;
+  background: var(--color-border-strong);
+}
+
+/* Reset follows close behind it: the bar already ends the page's rows. */
+.settings-more + .settings-reset {
+  margin-top: var(--space-6);
+}
+
+.settings-more-where:empty {
+  display: none;
+}
+
+/* A page with a live preview beside its rows (Subtitles, the player's look):
+   the preview stays in view while the rows scroll, and goes above them when
+   the pane is too narrow for two columns. */
+.settings-pane {
+  container-type: inline-size;
+}
+
+.settings-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+/* The preview's own panel: labelled at its top, framed like a card so it
+   reads as a picture of the setting rather than one of the rows. Its top
+   lines up with the first chapter's heading beside it. */
+.settings-split > .settings-split-aside {
+  position: sticky;
+  top: var(--space-5);
+  display: grid;
+  align-content: start;
+  justify-items: stretch;
+  gap: var(--space-3);
+  max-width: none;
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.settings-preview-heading,
+.room .settings-preview-heading,
+.pl-preview > figcaption.setting-hint {
+  order: -1;
+  margin: 0;
+  padding-inline: 2px;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0;
+  text-align: start;
+}
+
+.settings-split-aside .subtitle-preview {
+  margin: 0;
+}
+
+/* Under the sample: what it shows and the full-screen button. The row's own
+   name repeats the panel's heading, so only the palette and screen readers
+   get it (the palette finds the row by it). */
+.subtitle-preview-panel .setting-row {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: 0;
+  border-bottom: 0;
+}
+
+.subtitle-preview-panel .setting-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.settings-pane .subtitle-preview-panel .setting-row > .setting-text > .setting-hint:not([hidden]) {
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  font-size: var(--font-size-xs);
+}
+
+.subtitle-preview-panel .setting-row > .button {
+  justify-content: center;
+  width: 100%;
+}
+
+/* Too narrow for two columns: the preview goes above the rows, at a size
+   that previews rather than takes over, its notes beside it. */
+@container (max-width: 720px) {
+  .settings-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-split > .settings-split-aside {
+    position: static;
+    order: -1;
+    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .settings-split-aside > :is(.settings-preview-heading, figcaption) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* The player's preview has no notes to sit beside it when stacked. */
+@container (max-width: 720px) {
+  .settings-split > .pl-preview.settings-split-aside {
+    grid-template-columns: minmax(0, 320px);
+    justify-self: start;
+  }
+}
+
+/* A row's wash: under the pointer on a row that answers a click anywhere,
+   and on the row in use from the keyboard, remote or controller, so the
+   place in a long list shows from across the room as well as at the desk.
+   It bleeds past the hairline's ends rather than shifting the text. */
+.setting-row::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset-block: 3px;
+  inset-inline: calc(-1 * var(--space-4));
+  border-radius: var(--radius-md);
+  background: transparent;
+  pointer-events: none;
+  transition: background-color var(--duration-hover) var(--ease);
+}
+
+.setting-row[data-row-click]:hover::before {
+  background: var(--color-surface);
+}
+
+.settings-pane .setting-row:has(:focus-visible)::before {
+  background: var(--color-surface-raised);
+}
+
+:root[data-tv='on'] .settings-pane .setting-row:has(:focus-visible)::before {
+  background: var(--color-accent-soft);
+}
+
+/* The aside's rows and the dialog's aren't list rows. */
+.subtitle-preview-panel .setting-row::before {
+  display: none;
+}
+
+/* A slider in a row: the row names it, so it shows only its track and value. */
+.setting-row > .slider {
+  inline-size: 260px;
+  max-inline-size: 100%;
+  grid-template-columns: minmax(0, 1fr) 5ch;
+}
+
+.setting-row > .slider > .slider-label {
+  display: none;
+}
+
+/* Nothing here yet (no sources, no rows, a service to connect first): a
+   quiet note in the hints' voice, set in a dashed well so it reads as a
+   place that fills in rather than a stray line of text. */
+.settings-pane :is(.home-rows-list > li.muted, .tv-sources > p.muted, .streaming-section > div > p.muted:only-child, .addon-list > li.muted) {
+  margin-block: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  list-style: none;
+}
+
+/* "Add a row" with nothing to offer yet: in the hints' size, not the body's. */
+.settings-pane .home-rows-section p.muted {
+  font-size: var(--font-size-sm);
+}
+
+/* An empty status line under a row keeps no gap in the list (it reserves
+   its line only once there's something to say). */
+.settings-pane .provider-message:empty {
+  min-height: 0;
+}
+
+/* Appearance → Posters: the sample card stays beside the rows it previews,
+   framed like the other previews. */
+.poster-settings {
+  align-items: start;
+}
+
+.poster-settings > .poster-preview {
+  position: sticky;
+  display: grid;
+  justify-items: center;
+  top: var(--space-5);
+  box-sizing: content-box;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+/* A narrow pane (see above), after the rules these override: Appearance's
+   sample card goes above its rows (beside them, the rows were crushed to
+   nothing and their values spilled out), and a stacked preview's notes and
+   buttons go under it rather than into a column of no width. */
+@container (max-width: 560px) {
+  .settings-split > .settings-split-aside {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .poster-settings {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .poster-settings > .poster-preview {
+    position: static;
+    order: -1;
+    justify-self: start;
+  }
+}

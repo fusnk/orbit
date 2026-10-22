@@ -1,0 +1,27 @@
+import type { jellyfin as source } from '../en/jellyfin';
+
+export const jellyfin: Record<keyof typeof source, string> = {
+  'jellyfin.settings.intro': 'Assista do seu próprio servidor Jellyfin. Filmes e episódios que ele tiver ganham uma fonte Jellyfin, e as fileiras dele podem ir para o Início. O Orbit guarda um token de acesso do servidor, nunca sua senha.',
+  'jellyfin.settings.server': 'Endereço do servidor',
+  'jellyfin.settings.server-placeholder': 'http://192.168.1.10:8096',
+  'jellyfin.settings.username': 'Usuário',
+  'jellyfin.settings.password': 'Senha',
+  'jellyfin.settings.fields-hint': 'O endereço em que você abre o Jellyfin no navegador. Requer Jellyfin 10.9 ou mais recente.',
+  'jellyfin.settings.connect': 'Conectar',
+  'jellyfin.settings.connecting': 'Conectando…',
+  'jellyfin.settings.server-label': 'Servidor',
+  'jellyfin.settings.connected-as': 'Conectado como {user} em {server}',
+  'jellyfin.settings.connected': 'Conectado a {server}.',
+  'jellyfin.settings.connected-first': 'Conectado a {server}. “Adicionados recentemente” agora está no Início; adicione mais fileiras do Jellyfin em Configurações → Início e biblioteca → Fileiras do Início.',
+  'jellyfin.settings.disconnect': 'Desconectar',
+  'jellyfin.settings.disconnected': 'Desconectado, e a sessão no servidor foi encerrada.',
+  'jellyfin.settings.insecure': 'Não seguro',
+  'jellyfin.settings.insecure-title': 'Este servidor usa http sem criptografia, então seu login e os vídeos trafegam sem proteção. Tudo bem em casa; use https pela internet.',
+  'jellyfin.rows.kind': 'Jellyfin',
+  'jellyfin.rows.resume': 'Continuar assistindo',
+  'jellyfin.rows.latest': 'Adicionados recentemente',
+  'jellyfin.rows.label': 'Jellyfin: {row}',
+  'jellyfin.rows.not-connected': 'Conecte primeiro um servidor Jellyfin em Configurações → Contas e serviços.',
+  'jellyfin.rows.libraries-failed': 'Não foi possível carregar as bibliotecas do servidor.',
+  'jellyfin.source.origin': 'Jellyfin · {server}',
+};

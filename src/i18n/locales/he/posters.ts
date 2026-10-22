@@ -1,0 +1,33 @@
+import type { posters as source } from '../en/posters';
+import type { Catalog } from '../types';
+
+export const posters: Catalog<typeof source> = {
+  'posters.ratings': 'דירוגים על פוסטרים',
+  'posters.ratings-hint': 'ציונים מ-IMDb, TMDB ו-Letterboxd על התמונה, לפי מה ש-Orbit כבר יודע על כל כותר. מינימלי מציג ציון אחד; מלא מציג את כולם.',
+  'posters.ratings-minimal': 'מינימלי',
+  'posters.ratings-full': 'מלא',
+  'posters.provider': 'ספק הפוסטרים',
+  'posters.provider-hint': 'מאיפה מגיעים הפוסטרים. RPDB מצייר דירוגים על הפוסטרים שלו ודורש מפתח RPDB משלך (ratingposterdb.com). כשאין ל-RPDB פוסטר לכותר, Orbit מציג את הרגיל עם הדירוגים שלו. חל על פוסטרים שיוצגו מעכשיו.',
+  'posters.provider-orbit': 'Orbit (מובנה)',
+  'posters.rpdb.key': 'מפתח RPDB',
+  'posters.rpdb.key-hint': 'המפתח שלך מ-ratingposterdb.com. הוא נשמר באחסון המאובטח של המערכת ונשלח רק ל-RPDB.',
+  'posters.rpdb.key-placeholder': 't1-…',
+  'posters.rpdb.checking': 'בודק מול RPDB…',
+  'posters.rpdb.connected': 'מפתח ה-RPDB נשמר. הפוסטרים יגיעו מ-RPDB.',
+  'posters.rpdb.saved': 'נשמר',
+  'posters.rpdb.removed': 'מפתח ה-RPDB הוסר.',
+  'posters.rpdb.key-format': 'זה לא נראה כמו מפתח RPDB. מפתחות מתחילים ב-t0-, t1-, t2- וכן הלאה.',
+  'posters.rpdb.refused': 'RPDB לא קיבל את המפתח הזה.',
+  'posters.rpdb.busy': 'RPDB מקבל יותר מדי בקשות כרגע. אפשר לנסות שוב בעוד רגע.',
+  'posters.rpdb.unreachable': 'אין גישה ל-RPDB כדי לבדוק את המפתח.',
+  'posters.rpdb.style': 'סגנון פוסטרים של RPDB',
+  'posters.rpdb.style-hint': 'אילו דירוגים RPDB מצייר. מפתחות חינמיים כוללים רק ברירת מחדל; סגנונות אחרים דורשים מסלול RPDB בתשלום.',
+  'posters.rpdb.style-default': 'ברירת מחדל',
+  'posters.rpdb.style-certs': 'סיווגי גיל',
+  'posters.rpdb.style-mc': 'Metacritic',
+  'posters.rpdb.style-rt': 'Rotten Tomatoes',
+  'posters.rpdb.style-textless': 'ללא טקסט הכותר',
+  'posters.description': 'דירוגים: {scores}',
+  'posters.score': '{site} {value}',
+  'posters.score-of-5': '{site} {value} מתוך 5',
+};

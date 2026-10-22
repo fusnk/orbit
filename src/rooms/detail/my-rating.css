@@ -1,0 +1,212 @@
+/* Your own rating on a title page (my-rating.ts). It sits on the hero's dark
+   shade in every theme, so its colours are light, like the rest of the hero. */
+.my-rating {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.my-rating-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.my-rating-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(236, 232, 227, 0.72);
+}
+
+.my-rating-stars {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px 6px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  outline: none;
+}
+
+.my-rating-stars:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+/* Rating with the keys: the stars light up like a pressed control. */
+.my-rating-stars[data-adjusting] {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.my-rating-star {
+  position: relative;
+  display: grid;
+}
+
+.my-rating-star .icon {
+  width: 22px;
+  height: 22px;
+  color: rgba(236, 232, 227, 0.45);
+  stroke-width: 1.6;
+}
+
+.my-rating-fill {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  visibility: hidden;
+}
+
+.my-rating-fill .icon {
+  color: var(--color-rating);
+}
+
+.my-rating-star:is([data-fill='full'], [data-fill='half']) .my-rating-fill {
+  visibility: visible;
+}
+
+/* Half a star is its start half: the left, or the right in Arabic. */
+.my-rating-star[data-fill='half'] .my-rating-fill {
+  clip-path: inset(0 50% 0 0);
+}
+
+[dir='rtl'] .my-rating-star[data-fill='half'] .my-rating-fill {
+  clip-path: inset(0 0 0 50%);
+}
+
+.my-rating-like {
+  display: grid;
+  place-items: center;
+  width: var(--control-chip);
+  height: var(--control-chip);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: rgba(236, 232, 227, 0.45);
+}
+
+.my-rating-like:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.my-rating-like:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+.my-rating-like .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.my-rating-like[aria-pressed='true'] {
+  color: #ff6b5e;
+}
+
+.my-rating-note-button .icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Your Letterboxd stars, while Orbit has none of its own. */
+.my-rating-letterboxd {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(236, 232, 227, 0.72);
+}
+
+.my-rating-letterboxd[hidden] {
+  display: none;
+}
+
+.my-rating-letterboxd .rating-value {
+  color: #00e054;
+  letter-spacing: 0.04em;
+}
+
+.my-rating-note {
+  max-width: 60ch;
+  margin: 0;
+  padding-inline-start: var(--space-3);
+  border-inline-start: 2px solid rgba(236, 232, 227, 0.3);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  line-height: 1.55;
+  color: #cdc7c0;
+  white-space: pre-line;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* The note editor drawer (theme colours: it isn't on the hero). */
+.my-rating-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-6);
+}
+
+.my-rating-editor-title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+.my-rating-editor .muted {
+  margin: 0;
+}
+
+.my-rating-note-field {
+  width: 100%;
+  min-height: 180px;
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font: inherit;
+  line-height: 1.55;
+  resize: vertical;
+  user-select: text;
+}
+
+.my-rating-note-field:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.my-rating-note-field.editing {
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+.my-rating-editor-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--font-size-xs);
+}
+
+.my-rating-note-count {
+  flex: none;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.my-rating-note-count.over {
+  color: var(--color-danger-text);
+}
+
+.my-rating-editor-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.my-rating-editor-gap {
+  flex: 1;
+}

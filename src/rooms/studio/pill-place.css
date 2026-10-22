@@ -1,0 +1,50 @@
+/* The floating pill's six places (pill-place.ts): two rows of three, laid
+   out like the window, so the grid itself mirrors in Arabic. */
+.pill-places {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-1);
+  max-width: 420px;
+  padding: var(--space-1);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.pill-place {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: var(--control-segment);
+  padding: 6px var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.pill-place .icon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+
+.pill-place:not([aria-pressed='true']):hover {
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+}
+
+.pill-place[aria-pressed='true'] {
+  background: var(--color-surface-overlay);
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.pill-place:focus-visible {
+  box-shadow: var(--focus-ring);
+}
