@@ -16,7 +16,9 @@ tauri-build = { version = "2", features = [] }
 pkg-config = "0.3"
 
 [dependencies]
-tauri = { version = "2", features = [] }
+# macos-private-api: the WebView can be transparent on macOS, so video shows beneath it
+# (tauri.conf.json `macOSPrivateApi`; it only changes macOS builds).
+tauri = { version = "2", features = ["macos-private-api"] }
 # System notifications for new episodes (Settings → Library & Metadata → New episode alerts); shown from Rust only.
 tauri-plugin-notification = "2"
 # Native folder and save dialogs (download folder, exports), opened from Rust only: the WebView gets no dialog or file-system permission, just the chosen path back.

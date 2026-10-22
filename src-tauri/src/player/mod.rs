@@ -38,7 +38,33 @@ pub use surface::Surface;
 
 /// The bundled libmpv beside the app. On Linux `Mpv::load` ignores the path and uses the
 /// system library found by pkg-config, but the name is still passed (subtitle sync, previews).
-const LIBMPV: &str = if cfg!(windows) { "libmpv-2.dll" } else { "libmpv.so.2" };
+const LIBMPV: &str = if cfg!(windows) {
+    "libmpv-2.dll"
+} else if cfg!(target_os = "macos") {
+    "libmpv.dylib"
+} else {
+    "libmpv.so.2"
+};
+
+/// Where the bundled libmpv is, given the app's resources folder. On macOS it and the
+/// libraries it needs are in the bundle's `Contents/Frameworks`, beside `Contents/Resources`
+/// (see tauri.macos.conf.json); everywhere else it's in the resources folder itself.
+pub(crate) fn libmpv_in(resources: &std::path::Path) -> std::path::PathBuf {
+    if cfg!(target_os = "macos") {
+        return frameworks_dir(resources).join(LIBMPV);
+    }
+    resources.join(LIBMPV)
+}
+
+/// A macOS bundle's `Contents/Frameworks`, from its `Contents/Resources`.
+fn frameworks_dir(resources: &std::path::Path) -> std::path::PathBuf {
+    resources.parent().unwrap_or(resources).join("Frameworks")
+}
+
+/// libmpv, as `libmpv_in` finds it for this app.
+pub(crate) fn libmpv(app: &AppHandle) -> Result<std::path::PathBuf, String> {
+    app.path().resource_dir().map(|r| libmpv_in(&r)).map_err(|e| e.to_string())
+}
 /// The bundled subtitle fonts, under the resources folder.
 const FONTS_DIR: &str = "fonts";
 /// The WebView's background outside the player (matches tauri.conf.json).
@@ -372,7 +398,13 @@ impl PlayerState {
             surface.shutdown();
         }
         let _ = engine.events.join();
+        // On macOS this runs on the main thread, and mpv's video output tears its view down
+        // by waiting on that same thread: terminating here would never return. Orbit is
+        // quitting, so mpv simply ends with it.
+        #[cfg(target_os = "macos")]
+        std::mem::forget(engine.mpv);
         // The event thread's reference is gone, so this drop terminates mpv.
+        #[cfg(not(target_os = "macos"))]
         drop(engine.mpv);
     }
 
@@ -422,7 +454,7 @@ impl PlayerState {
         let surface = self.surface.clone().ok_or("video playback isn't available on this platform yet")?;
         let resources = app.path().resource_dir().map_err(|e| e.to_string())?;
         #[cfg(not(target_os = "linux"))]
-        let mpv = Mpv::load(&resources.join(LIBMPV))?;
+        let mpv = Mpv::load(&libmpv_in(&resources))?;
         #[cfg(target_os = "linux")]
         let mpv = Mpv::load(std::path::Path::new(env!("ORBIT_SYSTEM_LIBMPV")))?;
         #[cfg(not(target_os = "linux"))]
@@ -1958,6 +1990,17 @@ pub(crate) fn fuzz_input(data: &[u8]) {
 mod tests {
     use super::{AudioPrefs, BOOSTED_MAX, MAX_CHAPTERS, PlayerEvent, Sound, Status, Tagged, ass_override, audio_options, chapters_from, check_equalizer, check_hex, check_languages, check_passthrough, check_stream_url, check_volume, clean_label, corner_margins, hdr_hint, lifted_position, load_for, local_file_options, mpv_may_fetch_subtitle, passes_through, quality_options, sub_font, subtitle_mime, tracks_from, QUALITY_OPTIONS, SMOOTH_MOTION, HDR_SUBTITLE_NITS};
     use crate::addons::AddonError;
+
+    #[test]
+    fn a_mac_bundle_keeps_libmpv_in_frameworks_beside_resources() {
+        let resources = std::path::Path::new("/Applications/Orbit.app/Contents/Resources");
+        assert_eq!(super::frameworks_dir(resources), std::path::Path::new("/Applications/Orbit.app/Contents/Frameworks"));
+        if cfg!(target_os = "macos") {
+            assert_eq!(super::libmpv_in(resources), std::path::Path::new("/Applications/Orbit.app/Contents/Frameworks/libmpv.dylib"));
+        } else {
+            assert_eq!(super::libmpv_in(resources), resources.join(super::LIBMPV));
+        }
+    }
 
     #[test]
     fn a_subtitle_still_downloading_when_another_file_opens_is_for_the_one_before() {

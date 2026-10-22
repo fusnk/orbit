@@ -12,7 +12,7 @@ use std::time::{Duration, Instant, SystemTime};
 use tauri::{AppHandle, Manager, State};
 
 use super::mpv::{Mpv, event};
-use super::{LIBMPV, STREAM_HARDENING, check_stream_url};
+use super::{STREAM_HARDENING, check_stream_url};
 
 const WIDTH: u32 = 288;
 const WAIT_LOADED: Duration = Duration::from_secs(15);
@@ -93,7 +93,7 @@ pub async fn thumbs_start(app: AppHandle, thumbs: State<'_, Thumbs>, url: String
     let mut name = [0u8; 8];
     getrandom::fill(&mut name).map_err(|e| e.to_string())?;
     let out = dir.join(format!("{}.raw", name.iter().map(|b| format!("{b:02x}")).collect::<String>()));
-    let library = app.path().resource_dir().map_err(|e| e.to_string())?.join(LIBMPV);
+    let library = super::libmpv(&app)?;
     let preview = (WIDTH, preview_height(width, height));
     let (slot, latest) = (thumbs.0.clone(), thumbs.1.clone());
     let run = latest.fetch_add(1, Ordering::SeqCst) + 1;

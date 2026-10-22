@@ -1,5 +1,6 @@
 // Downloads the pinned libmpv build Orbit plays video with, checks it against
-// its SHA-256, and extracts libmpv-2.dll to src-tauri/libs/windows/.
+// its SHA-256, and extracts it: libmpv-2.dll to src-tauri/libs/windows/, or on
+// macOS libmpv.dylib and the libraries it needs to src-tauri/libs/macos/.
 // Usage: pnpm run setup:libmpv
 //
 // The LGPL build is used on purpose: Orbit only loads the DLL at runtime, so
@@ -20,6 +21,20 @@ const ARCHIVE = {
 };
 const DLL = 'libmpv-2.dll';
 
+// macOS: media-kit/libmpv-darwin-build v0.7.3, the LGPL "video-full" flavour (mpv 0.36,
+// FFmpeg 6.0 without --enable-gpl), one universal build for Apple silicon and Intel.
+// libmpv.dylib and the libraries it loads (by @rpath, which resolves to the bundle's
+// Contents/Frameworks) go to src-tauri/libs/macos/; tauri.macos.conf.json lists the same files.
+const MAC_ARCHIVE = {
+  url: 'https://github.com/media-kit/libmpv-darwin-build/releases/download/v0.7.3/libmpv-libs_v0.7.3_macos-universal-video-full.tar.gz',
+  sha256: 'f570695d8ba8534835dd4cba0b6e275579c1c22c01a9da0442748ca37e2daac1',
+};
+const MAC_LIBS = [
+  'libmpv.dylib', 'libass.dylib', 'libavcodec.dylib', 'libavfilter.dylib', 'libavformat.dylib', 'libavutil.dylib',
+  'libdav1d.dylib', 'libfreetype.dylib', 'libfribidi.dylib', 'libharfbuzz.dylib', 'libmbedcrypto.dylib', 'libmbedtls.dylib',
+  'libmbedx509.dylib', 'libpng16.dylib', 'libswresample.dylib', 'libswscale.dylib', 'libuchardet.dylib', 'libxml2.dylib',
+];
+
 if (process.platform === 'linux') {
   try {
     const version = execFileSync('pkg-config', ['--modversion', 'mpv'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
@@ -30,8 +45,13 @@ if (process.platform === 'linux') {
   process.exit(0);
 }
 
+if (process.platform === 'darwin') {
+  await setupMac();
+  process.exit(0);
+}
+
 if (process.platform !== 'win32') {
-  console.log('libmpv setup is Windows-only for now; skipping.');
+  console.log('libmpv setup is Windows and macOS only for now; skipping.');
   process.exit(0);
 }
 
@@ -67,4 +87,33 @@ try {
   console.log(`Installed ${target}`);
 } finally {
   rmSync(work, { recursive: true, force: true });
+}
+
+async function setupMac() {
+  const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const outDir = join(root, 'src-tauri', 'libs', 'macos');
+  const stamp = join(outDir, 'libmpv.source');
+  if (MAC_LIBS.every((lib) => existsSync(join(outDir, lib))) && existsSync(stamp) && readFileSync(stamp, 'utf8').trim() === MAC_ARCHIVE.sha256) {
+    console.log('libmpv for macOS is already set up.');
+    return;
+  }
+  console.log(`Downloading ${MAC_ARCHIVE.url}`);
+  const response = await fetch(MAC_ARCHIVE.url);
+  if (!response.ok) throw new Error(`Download failed: HTTP ${response.status}`);
+  const archive = Buffer.from(await response.arrayBuffer());
+  const actual = createHash('sha256').update(archive).digest('hex');
+  if (actual !== MAC_ARCHIVE.sha256) throw new Error(`Checksum mismatch: expected ${MAC_ARCHIVE.sha256}, got ${actual}. Not extracting.`);
+  const work = mkdtempSync(join(tmpdir(), 'orbit-libmpv-'));
+  try {
+    const file = join(work, 'libmpv.tar.gz');
+    writeFileSync(file, archive);
+    execFileSync('/usr/bin/tar', ['-xzf', file, '-C', work], { stdio: 'inherit' });
+    const extracted = join(work, MAC_ARCHIVE.url.split('/').pop().replace(/\.tar\.gz$/, ''));
+    mkdirSync(outDir, { recursive: true });
+    for (const lib of MAC_LIBS) copyFileSync(join(extracted, lib), join(outDir, lib));
+    writeFileSync(stamp, `${MAC_ARCHIVE.sha256}\n`);
+    console.log(`Installed ${MAC_LIBS.length} libraries in ${outDir}`);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
 }

@@ -1,0 +1,29 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "bundle": {
+    "macOS": {
+      "minimumSystemVersion": "11.0",
+      "signingIdentity": "-",
+      "frameworks": [
+        "libs/macos/libmpv.dylib",
+        "libs/macos/libass.dylib",
+        "libs/macos/libavcodec.dylib",
+        "libs/macos/libavfilter.dylib",
+        "libs/macos/libavformat.dylib",
+        "libs/macos/libavutil.dylib",
+        "libs/macos/libdav1d.dylib",
+        "libs/macos/libfreetype.dylib",
+        "libs/macos/libfribidi.dylib",
+        "libs/macos/libharfbuzz.dylib",
+        "libs/macos/libmbedcrypto.dylib",
+        "libs/macos/libmbedtls.dylib",
+        "libs/macos/libmbedx509.dylib",
+        "libs/macos/libpng16.dylib",
+        "libs/macos/libswresample.dylib",
+        "libs/macos/libswscale.dylib",
+        "libs/macos/libuchardet.dylib",
+        "libs/macos/libxml2.dylib"
+      ]
+    }
+  }
+}

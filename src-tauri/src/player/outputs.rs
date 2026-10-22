@@ -13,10 +13,10 @@
 //! is never used.
 
 use serde::Serialize;
-use tauri::{AppHandle, Manager, State};
+use tauri::{AppHandle, State};
 
 use super::mpv::Mpv;
-use super::{LIBMPV, PlayerState, STREAM_HARDENING};
+use super::{PlayerState, STREAM_HARDENING};
 
 pub const AUTO: &str = "auto";
 /// More than any real machine has; the rest are ignored.
@@ -122,7 +122,7 @@ pub struct Listing {
 /// played, and starting the player itself for that would open its video
 /// surface and keep an engine running for nothing.
 fn list_without_player(app: &AppHandle) -> Result<Vec<Device>, String> {
-    let mpv = Mpv::load(&app.path().resource_dir().map_err(|e| e.to_string())?.join(LIBMPV))?;
+    let mpv = Mpv::load(&super::libmpv(app)?)?;
     for (name, value) in STREAM_HARDENING.iter().copied().chain([("vo", "null"), ("idle", "yes"), ("terminal", "no")]) {
         mpv.set_option(name, value).map_err(|e| format!("mpv option {name}: {e}"))?;
     }

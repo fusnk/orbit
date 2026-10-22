@@ -589,7 +589,9 @@ fn create_video_surface(app: &tauri::App) -> Option<player::Surface> {
     let _ = window.set_background_color(Some(player::OPAQUE));
     #[cfg(target_os = "linux")]
     return player::Surface::new_linux(&window).map_err(|e| diagnostics::warn(&format!("video surface: {e}"))).ok();
-    #[cfg(not(target_os = "linux"))]
+    #[cfg(target_os = "macos")]
+    return player::Surface::new_macos(&window).map_err(|e| diagnostics::warn(&format!("video surface: {e}"))).ok();
+    #[cfg(not(any(target_os = "linux", target_os = "macos")))]
     {
     #[cfg(windows)]
     let parent = window.hwnd().ok()?.0;

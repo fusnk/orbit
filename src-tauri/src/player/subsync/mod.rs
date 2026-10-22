@@ -29,7 +29,7 @@ use serde::Serialize;
 use tauri::{AppHandle, Emitter, Manager, State};
 
 use super::mpv::Mpv;
-use super::{LIBMPV, MAX_SUBTITLE_BYTES, PlayerState, clean_label};
+use super::{MAX_SUBTITLE_BYTES, PlayerState, clean_label};
 
 const EVENT: &str = "player://sync";
 /// Tracks looked through at most (a file with more is unusual).
@@ -287,7 +287,7 @@ async fn sync(app: &AppHandle, state: &PlayerState, this: Run<'_>, audio: bool, 
         && audio
         && let Some(Media::File { path, .. }) = &media
     {
-        let library = app.path().resource_dir().map_err(|_| SyncError::NoReference)?.join(LIBMPV);
+        let library = app.path().resource_dir().map(|r| super::libmpv_in(&r)).map_err(|_| SyncError::NoReference)?;
         let cache = app.path().app_cache_dir().map_err(|_| SyncError::NoReference)?.join("subsync");
         // Left over from a run cut short (the app closed mid-way).
         let _ = std::fs::remove_dir_all(&cache);
