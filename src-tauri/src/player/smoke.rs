@@ -35,13 +35,18 @@ fn play(app: &AppHandle, file: &str) -> Result<(), String> {
     window.eval(HIDE_PAGE).map_err(|e| e.to_string())?;
     window.set_background_color(Some(TRANSPARENT)).map_err(|e| e.to_string())?;
     let mpv = app.state::<PlayerState>().mpv(app)?;
+    // mpv's own log, for when the file doesn't start.
+    if let Ok(log) = std::env::var("ORBIT_SMOKE_LOG") {
+        mpv.set_property("msg-level", "all=v")?;
+        mpv.set_property("log-file", &log)?;
+    }
     mpv.loadfile(file, "replace", "")?;
     mpv.set_property("pause", "no")
 }
 
 fn status(app: &AppHandle) -> String {
     let Some(mpv) = app.state::<PlayerState>().running() else { return "mpv not running".into() };
-    ["mpv-version", "current-vo", "hwdec-current", "time-pos", "video-params/w", "video-params/h", "osd-width", "osd-height", "pause", "core-idle"]
+    ["mpv-version", "current-vo", "hwdec-current", "time-pos", "video-params/w", "video-params/h", "osd-width", "osd-height", "pause", "core-idle", "idle-active", "playlist-count", "path"]
         .iter()
         .map(|p| format!("{p}={}", mpv.get_string(p).unwrap_or_else(|| "-".into())))
         .collect::<Vec<_>>()
