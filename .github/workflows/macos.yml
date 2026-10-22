@@ -136,7 +136,7 @@
         {
           "name": "Build the universal .dmg",
           "if": "${{ inputs.universal && matrix.target == 'aarch64-apple-darwin' }}",
-          "run": "pnpm tauri build --target universal-apple-darwin --bundles app,dmg"
+          "run": "pnpm tauri build --target universal-apple-darwin --bundles app,dmg\n# Ad-hoc signed, the hardened runtime gains nothing and its library checks can keep macOS from loading the bundled libmpv.\nAPP=src-tauri/target/universal-apple-darwin/release/bundle/macos/Orbit.app\ncodesign -dv \"$APP\" 2>&1 | tee codesign.txt\n! grep -q runtime codesign.txt"
         },
         {
           "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02", # v4.6.2
