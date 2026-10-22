@@ -204,6 +204,8 @@ pub fn run() {
                 diagnostics::warn(&format!("Linux playback initialization: {error}"));
             }
             app.manage(player);
+            #[cfg(feature = "smoke-test")]
+            player::smoke::start(app.handle());
             // The tray only matters for "Minimize to tray"; Orbit runs without it.
             #[cfg(not(target_os = "android"))]
             if let Err(e) = tray::install(app) {

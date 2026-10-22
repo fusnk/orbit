@@ -1,0 +1,120 @@
+# JSON-style YAML, like ci.yml. Builds Orbit for macOS and checks that video plays:
+# a build with the smoke-test feature (src-tauri/src/player/smoke.rs) is launched on
+# the runner, plays .github/smoke/clip.mp4 beneath the hidden page, and the run keeps
+# two screenshots and what mpv printed. Run by hand with "universal" to also build the
+# universal (Apple silicon + Intel) .dmg a release would ship.
+{
+  "name": "macOS",
+  "on": {
+    "push": {
+      "branches": [
+        "macos"
+      ]
+    },
+    "workflow_dispatch": {
+      "inputs": {
+        "universal": {
+          "description": "Also build the universal .dmg",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "concurrency": {
+    "group": "macos-${{ github.ref }}",
+    "cancel-in-progress": true
+  },
+  "jobs": {
+    "macos": {
+      "runs-on": "macos-latest",
+      "timeout-minutes": 60,
+      "steps": [
+        {
+          "uses": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803", # v6.1.0
+          "with": {
+            "persist-credentials": false
+          }
+        },
+        {
+          "uses": "pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1", # v4.3.0
+          "with": {
+            "version": "12.6.0"
+          }
+        },
+        {
+          "uses": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38", # v6.5.0
+          "with": {
+            "node-version": "24",
+            "cache": "pnpm"
+          }
+        },
+        {
+          "uses": "dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec", # stable (branch, as of 2026-10-22)
+          "with": {
+            "components": "clippy",
+            "targets": "aarch64-apple-darwin,x86_64-apple-darwin"
+          }
+        },
+        {
+          "uses": "Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0", # v2.9.3
+          "with": {
+            "workspaces": "src-tauri -> target"
+          }
+        },
+        {
+          "run": "pnpm install --frozen-lockfile"
+        },
+        {
+          "name": "Prepare libmpv for macOS",
+          "run": "pnpm run setup:libmpv"
+        },
+        {
+          "run": "cargo clippy --locked --all-targets --manifest-path src-tauri/Cargo.toml -- -D warnings"
+        },
+        {
+          "run": "cargo test --locked --manifest-path src-tauri/Cargo.toml"
+        },
+        {
+          "name": "Build the smoke-test app",
+          "run": "pnpm tauri build --debug --target aarch64-apple-darwin --bundles app --features smoke-test"
+        },
+        {
+          "name": "What the app bundle holds",
+          "run": "APP=src-tauri/target/aarch64-apple-darwin/debug/bundle/macos/Orbit.app\nls -la \"$APP/Contents/MacOS\" \"$APP/Contents/Frameworks\"\notool -l \"$APP\"/Contents/MacOS/* | grep -A2 LC_RPATH || true\ncodesign -dv \"$APP\" 2>&1 || true"
+        },
+        {
+          "name": "Launch it, play the clip, take screenshots",
+          "run": "APP=src-tauri/target/aarch64-apple-darwin/debug/bundle/macos/Orbit.app\nBIN=\"$(ls \"$APP\"/Contents/MacOS/* | head -1)\"\nmkdir -p smoke\nORBIT_SMOKE_PLAY=\"$PWD/.github/smoke/clip.mp4\" \"$BIN\" > smoke/orbit.log 2>&1 &\nPID=$!\nsleep 8\nscreencapture -x smoke/1-before-play.png || true\nsleep 14\nscreencapture -x smoke/2-playing.png || true\nsleep 6\nscreencapture -x smoke/3-still-playing.png || true\nsleep 6\nkill \"$PID\" 2>/dev/null || true\nsleep 2\nkill -9 \"$PID\" 2>/dev/null || true\ncat smoke/orbit.log\ngrep -q 'smoke: play Ok' smoke/orbit.log"
+        },
+        {
+          "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02", # v4.6.2
+          "if": "${{ always() }}",
+          "with": {
+            "name": "macos-smoke-${{ github.run_id }}",
+            "path": "smoke/",
+            "if-no-files-found": "ignore",
+            "retention-days": 14
+          }
+        },
+        {
+          "name": "Build the universal .dmg",
+          "if": "${{ inputs.universal }}",
+          "run": "pnpm tauri build --target universal-apple-darwin --bundles app,dmg"
+        },
+        {
+          "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02", # v4.6.2
+          "if": "${{ inputs.universal }}",
+          "with": {
+            "name": "macos-dmg-${{ github.run_id }}",
+            "path": "src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg",
+            "retention-days": 14
+          }
+        }
+      ]
+    }
+  }
+}

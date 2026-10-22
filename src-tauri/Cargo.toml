@@ -77,6 +77,10 @@ mdns-sd = { version = "0.21.5", default-features = false }
 # version rustls and the torrent engine already build on every platform; only named here to call it.
 aws-lc-rs = { version = "1.18", default-features = false, features = ["aws-lc-sys"] }
 
+[features]
+# CI only: plays a test file at start and prints what mpv reports (src/player/smoke.rs).
+smoke-test = []
+
 [profile.release]
 codegen-units = 1
 lto = true

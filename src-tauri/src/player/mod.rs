@@ -17,6 +17,8 @@ mod placement;
 mod proxy_headers;
 mod rewind_cache;
 mod sdh;
+#[cfg(feature = "smoke-test")]
+pub mod smoke;
 mod sub_colors;
 pub mod subsync;
 pub mod subtrans;
