@@ -30,7 +30,18 @@
   },
   "jobs": {
     "macos": {
-      "runs-on": "macos-latest",
+      # Apple silicon runners only have Apple's software OpenGL, which can't give mpv the
+      # context it draws in (actions/runner-images#9712): video is only checked on Intel.
+      "strategy": {
+        "fail-fast": false,
+        "matrix": {
+          "include": [
+            { "runner": "macos-latest", "target": "aarch64-apple-darwin", "video": false },
+            { "runner": "macos-15-intel", "target": "x86_64-apple-darwin", "video": true }
+          ]
+        }
+      },
+      "runs-on": "${{ matrix.runner }}",
       "timeout-minutes": 60,
       "steps": [
         {
@@ -80,21 +91,21 @@
         },
         {
           "name": "Build the smoke-test app",
-          "run": "pnpm tauri build --debug --target aarch64-apple-darwin --bundles app --features smoke-test"
+          "run": "pnpm tauri build --debug --target ${{ matrix.target }} --bundles app --features smoke-test"
         },
         {
           "name": "What the app bundle holds",
-          "run": "APP=src-tauri/target/aarch64-apple-darwin/debug/bundle/macos/Orbit.app\nls -la \"$APP/Contents/MacOS\" \"$APP/Contents/Frameworks\"\notool -l \"$APP\"/Contents/MacOS/* | grep -A2 LC_RPATH || true\ncodesign -dv \"$APP\" 2>&1 || true"
+          "run": "APP=src-tauri/target/${{ matrix.target }}/debug/bundle/macos/Orbit.app\nls -la \"$APP/Contents/MacOS\" \"$APP/Contents/Frameworks\"\notool -l \"$APP\"/Contents/MacOS/* | grep -A2 LC_RPATH || true\ncodesign -dv \"$APP\" 2>&1 || true"
         },
         {
           "name": "Launch it, play the clip, take screenshots",
-          "run": "APP=src-tauri/target/aarch64-apple-darwin/debug/bundle/macos/Orbit.app\nBIN=\"$(ls \"$APP\"/Contents/MacOS/* | head -1)\"\nmkdir -p smoke\nORBIT_SMOKE_PLAY=\"$PWD/.github/smoke/clip.mp4\" ORBIT_SMOKE_LOG=\"$PWD/smoke/mpv.log\" \"$BIN\" > smoke/orbit.log 2>&1 &\nPID=$!\nsleep 8\nscreencapture -x smoke/1-before-play.png || true\nsleep 14\nscreencapture -x smoke/2-playing.png || true\nsleep 6\nscreencapture -x smoke/3-still-playing.png || true\nsleep 6\nkill \"$PID\" 2>/dev/null || true\nsleep 2\nkill -9 \"$PID\" 2>/dev/null || true\ncat smoke/orbit.log\necho '--- mpv log'\ngrep -vE 'cplayer: (Set property|Run command)' smoke/mpv.log | head -300 || true\nfor f in smoke/*.png; do sips -Z 720 -s format jpeg -s formatOptions 60 \"$f\" --out \"${f%.png}.jpg\" >/dev/null && echo \"--- $f base64\" && base64 -b 76 -i \"${f%.png}.jpg\" && echo '--- end'; done\n# Played: mpv reported a position, not just that it took the file.\ngrep -qE 'smoke: .*time-pos=[0-9]' smoke/orbit.log"
+          "run": "APP=src-tauri/target/${{ matrix.target }}/debug/bundle/macos/Orbit.app\nBIN=\"$(ls \"$APP\"/Contents/MacOS/* | head -1)\"\nmkdir -p smoke\nORBIT_SMOKE_PLAY=\"$PWD/.github/smoke/clip.mp4\" ORBIT_SMOKE_LOG=\"$PWD/smoke/mpv.log\" \"$BIN\" > smoke/orbit.log 2>&1 &\nPID=$!\nsleep 8\nscreencapture -x smoke/1-before-play.png || true\nsleep 14\nscreencapture -x smoke/2-playing.png || true\nsleep 6\nscreencapture -x smoke/3-still-playing.png || true\nsleep 6\nkill \"$PID\" 2>/dev/null || true\nsleep 2\nkill -9 \"$PID\" 2>/dev/null || true\ncat smoke/orbit.log\necho '--- mpv log'\ngrep -vE 'cplayer: (Set property|Run command)' smoke/mpv.log | head -300 || true\nfor f in smoke/*.png; do sips -Z 720 -s format jpeg -s formatOptions 60 \"$f\" --out \"${f%.png}.jpg\" >/dev/null && echo \"--- $f base64\" && base64 -b 76 -i \"${f%.png}.jpg\" && echo '--- end'; done\n# Played: mpv reported a position, not just that it took the file.\nif ${{ matrix.video }}; then grep -qE 'smoke: .*time-pos=[0-9]' smoke/orbit.log; else grep -q 'smoke: play Ok' smoke/orbit.log; fi"
         },
         {
           "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02", # v4.6.2
           "if": "${{ always() }}",
           "with": {
-            "name": "macos-smoke-${{ github.run_id }}",
+            "name": "macos-smoke-${{ matrix.target }}-${{ github.run_id }}",
             "path": "smoke/",
             "if-no-files-found": "ignore",
             "retention-days": 14
@@ -102,12 +113,12 @@
         },
         {
           "name": "Build the universal .dmg",
-          "if": "${{ inputs.universal }}",
+          "if": "${{ inputs.universal && matrix.video }}",
           "run": "pnpm tauri build --target universal-apple-darwin --bundles app,dmg"
         },
         {
           "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02", # v4.6.2
-          "if": "${{ inputs.universal }}",
+          "if": "${{ inputs.universal && matrix.video }}",
           "with": {
             "name": "macos-dmg-${{ github.run_id }}",
             "path": "src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg",
