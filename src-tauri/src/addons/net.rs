@@ -531,9 +531,11 @@ pub(crate) mod tests {
         for url in ["https://10.255.255.1/sub.srt", "https://127.0.0.2:1/sub.srt", "https://[fd00::1]/a.jpg", "https://[::ffff:192.168.1.1]/a.jpg"] {
             assert!(matches!(get(url), Err(AddonError::Blocked { reason: "local" })), "{url}");
         }
-        // One the person gave (a LAN addon, say) is reached.
+        // One the person gave (a LAN addon, say) is reached: it fails only for want of a server
+        // there. How depends on the system (macOS has no 127.0.0.3 to connect to), never "local".
         trust_host(&Url::parse("https://127.0.0.3:1/manifest.json").unwrap());
-        assert!(matches!(get("https://127.0.0.3:1/sub.srt"), Err(AddonError::Network { .. })));
+        let reached = get("https://127.0.0.3:1/sub.srt");
+        assert!(reached.is_err() && !matches!(reached, Err(AddonError::Blocked { .. })), "{reached:?}");
     }
 
     #[test]
