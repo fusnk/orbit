@@ -533,10 +533,10 @@ pub fn run() {
         .run(|app, event| {
             // macOS hands install links over as an event, to a running Orbit too.
             #[cfg(target_os = "macos")]
-            if let tauri::RunEvent::Opened { urls } = &event {
-                if deep_link::offer(app, urls.iter().map(|u| u.as_str())) {
-                    tray::show_main(app);
-                }
+            if let tauri::RunEvent::Opened { urls } = &event
+                && deep_link::offer(app, urls.iter().map(|u| u.as_str()))
+            {
+                tray::show_main(app);
             }
             // Clicking the Dock icon with the window in the tray ("Minimize to tray") brings it back,
             // as the tray icon does; otherwise the Dock click did nothing.

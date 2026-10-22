@@ -43,6 +43,7 @@ fn dormant_due(paused_for: Option<std::time::Duration>, focused: bool) -> bool {
 }
 
 /// What fits on the flyout; anything longer is cut.
+#[cfg_attr(not(any(windows, target_os = "linux")), allow(dead_code))]
 const MAX_TEXT: usize = 200;
 #[cfg(windows)]
 const ART_LIMIT: usize = 4 * 1024 * 1024;
@@ -52,6 +53,7 @@ const ART_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(10);
 /// What the flyout shows, as the page describes it.
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
+#[cfg_attr(not(any(windows, target_os = "linux")), allow(dead_code))]
 pub struct NowPlaying {
     title: String,
     /// The episode, or nothing.
@@ -63,6 +65,7 @@ pub struct NowPlaying {
 }
 
 /// Text Windows shows: no control characters, at most `MAX_TEXT` characters.
+#[cfg_attr(not(any(windows, target_os = "linux")), allow(dead_code))]
 fn clean(text: &str) -> String {
     text.chars().filter(|c| !c.is_control()).take(MAX_TEXT).collect::<String>().trim().to_owned()
 }
