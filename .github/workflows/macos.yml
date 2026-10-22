@@ -17,12 +17,18 @@
           "description": "Also build the universal .dmg",
           "type": "boolean",
           "default": false
+        },
+        "gpu": {
+          "description": "Also check that video draws, on a paid M2 runner with a GPU ($0.16/min)",
+          "type": "boolean",
+          "default": false
         }
       }
     }
   },
   "permissions": {
-    "contents": "read"
+    "contents": "read",
+    "actions": "read"
   },
   "concurrency": {
     "group": "macos-${{ github.ref }}",
@@ -114,6 +120,20 @@
           }
         },
         {
+          "name": "Pack the app for the GPU check",
+          "if": "${{ inputs.gpu && matrix.target == 'aarch64-apple-darwin' }}",
+          "run": "tar -czf orbit-app.tar.gz -C src-tauri/target/${{ matrix.target }}/debug/bundle/macos Orbit.app"
+        },
+        {
+          "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02", # v4.6.2
+          "if": "${{ inputs.gpu && matrix.target == 'aarch64-apple-darwin' }}",
+          "with": {
+            "name": "orbit-app-${{ github.run_id }}",
+            "path": "orbit-app.tar.gz",
+            "retention-days": 1
+          }
+        },
+        {
           "name": "Build the universal .dmg",
           "if": "${{ inputs.universal && matrix.target == 'aarch64-apple-darwin' }}",
           "run": "pnpm tauri build --target universal-apple-darwin --bundles app,dmg"
@@ -126,6 +146,35 @@
             "path": "src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg",
             "retention-days": 14
           }
+        }
+      ]
+    },
+    # The app built above, on a runner with a GPU, playing with mpv's real video output:
+    # only this checks that video draws beneath the page. Paid even on a public repository,
+    # so it only runs by hand, and only long enough to launch the app and take screenshots.
+    "gpu": {
+      "needs": "macos",
+      "if": "${{ inputs.gpu }}",
+      "runs-on": "macos-latest-xlarge",
+      "timeout-minutes": 10,
+      "steps": [
+        {
+          "uses": "actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803", # v6.1.0
+          "with": {
+            "persist-credentials": false,
+            "sparse-checkout": ".github/smoke"
+          }
+        },
+        {
+          "name": "Get the app",
+          "env": {
+            "GH_TOKEN": "${{ github.token }}"
+          },
+          "run": "gh run download ${{ github.run_id }} -R ${{ github.repository }} -n orbit-app-${{ github.run_id }}\ntar -xzf orbit-app.tar.gz"
+        },
+        {
+          "name": "Launch it, play the clip, take screenshots",
+          "run": "BIN=\"$(ls Orbit.app/Contents/MacOS/* | head -1)\"\nmkdir -p smoke\nORBIT_SMOKE_PLAY=\"$PWD/.github/smoke/clip.mp4\" ORBIT_SMOKE_LOG=\"$PWD/smoke/mpv.log\" \"$BIN\" > smoke/orbit.log 2>&1 &\nPID=$!\nsleep 8\nscreencapture -x smoke/1-before-play.png || true\nsleep 14\nscreencapture -x smoke/2-playing.png || true\nsleep 6\nscreencapture -x smoke/3-still-playing.png || true\nsleep 6\nkill \"$PID\" 2>/dev/null || true\nsleep 2\nkill -9 \"$PID\" 2>/dev/null || true\ncat smoke/orbit.log\necho '--- mpv log'\ngrep -vE 'cplayer: (Set property|Run command)' smoke/mpv.log | head -300 || true\nfor f in smoke/*.png; do sips -Z 720 -s format jpeg -s formatOptions 60 \"$f\" --out \"${f%.png}.jpg\" >/dev/null && echo \"--- $f base64\" && base64 -b 76 -i \"${f%.png}.jpg\" && echo '--- end'; done\n# Drawn: mpv's video output started and the clip moved.\ngrep -qE 'smoke: .*current-vo=gpu.*time-pos=[0-9]' smoke/orbit.log"
         }
       ]
     }
