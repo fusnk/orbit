@@ -69,8 +69,8 @@
           "run": "pnpm install --frozen-lockfile"
         },
         {
-          "name": "Prepare libmpv for macOS",
-          "run": "pnpm run setup:libmpv"
+          "name": "Prepare libmpv and yt-dlp for macOS",
+          "run": "pnpm run setup:libmpv\npnpm run setup:ytdlp"
         },
         {
           "run": "cargo clippy --locked --all-targets --manifest-path src-tauri/Cargo.toml -- -D warnings"

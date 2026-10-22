@@ -130,5 +130,5 @@ discord-rich-presence = "1.1"
 # Orbit's own updates (Settings → General → About Orbit): checks GitHub Releases and verifies each download's
 # minisign signature against the public key in tauri.conf.json before installing. Driven from Rust only (updater.rs);
 # the page gets none of its commands. 2.12 is the last release for Rust 1.88. No `zip`: Windows updates are the
-# installers themselves, and macOS isn't built yet.
+# installers themselves, and macOS updates (.app.tar.gz) are unpacked with tar and flate2, which it always builds there.
 tauri-plugin-updater = { version = "2.12.0", default-features = false, features = ["rustls-tls", "system-proxy"] }

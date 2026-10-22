@@ -1,27 +1,34 @@
 // Downloads the pinned yt-dlp build Orbit finds trailers with, checks it
-// against its SHA-256, and saves it to src-tauri/libs/windows/.
+// against its SHA-256, and saves it to src-tauri/libs/windows/ (yt-dlp.exe) or,
+// on macOS, src-tauri/libs/macos/ (yt-dlp_macos, for Apple silicon and Intel).
 // Usage: pnpm run setup:ytdlp
 //
 // yt-dlp is public domain (Unlicense). Orbit runs a copy of it in the app's
 // data folder, which yt-dlp keeps up to date itself (YouTube changes often).
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const RELEASE = {
-  url: 'https://github.com/yt-dlp/yt-dlp/releases/download/2026.08.19/yt-dlp.exe',
-  sha256: '66674953fe251b89f4d08c5f0e35e0728679bd67ab3d7d05c0562af101dd3e7a',
-};
-const EXE = 'yt-dlp.exe';
+const mac = process.platform === 'darwin';
+const RELEASE = mac
+  ? {
+      url: 'https://github.com/yt-dlp/yt-dlp/releases/download/2026.08.19/yt-dlp_macos',
+      sha256: '0f192b7ec147ab6288885d6351d9ab67367640029b4377576ef46dd79cf7b202',
+    }
+  : {
+      url: 'https://github.com/yt-dlp/yt-dlp/releases/download/2026.08.19/yt-dlp.exe',
+      sha256: '66674953fe251b89f4d08c5f0e35e0728679bd67ab3d7d05c0562af101dd3e7a',
+    };
+const EXE = mac ? 'yt-dlp_macos' : 'yt-dlp.exe';
 
-if (process.platform !== 'win32') {
-  console.log('yt-dlp setup is Windows-only for now; skipping.');
+if (process.platform !== 'win32' && !mac) {
+  console.log('yt-dlp setup is Windows and macOS only for now; skipping.');
   process.exit(0);
 }
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const outDir = join(root, 'src-tauri', 'libs', 'windows');
+const outDir = join(root, 'src-tauri', 'libs', mac ? 'macos' : 'windows');
 const target = join(outDir, EXE);
 const stamp = join(outDir, `${EXE}.source`);
 
@@ -40,5 +47,6 @@ if (actual !== RELEASE.sha256) throw new Error(`Checksum mismatch: expected ${RE
 
 mkdirSync(outDir, { recursive: true });
 writeFileSync(target, exe);
+if (mac) chmodSync(target, 0o755);
 writeFileSync(stamp, `${RELEASE.sha256}\n`);
 console.log(`Installed ${target}`);

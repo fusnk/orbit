@@ -19,7 +19,8 @@ use tokio::io::AsyncReadExt;
 
 /// What the player is asked to open for a trailer.
 pub const SCHEME: &str = "orbit-trailer://";
-const EXE: &str = "yt-dlp.exe";
+/// The bundled yt-dlp (scripts/setup-ytdlp.mjs): yt-dlp's own build for each system.
+const EXE: &str = if cfg!(target_os = "macos") { "yt-dlp_macos" } else { "yt-dlp.exe" };
 /// yt-dlp's addresses last about six hours; reuse them for a while.
 const CACHE_FOR: Duration = Duration::from_secs(30 * 60);
 const RUN_TIMEOUT: Duration = Duration::from_secs(30);

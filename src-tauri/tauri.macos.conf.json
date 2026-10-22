@@ -1,6 +1,9 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "bundle": {
+    "resources": {
+      "libs/macos/yt-dlp_macos": "yt-dlp_macos"
+    },
     "macOS": {
       "minimumSystemVersion": "11.0",
       "signingIdentity": "-",
