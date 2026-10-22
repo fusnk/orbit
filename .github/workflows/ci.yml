@@ -47,7 +47,7 @@
           }
         },
         {
-          "uses": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38", # v6.5.0
+          "uses": "actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1", # v6.5.0
           "with": {
             "node-version": "24",
             "cache": "pnpm"
@@ -120,7 +120,7 @@
             "cache": "pnpm",
             "node-version": "24"
           },
-          "uses": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38" # v6.5.0
+          "uses": "actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1" # v6.5.0
         },
         {
           "with": {
@@ -203,7 +203,7 @@
           }
         },
         {
-          "uses": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38", # v6.5.0
+          "uses": "actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1", # v6.5.0
           "with": {
             "node-version": "24",
             "cache": "pnpm"
@@ -250,7 +250,7 @@
           }
         },
         {
-          "uses": "actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38", # v6.5.0
+          "uses": "actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1", # v6.5.0
           "with": {
             "node-version": "24",
             "cache": "pnpm"
