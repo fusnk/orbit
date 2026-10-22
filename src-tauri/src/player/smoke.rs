@@ -40,6 +40,10 @@ fn play(app: &AppHandle, file: &str) -> Result<(), String> {
         mpv.set_property("msg-level", "all=v")?;
         mpv.set_property("log-file", &log)?;
     }
+    // GitHub's Macs have no GPU, so mpv can't draw there: "null" still decodes and plays.
+    if let Ok(vo) = std::env::var("ORBIT_SMOKE_VO") {
+        mpv.set_property("vo", &vo)?;
+    }
     mpv.loadfile(file, "replace", "")?;
     mpv.set_property("pause", "no")
 }
