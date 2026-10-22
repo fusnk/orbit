@@ -368,7 +368,7 @@ Rust crates (in Orbit itself) (447):
   rustls 0.23.46 - Apache-2.0 OR ISC OR MIT - https://github.com/rustls/rustls - [32, 135, 136]
   rustls-pki-types 1.15.1 - MIT OR Apache-2.0 - https://github.com/rustls/pki-types - [225, 226]
   rustls-platform-verifier 0.7.0 - MIT OR Apache-2.0 - https://github.com/rustls/rustls-platform-verifier - [62, 227]
-  rustls-webpki 0.103.15 - ISC - https://github.com/rustls/webpki - [228]
+  rustls-webpki 0.103.16 - ISC - https://github.com/rustls/webpki - [228]
   rustversion 1.0.23 - MIT OR Apache-2.0 - https://github.com/dtolnay/rustversion - [31, 20]
   ryu 1.0.23 - Apache-2.0 OR BSL-1.0 - https://github.com/dtolnay/ryu - [31, 229]
   same-file 1.0.6 - Unlicense/MIT - https://github.com/BurntSushi/same-file - [25, 230, 27]
@@ -21252,7 +21252,7 @@ SOFTWARE.
 
 
 ==============================================================================
-[228] Used by: rustls-webpki 0.103.15 (LICENSE)
+[228] Used by: rustls-webpki 0.103.16 (LICENSE)
 ==============================================================================
 
 Except as otherwise noted, this project is licensed under the following
