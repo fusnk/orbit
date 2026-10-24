@@ -19,7 +19,8 @@ import { toast } from '../../components/toast';
 import { t } from '../../i18n';
 import { h } from '../../lib/dom';
 import { SHOWN_VIEW } from '../../lib/shown';
-import { undoRedo } from '../../lib/keymap';
+import { keyLabel, undoRedo } from '../../lib/keymap';
+import { isMac } from '../../lib/platform';
 import { isEditing } from '../../app/spatial';
 import { currentLook, currentThemeId, holdSeekImages, loadTheme, previewLook, releaseSeekImages, saveLook, saveThemeFile, showSavedLook, type Look } from '../../theme/engine';
 import { createHistory, type History } from '../../theme/history';
@@ -110,11 +111,11 @@ function createStudio(): Studio {
   /** The Code tab's CSS edit still waiting for typing to stop; applied before anything reads the draft. */
   let flushCode: (() => void) | null = null;
   const flush = () => flushCode?.();
-  const undo = roundButton('undo', t('studio.undo'), () => {
+  const undo = roundButton('undo', t('studio.undo', { key: keyLabel('Ctrl+Z') }), () => {
     flush();
     step(history.undo());
   });
-  const redo = roundButton('redo', t('studio.redo'), () => {
+  const redo = roundButton('redo', t('studio.redo', { key: keyLabel(isMac ? 'Ctrl+Shift+Z' : 'Ctrl+Y') }), () => {
     flush();
     step(history.redo());
   });

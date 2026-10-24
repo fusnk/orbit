@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { actionForEvent, assignKey, comboFromEvent, comboToSave, conflictFor, defaultKeymap, isCommand, isReserved, KEYMAP_KEY, keymap, loadKeymap, overrides, parseCombo, parseKeymap, parseSavedKeymap, resetAction, undoRedo, type KeyLike } from './keymap';
+import { actionForEvent, assignKey, comboFromEvent, comboToSave, conflictFor, defaultKeymap, isCommand, isReserved, KEYMAP_KEY, keyLabel, keymap, loadKeymap, overrides, parseCombo, parseKeymap, parseSavedKeymap, resetAction, undoRedo, type KeyLike } from './keymap';
 
 const saved = new Map<string, unknown>();
 vi.mock('./ipc', () => ({
@@ -99,6 +99,28 @@ describe('keymap defaults', () => {
     expect(parseKeymap({})).toEqual(map);
     expect(parseKeymap(overrides(map))).toEqual(map);
     expect(overrides(map)).toEqual({});
+  });
+});
+
+describe('on a Mac', () => {
+  const mac = (key: string, mods?: Partial<Omit<KeyLike, 'key'>>) => comboFromEvent(press(key, mods), true);
+
+  it('Cmd does what Ctrl does elsewhere, so the defaults and editing keys work with Cmd', () => {
+    expect(mac('k', { metaKey: true })).toBe('Ctrl+K');
+    expect(mac(',', { metaKey: true })).toBe('Ctrl+,');
+    expect(mac('z', { metaKey: true, shiftKey: true })).toBe('Ctrl+Shift+Z');
+    expect(defaultKeymap()['app.palette']).toContain(mac('k', { metaKey: true }));
+    // The Control key is a modifier of its own, not Ctrl+K.
+    expect(mac('k', { ctrlKey: true })).toBe('Meta+K');
+  });
+
+  it('shows keys the Mac way', () => {
+    expect(keyLabel('Ctrl+K', true)).toBe('⌘K');
+    expect(keyLabel('Ctrl+,', true)).toBe('⌘,');
+    expect(keyLabel('Ctrl+Alt+Shift+Meta+K', true)).toBe('⌃⌥⇧⌘K');
+    expect(keyLabel('Shift+ArrowLeft', true)).toBe('⇧←');
+    expect(keyLabel('/', true)).toBe('/');
+    expect(keyLabel('Ctrl+K', false)).toBe('Ctrl+K');
   });
 });
 

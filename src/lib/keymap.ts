@@ -11,6 +11,10 @@
  * such as "?" already says whether Shift was held (and which keys need it
  * depends on the keyboard layout).
  *
+ * On a Mac, Cmd plays Ctrl's part: Cmd+K is the combo "Ctrl+K" (and the
+ * Control key is "Meta"), so the defaults, the keys kept for text fields and
+ * saved shortcuts mean what a Mac user expects; labels say ⌘K.
+ *
  * Some keys never move (see `isReserved`): arrow keys, Enter, Space and Tab
  * move focus and activate things outside the player, and Escape/Backspace
  * are Back everywhere. Media keys stay with their meaning.
@@ -18,6 +22,7 @@
 import * as v from 'valibot';
 import { t, type MessageKey } from '../i18n';
 import { settings } from './ipc';
+import { isMac } from './platform';
 
 export type Scope = 'app' | 'player';
 
@@ -135,9 +140,10 @@ export interface KeyLike {
   getModifierState?(key: string): boolean;
 }
 
-/** The combo a key press is, or null for a modifier on its own (or a key with no name). */
-export function comboFromEvent(event: KeyLike): string | null {
+/** The combo a key press is, or null for a modifier on its own (or a key with no name). On a Mac, Cmd is "Ctrl" and Control is "Meta". */
+export function comboFromEvent(event: KeyLike, mac = isMac): string | null {
   if (!event.key || MODIFIER_KEYS.has(event.key)) return null;
+  if (mac) return combo(event.key, { ctrl: event.metaKey, alt: event.altKey, shift: event.shiftKey, meta: event.ctrlKey });
   // AltGr arrives as Ctrl+Alt on Windows: the character it typed is the key.
   const altGraph = event.getModifierState?.('AltGraph') === true;
   return combo(event.key, { ctrl: event.ctrlKey && !altGraph, alt: event.altKey && !altGraph, shift: event.shiftKey, meta: event.metaKey });
@@ -397,13 +403,25 @@ const KEY_NAMES: Record<string, MessageKey> = {
 };
 const ARROWS: Record<string, string> = { ArrowLeft: '←', ArrowRight: '→', ArrowUp: '↑', ArrowDown: '↓' };
 
-/** A combo as people read it, in the interface's language: "Ctrl+K", "Umschalt+G", "→". */
-export function keyLabel(value: string): string {
-  return splitCombo(value).map((p) => ARROWS[p] ?? (KEY_NAMES[p] ? t(KEY_NAMES[p]) : p)).join('+');
+/** A Mac's modifier symbols, in the order Macs write them (⌃⌥⇧⌘). "Ctrl" is Cmd there (see `comboFromEvent`). */
+const MAC_MODIFIERS: readonly [string, string][] = [
+  ['Meta', '⌃'],
+  ['Alt', '⌥'],
+  ['Shift', '⇧'],
+  ['Ctrl', '⌘'],
+];
+
+/** A combo as people read it, in the interface's language: "Ctrl+K", "Umschalt+G", "→"; on a Mac "⌘K", "⇧G". */
+export function keyLabel(value: string, mac = isMac): string {
+  const parts = splitCombo(value);
+  const name = (p: string) => ARROWS[p] ?? (KEY_NAMES[p] ? t(KEY_NAMES[p]) : p);
+  if (!mac) return parts.map(name).join('+');
+  const key = parts.pop()!;
+  return MAC_MODIFIERS.filter(([m]) => parts.includes(m)).map(([, symbol]) => symbol).join('') + name(key);
 }
 
 /** An action's keys as people read them, or '' when it has none. */
-export const keysLabel = (keys: readonly string[]) => keys.map(keyLabel).join('  ·  ');
+export const keysLabel = (keys: readonly string[]) => keys.map((k) => keyLabel(k)).join('  ·  ');
 
 // ── The keymap in use ──
 
