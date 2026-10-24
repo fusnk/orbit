@@ -237,11 +237,12 @@
     0 -10px 30px -18px rgb(0 0 0 / 0.6);
 }
 
-:root[data-theme-style='glass'] :is(.player-panel, .next-up:not(.takeover), .still-watching, .skip-segment, .source-chip, .speed-pill, .seek-bubble, .cheat-card, .lock-panel, .dock-tab, .surf-card, .surf-panel, .volume-popup) {
+/* A prominent Skip button keeps its solid fill (graduated.css): a plate under its dark label reads as greyed out. */
+:root[data-theme-style='glass'] :is(.player-panel, .next-up:not(.takeover), .still-watching, .skip-segment:not([data-prominence='prominent']), .source-chip, .speed-pill, .seek-bubble, .cheat-card, .lock-panel, .dock-tab, .surf-card, .surf-panel, .volume-popup) {
   background: linear-gradient(180deg, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0) 45%), var(--glass-plate);
 }
 
-:root[data-theme-style='glass'] :is(.player-panel, .next-up:not(.takeover), .still-watching, .skip-segment, .source-chip, .speed-pill, .seek-bubble, .cheat-card, .lock-panel, .dock-tab, .surf-card, .surf-panel, .volume-popup):not(:focus-visible) {
+:root[data-theme-style='glass'] :is(.player-panel, .next-up:not(.takeover), .still-watching, .skip-segment:not([data-prominence='prominent']), .source-chip, .speed-pill, .seek-bubble, .cheat-card, .lock-panel, .dock-tab, .surf-card, .surf-panel, .volume-popup):not(:focus-visible) {
   box-shadow:
     inset 1px 1px 0 rgb(255 255 255 / 0.18),
     inset -1px -1px 0 rgb(255 255 255 / 0.05),
