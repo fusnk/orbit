@@ -178,6 +178,10 @@
           "uses": "Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0" # v2.9.3
         },
         {
+          "name": "Stand-in for the bundled yt-dlp, which only the macOS workflow's bundle needs",
+          "run": "mkdir -p src-tauri/libs/macos && touch src-tauri/libs/macos/yt-dlp_macos"
+        },
+        {
           "run": "cargo check --locked --manifest-path src-tauri/Cargo.toml"
         },
         {

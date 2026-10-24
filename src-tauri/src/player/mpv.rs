@@ -411,6 +411,7 @@ mod loadfile_tests {
 #[cfg(test)]
 mod tests {
     use super::with_cause;
+    use std::error::Error as _;
 
     #[test]
     fn a_library_that_wont_load_says_why() {
@@ -418,6 +419,8 @@ mod tests {
         // SAFETY: the file doesn't exist, so nothing is loaded or run.
         let error = unsafe { libloading::Library::new("/nonexistent/orbit-libmpv-test.dylib") }.unwrap_err();
         let text = with_cause(&error);
-        assert!(text.contains("orbit-libmpv-test"), "{text}");
+        // dlopen names the file; Windows gives the reason as the error's source.
+        let reason = error.source().map_or_else(|| "orbit-libmpv-test".to_owned(), ToString::to_string);
+        assert!(text.contains(&reason), "{text}");
     }
 }
