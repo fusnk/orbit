@@ -10,8 +10,8 @@ import { NO_AUTOPLAY_LIMITS, parseAutoplayLimits, type AutoplayLimits } from '..
 import { settings } from '../../lib/ipc';
 import { profileSetting } from '../../library/profiles';
 import { invoke } from '@tauri-apps/api/core';
-import { DEFAULT_RULES, parseDeviceSupport, parseSourceRules, type DeviceSupport, type RankingPrefs, type Resolution } from '../../lib/ranking-fallback';
-import { isAndroid } from '../../lib/platform';
+import { DEFAULT_RULES, MAC_SUPPORT, parseDeviceSupport, parseSourceRules, type DeviceSupport, type RankingPrefs, type Resolution } from '../../lib/ranking-fallback';
+import { isAndroid, isMac } from '../../lib/platform';
 import { LANGUAGE_SETTINGS, parseLanguage } from '../player/preferred-language';
 
 export const QUALITY_KEY = 'playback.quality';
@@ -44,7 +44,7 @@ export const RULES_KEY = 'playback.source-rules';
 export const AUTOPLAY_LIMITS_PREFIX = 'playback.autoplay-limits';
 
 let prefs: RankingPrefs = { preferredQuality: '1080p', language: 'en', rules: DEFAULT_RULES };
-/** Android: what this TV can decode and show, asked once (it doesn't change while Orbit runs). */
+/** Android: what this TV can decode and show, asked once (it doesn't change while Orbit runs); a Mac's is known (MAC_SUPPORT). */
 let device: Promise<DeviceSupport | undefined> | undefined;
 let torrents: TorrentMode = 'off';
 let limits: AutoplayLimits = NO_AUTOPLAY_LIMITS;
@@ -56,7 +56,7 @@ export const autoplayLimits = (): AutoplayLimits => limits;
 export const rankingPrefs = (episode = false): RankingPrefs => (episode ? { ...prefs, episode } : prefs);
 
 export async function loadRankingPrefs(): Promise<void> {
-  device ??= isAndroid ? invoke('player_device_support').then(parseDeviceSupport, () => undefined) : Promise.resolve(undefined);
+  device ??= isAndroid ? invoke('player_device_support').then(parseDeviceSupport, () => undefined) : Promise.resolve(isMac ? MAC_SUPPORT : undefined);
   const [quality, language, torrent, rules, autoplay, support] = await Promise.all([
     settings.get(QUALITY_KEY).catch(() => null),
     settings.get(LANGUAGE_SETTINGS.audio).catch(() => null),

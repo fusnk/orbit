@@ -218,6 +218,7 @@ export const titles: Catalog<typeof source> = {
   'titles.why.keyword': '키워드 “{word}”',
   'titles.why.avoided-keyword': '피하는 키워드 “{word}”',
   'titles.why.unsupported': '이 TV에서 {what}을(를) 지원하지 않음',
+  'titles.why.unsupported-mac': 'Mac에서는 {what}이(가) 제대로 재생되지 않음',
   'titles.why.above-screen': '이 화면이 표시할 수 있는 것보다 높음 ({resolution})',
   'titles.why.breaks-limit': '설정한 제한 중 하나를 넘어서, 제한을 지키는 모든 소스 뒤에 표시돼요.',
   'titles.why.best-breaks-limit': '설정한 제한 중 하나를 넘지만, 여기서는 여전히 최선의 선택이에요.',

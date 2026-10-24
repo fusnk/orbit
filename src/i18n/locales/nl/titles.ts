@@ -217,6 +217,7 @@ export const titles: Catalog<typeof source> = {
   'titles.why.keyword': 'Trefwoord ‘{word}’',
   'titles.why.avoided-keyword': 'Vermeden trefwoord ‘{word}’',
   'titles.why.unsupported': '{what} wordt niet ondersteund op deze tv',
+  'titles.why.unsupported-mac': '{what} speelt niet goed af op een Mac',
   'titles.why.above-screen': 'Meer dan dit scherm toont ({resolution})',
   'titles.why.breaks-limit': 'Hij overschrijdt een van je limieten en komt dus na alle bronnen die dat niet doen.',
   'titles.why.best-breaks-limit': 'Hij overschrijdt een van je limieten, maar is hier toch de beste keuze.',

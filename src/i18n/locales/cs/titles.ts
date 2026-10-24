@@ -228,6 +228,7 @@ export const titles: Catalog<typeof source> = {
   'titles.why.keyword': 'Klíčové slovo „{word}“',
   'titles.why.avoided-keyword': 'Slovo, kterému se vyhnout: „{word}“',
   'titles.why.unsupported': '{what} tato TV nepodporuje',
+  'titles.why.unsupported-mac': '{what} se na Macu nepřehraje správně',
   'titles.why.above-screen': 'Víc, než tato obrazovka zobrazí ({resolution})',
   'titles.why.breaks-limit': 'Porušuje jeden z vašich limitů, proto je až za všemi zdroji, které ho neporušují.',
   'titles.why.best-breaks-limit': 'Porušuje jeden z vašich limitů, ale i tak je tu nejlepší volbou.',

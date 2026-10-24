@@ -213,6 +213,7 @@ export const titles: Catalog<typeof source> = {
   'titles.why.keyword': 'Kata kunci “{word}”',
   'titles.why.avoided-keyword': 'Kata kunci yang dihindari “{word}”',
   'titles.why.unsupported': '{what} tidak didukung di TV ini',
+  'titles.why.unsupported-mac': '{what} tidak diputar dengan benar di Mac',
   'titles.why.above-screen': 'Melebihi kemampuan layar ini ({resolution})',
   'titles.why.breaks-limit': 'Sumber ini melanggar salah satu batas Anda, jadi ditempatkan setelah semua sumber yang tidak melanggar.',
   'titles.why.best-breaks-limit': 'Sumber ini melanggar salah satu batas Anda, tetapi tetap pilihan terbaik di sini.',

@@ -86,6 +86,14 @@ export interface DeviceSupport {
   maxResolution: Resolution;
 }
 
+/**
+ * A Mac: mpv decodes everything, but its OpenGL output there can't apply Dolby
+ * Vision's colour layer, so a Dolby Vision-only file (profile 5) plays purple
+ * and green. Other HDR plays, in normal colours. Dolby Vision sources rank after
+ * the rest, still there if nothing else plays.
+ */
+export const MAC_SUPPORT: DeviceSupport = { codecs: ['HEVC', 'AV1', 'H.264'], hdr: ['HDR10', 'HDR10+', 'HLG'], maxResolution: '2160p' };
+
 const CODECS: readonly Codec[] = ['HEVC', 'AV1', 'H.264'];
 const HDR_KINDS: readonly Hdr[] = ['Dolby Vision', 'HDR10', 'HDR10+', 'HLG'];
 const RESOLUTIONS: readonly Resolution[] = ['2160p', '1080p', '720p', '480p'];

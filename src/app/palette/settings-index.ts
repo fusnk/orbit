@@ -20,7 +20,7 @@ import { ACTION_IDS, firstKey, type ActionId } from '../../lib/keymap';
 import { ACTION_LABELS } from '../../rooms/settings/shortcuts';
 import { CATEGORIES, resolvePlace } from '../../rooms/settings/categories';
 import type { StudioPlace } from '../../rooms/studio';
-import { isAndroid } from '../../lib/platform';
+import { isAndroid, isMac } from '../../lib/platform';
 
 export interface SettingsCategory {
   id: string;
@@ -328,6 +328,8 @@ const SPECS: Record<string, Spec[]> = {
 
 /** Rows Android doesn't show (general.ts, settings/index.ts, integrations.ts, subtitles.ts): the window's, Discord's, external players' and the sound output. */
 const ANDROID_HIDDEN = /^(settings\.general\.(window|close)|integrations\.discord\.|local\.external\.|settings\.player\.rewind|audiodevice\.)/;
+/** Rows a Mac doesn't show (video.ts): its player shows HDR films in normal colours, so HDR output doesn't apply. */
+const MAC_HIDDEN = /^settings\.video\.hdr/;
 
 export const SETTINGS_ENTRIES: readonly SettingsEntry[] = Object.entries(SPECS)
   .flatMap(([where, specs]) => {
@@ -335,7 +337,7 @@ export const SETTINGS_ENTRIES: readonly SettingsEntry[] = Object.entries(SPECS)
     return specs.map(([label, hint, find, advanced, studio]) => ({ id: `${category}/${label}`, category, ...(tab ? { tab } : {}), label, ...(hint ? { hint } : {}), find: find ?? 'row', advanced: advanced === 'A', ...(studio ? { studio } : {}) }));
   })
   // Only what this platform's Settings shows.
-  .filter((entry) => SETTINGS_CATEGORIES.some((c) => c.id === entry.category) && !(isAndroid && ANDROID_HIDDEN.test(entry.label)));
+  .filter((entry) => SETTINGS_CATEGORIES.some((c) => c.id === entry.category) && !(isAndroid && ANDROID_HIDDEN.test(entry.label)) && !(isMac && MAC_HIDDEN.test(entry.label)));
 
 /** The rows `category` folds in its simple view. */
 export const advancedEntries = (category: string): SettingsEntry[] => SETTINGS_ENTRIES.filter((e) => e.category === category && e.advanced);

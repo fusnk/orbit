@@ -212,6 +212,7 @@ export const titles: Record<keyof typeof source, string> = {
   'titles.why.keyword': 'Mot « {word} »',
   'titles.why.avoided-keyword': 'Mot évité « {word} »',
   'titles.why.unsupported': '{what} n’est pas pris en charge sur ce téléviseur',
+  'titles.why.unsupported-mac': '{what} ne s’affiche pas correctement sur Mac',
   'titles.why.above-screen': 'Plus que ce que cet écran affiche ({resolution})',
   'titles.why.breaks-limit': 'Elle dépasse une de vos limites, donc elle passe après toutes les sources qui la respectent.',
   'titles.why.best-breaks-limit': 'Elle dépasse une de vos limites, mais reste le meilleur choix ici.',

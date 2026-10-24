@@ -210,6 +210,7 @@ export const titles: Catalog<typeof source> = {
   'titles.why.keyword': "关键词“{word}”",
   'titles.why.avoided-keyword': "已避开的关键词“{word}”",
   'titles.why.unsupported': "此电视不支持 {what}",
+  'titles.why.unsupported-mac': '{what} 在 Mac 上无法正常播放',
   'titles.why.above-screen': "超出此屏幕可显示的范围（{resolution}）",
   'titles.why.breaks-limit': "它超出了你的某项限制，因此排在所有未超限的片源之后。",
   'titles.why.best-breaks-limit': "它超出了你的某项限制，但仍是这里的最佳选择。",

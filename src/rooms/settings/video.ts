@@ -11,6 +11,7 @@ import { HDR_KEY, HDR_SUBTITLES_KEY, SMOOTH_MOTION_PREFIX } from '../player/play
 import { profileSetting } from '../../library/profiles';
 import { showDependents } from './dependent-rows';
 import { choices, row, save } from './playback';
+import { isMac } from '../../lib/platform';
 import './video.css';
 
 const QUALITY_TEXT: Record<PictureQuality, { who: MessageKey; description: MessageKey }> = {
@@ -80,8 +81,9 @@ export function videoPanel(): HTMLElement {
         t('settings.video.hwdec-hint'),
         choices(t('settings.video.hwdec'), [['auto', t('settings.common.auto')], ['off', t('settings.common.off')]] as const, hwdec === 'off' ? 'off' : 'auto', (v) => void save(HWDEC_KEY, v)),
       ),
-      hdrRow,
-      hdrSubtitlesRow,
+      // A Mac's player (mpv's OpenGL output) shows HDR films in normal colours: HDR output doesn't apply there.
+      isMac ? '' : hdrRow,
+      isMac ? '' : hdrSubtitlesRow,
       // Per profile: the key carries this profile's id.
       row(t('settings.video.smooth-motion'), t('settings.video.smooth-motion-hint'), settingSwitch(t('settings.video.smooth-motion'), smooth.key, smooth.value === true)),
     );

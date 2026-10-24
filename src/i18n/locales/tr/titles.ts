@@ -210,6 +210,7 @@ export const titles: Catalog<typeof source> = {
   'titles.why.keyword': "Anahtar kelime “{word}”",
   'titles.why.avoided-keyword': "Kaçınılan anahtar kelime “{word}”",
   'titles.why.unsupported': "Bu TV’de desteklenmiyor: {what}",
+  'titles.why.unsupported-mac': 'Mac’te doğru oynatılmıyor: {what}',
   'titles.why.above-screen': "Bu ekranın gösterebileceğinden fazla ({resolution})",
   'titles.why.breaks-limit': "Sınırlarından birini aşıyor, bu yüzden aşmayan tüm kaynaklardan sonra gelir.",
   'titles.why.best-breaks-limit': "Sınırlarından birini aşıyor ama yine de buradaki en iyi seçim.",

@@ -35,6 +35,7 @@ import './streams.css';
 import type { EpisodeRef } from './title-actions';
 import { vodOrigin, vodSources, vodStream } from '../../live/vod';
 import { pageLeft } from './page-left';
+import { isMac } from '../../lib/platform';
 
 /** A source's audio trait as shown: "Stereo" is a word, the rest (Atmos, 5.1) are names. */
 const audioLabel = (audio: string | undefined) => (audio === 'Stereo' ? t('player.tracks.stereo') : audio);
@@ -260,7 +261,8 @@ const SIGNAL_TEXT: Record<SignalId, MessageKey> = {
   'above-screen': 'titles.why.above-screen',
 };
 
-const signalText = (signal: Signal) => t(SIGNAL_TEXT[signal.id], signal.vars);
+// A Mac's only "unsupported" is Dolby Vision (MAC_SUPPORT in ranking-fallback.ts): said for a Mac, not a TV.
+const signalText = (signal: Signal) => t(isMac && signal.id === 'unsupported' ? 'titles.why.unsupported-mac' : SIGNAL_TEXT[signal.id], signal.vars);
 
 /** The quiet tag on a source that failed lately for this movie or episode. */
 const FAILURE_TEXT: Record<FailureReason | 'unknown', MessageKey> = {

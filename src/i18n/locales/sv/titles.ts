@@ -213,6 +213,7 @@ export const titles: Catalog<typeof source> = {
   'titles.why.keyword': 'Nyckelord ”{word}”',
   'titles.why.avoided-keyword': 'Undvikt nyckelord ”{word}”',
   'titles.why.unsupported': '{what} stöds inte på den här tv:n',
+  'titles.why.unsupported-mac': '{what} spelas inte upp rätt på en Mac',
   'titles.why.above-screen': 'Mer än skärmen kan visa ({resolution})',
   'titles.why.breaks-limit': 'Den bryter mot en av dina gränser, så den hamnar efter alla källor som inte gör det.',
   'titles.why.best-breaks-limit': 'Den bryter mot en av dina gränser, men är ändå det bästa valet här.',

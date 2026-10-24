@@ -216,6 +216,7 @@ export const titles = {
   'titles.why.keyword': 'Keyword “{word}”',
   'titles.why.avoided-keyword': 'Avoided keyword “{word}”',
   'titles.why.unsupported': '{what} isn’t supported on this TV',
+  'titles.why.unsupported-mac': '{what} doesn’t play right on a Mac',
   'titles.why.above-screen': 'More than this screen shows ({resolution})',
   'titles.why.breaks-limit': 'It breaks one of your limits, so it comes after every source that doesn’t.',
   'titles.why.best-breaks-limit': 'It breaks one of your limits, but it’s still the best choice here.',

@@ -237,6 +237,7 @@ export const titles: Catalog<typeof source> = {
   'titles.why.keyword': 'Słowo „{word}”',
   'titles.why.avoided-keyword': 'Unikane słowo „{word}”',
   'titles.why.unsupported': '{what} nie jest obsługiwany na tym telewizorze',
+  'titles.why.unsupported-mac': '{what} nie odtwarza się poprawnie na Macu',
   'titles.why.above-screen': 'Więcej, niż pokazuje ten ekran ({resolution})',
   'titles.why.breaks-limit': 'Przekracza jeden z Twoich limitów, więc trafia za wszystkie źródła, które go nie przekraczają.',
   'titles.why.best-breaks-limit': 'Przekracza jeden z Twoich limitów, ale i tak jest tu najlepszym wyborem.',

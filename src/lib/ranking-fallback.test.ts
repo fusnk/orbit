@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_RULES, parseDeviceSupport, parseKeywords, parseSourceRules, rankSources, rankingSignals, scoreOf, type RankingPrefs, type SourceRules, type SourceTraits } from './ranking-fallback';
+import { DEFAULT_RULES, MAC_SUPPORT, parseDeviceSupport, parseKeywords, parseSourceRules, rankSources, rankingSignals, scoreOf, type RankingPrefs, type SourceRules, type SourceTraits } from './ranking-fallback';
 
 const prefs: RankingPrefs = { preferredQuality: '2160p', language: 'en' };
 const withRules = (rules: Partial<SourceRules>, extra: Partial<RankingPrefs> = {}): RankingPrefs => ({ ...prefs, ...extra, rules: { ...DEFAULT_RULES, ...rules } });
@@ -299,6 +299,20 @@ describe('what the device can play (Android TV)', () => {
 
   it('changes nothing on a PC', () => {
     expect(ids({ codec: 'AV1', hdr: 'Dolby Vision', resolution: '2160p' })).toEqual(['resolution', 'dolby-vision']);
+  });
+});
+
+describe('on a Mac', () => {
+  const mac: RankingPrefs = { preferredQuality: '1080p', language: 'en', device: MAC_SUPPORT };
+
+  it('puts Dolby Vision (purple and green there) after normal and other HDR sources, but keeps it', () => {
+    const sources = [
+      { id: 'dv-4k', traits: { resolution: '2160p' as const, hdr: 'Dolby Vision' as const } },
+      { id: 'dv', traits: { resolution: '1080p' as const, hdr: 'Dolby Vision' as const } },
+      { id: 'sdr', traits: { resolution: '1080p' as const } },
+      { id: 'hdr10', traits: { resolution: '1080p' as const, hdr: 'HDR10' as const } },
+    ];
+    expect(order(sources, mac)).toEqual(['hdr10', 'sdr', 'dv', 'dv-4k']);
   });
 });
 
