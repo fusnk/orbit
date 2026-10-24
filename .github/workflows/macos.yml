@@ -2,7 +2,8 @@
 # a build with the smoke-test feature (src-tauri/src/player/smoke.rs) is launched on
 # the runner, plays .github/smoke/clip.mp4 beneath the hidden page, and the run keeps
 # two screenshots and what mpv printed. Run by hand with "universal" to also build the
-# universal (Apple silicon + Intel) .dmg a release would ship.
+# universal (Apple silicon + Intel) .dmg a release would ship, and with "beta" to
+# publish that .dmg as a Mac beta (or the one "from_run" built).
 {
   "name": "macOS",
   "on": {
@@ -22,6 +23,21 @@
           "description": "Also check that video draws, on a paid M2 runner with a GPU ($0.16/min)",
           "type": "boolean",
           "default": false
+        },
+        "beta": {
+          "description": "Publish the universal .dmg as this Mac beta (mac-beta-<n>): a pre-release, never latest",
+          "type": "string",
+          "default": ""
+        },
+        "notes": {
+          "description": "The beta's release notes",
+          "type": "string",
+          "default": ""
+        },
+        "from_run": {
+          "description": "Publish the .dmg this earlier run built instead of building one",
+          "type": "string",
+          "default": ""
         }
       }
     }
@@ -36,6 +52,7 @@
   },
   "jobs": {
     "macos": {
+      "if": "${{ !inputs.from_run }}",
       # GitHub's Macs are virtual machines with only Apple's software OpenGL, which can't give
       # mpv the accelerated context it draws in ("invalid pixel format"). So the clip plays
       # with mpv's null video output: everything but drawing on screen is checked here; that
@@ -152,6 +169,32 @@
     # The app built above, on a runner with a GPU, playing with mpv's real video output:
     # only this checks that video draws beneath the page. Paid even on a public repository,
     # so it only runs by hand, and only long enough to launch the app and take screenshots.
+    # A Mac beta goes up as a pre-release under a mac-beta-<n> tag (never v*, which starts the
+    # release pipeline) on the commit its .dmg was built from. Never marked latest, so the
+    # release the updater and the Download page follow stays where it is.
+    "beta": {
+      "needs": "macos",
+      "if": "${{ always() && inputs.beta != '' && (needs.macos.result == 'success' || (needs.macos.result == 'skipped' && inputs.from_run != '')) }}",
+      "runs-on": "ubuntu-latest",
+      "timeout-minutes": 10,
+      "permissions": {
+        "contents": "write",
+        "actions": "read"
+      },
+      "steps": [
+        {
+          "name": "Publish the .dmg as a pre-release",
+          "env": {
+            "GH_TOKEN": "${{ github.token }}",
+            "GH_REPO": "${{ github.repository }}",
+            "RUN_ID": "${{ inputs.from_run || github.run_id }}",
+            "TAG": "${{ inputs.beta }}",
+            "NOTES": "${{ inputs.notes }}"
+          },
+          "run": "[[ \"$TAG\" =~ ^mac-beta-([0-9]+)$ ]] || { echo 'The beta must be mac-beta-<n>'; exit 1; }\nTITLE=\"Orbit for Mac (beta ${BASH_REMATCH[1]})\"\n[[ \"$RUN_ID\" =~ ^[0-9]+$ ]] || { echo 'Not a run id'; exit 1; }\n[ \"$(gh run view \"$RUN_ID\" --json workflowName -q .workflowName)\" = macOS ] || { echo 'Not a macOS run'; exit 1; }\nSHA=\"$(gh run view \"$RUN_ID\" --json headSha -q .headSha)\"\ngh run download \"$RUN_ID\" -n \"macos-dmg-$RUN_ID\" -D dmg\nls -la dmg\ngh release create \"$TAG\" dmg/*.dmg --prerelease --latest=false --target \"$SHA\" --title \"$TITLE\" --notes \"$NOTES\""
+        }
+      ]
+    },
     "gpu": {
       "needs": "macos",
       "if": "${{ inputs.gpu }}",
