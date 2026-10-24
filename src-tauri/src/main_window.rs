@@ -1,6 +1,6 @@
 //! The main window: Settings → General → "When Orbit opens" (a normal
-//! window, maximized or full screen), and on Windows a fix that lets full
-//! screen cover the whole screen.
+//! window, maximized or full screen), on Windows a fix that lets full
+//! screen cover the whole screen, and on macOS the window's own buttons.
 
 use serde_json::Value;
 use tauri::{App, Manager, WebviewWindowBuilder};
@@ -70,6 +70,14 @@ pub fn create(app: &App) -> Result<(), Box<dyn std::error::Error>> {
     let config = app.config().app.windows.iter().find(|w| w.label == LABEL).ok_or("tauri.conf.json has no main window")?;
     // Full screen remembers the 1280×800 window from the config to go back to.
     let builder = guarded(app, WebviewWindowBuilder::from_config(app.handle(), config)?);
+    // A Mac window keeps its own close, minimize and zoom buttons, over the page's header
+    // (whose start leaves room for them, app/titlebar.ts) instead of drawn ones on the right.
+    #[cfg(target_os = "macos")]
+    let builder = builder
+        .decorations(true)
+        .title_bar_style(tauri::TitleBarStyle::Overlay)
+        .hidden_title(true)
+        .traffic_light_position(tauri::LogicalPosition::new(mac_buttons::X, mac_buttons::Y));
     // An Android Activity always fills the screen; there's no window state to choose.
     #[cfg(not(target_os = "android"))]
     {
@@ -101,6 +109,65 @@ pub fn create(app: &App) -> Result<(), Box<dyn std::error::Error>> {
         builder.build()?;
     }
     Ok(())
+}
+
+/// The Mac's window buttons hide while the player is open, as the whole header does
+/// (and with it the caption buttons elsewhere). A no-op on other systems.
+#[tauri::command]
+pub fn window_buttons(window: tauri::WebviewWindow, visible: bool) -> Result<(), String> {
+    #[cfg(target_os = "macos")]
+    return mac_buttons::show(&window, visible);
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = (window, visible);
+        Ok(())
+    }
+}
+
+#[cfg(target_os = "macos")]
+mod mac_buttons {
+    use std::ffi::{CStr, c_char, c_void};
+
+    /// The close button's place in the 60px header (--header-height): level with the
+    /// header's round buttons, and as far in as the header's start (--space-5).
+    pub const X: f64 = 20.0;
+    pub const Y: f64 = 23.0;
+
+    type Id = *mut c_void;
+    type Sel = *mut c_void;
+
+    #[link(name = "objc", kind = "dylib")]
+    unsafe extern "C" {
+        fn sel_registerName(name: *const c_char) -> Sel;
+        fn objc_msgSend();
+    }
+
+    fn sel(name: &CStr) -> Sel {
+        // SAFETY: a NUL-terminated selector name; registering one is thread-safe.
+        unsafe { sel_registerName(name.as_ptr()) }
+    }
+
+    /// `NSWindowCloseButton`, `NSWindowMiniaturizeButton` and `NSWindowZoomButton`.
+    const BUTTONS: [usize; 3] = [0, 1, 2];
+
+    pub fn show(window: &tauri::WebviewWindow, visible: bool) -> Result<(), String> {
+        let ns_window = window.ns_window().map_err(|e| e.to_string())? as usize;
+        window
+            .run_on_main_thread(move || {
+                let ns_window = ns_window as Id;
+                for kind in BUTTONS {
+                    // SAFETY: on the main thread, with the live NSWindow: `standardWindowButton:` takes an
+                    // NSWindowButton and returns an NSButton (or nil, which ignores `setHidden:`).
+                    unsafe {
+                        let send_button = std::mem::transmute::<unsafe extern "C" fn(), unsafe extern "C" fn(Id, Sel, usize) -> Id>(objc_msgSend);
+                        let button = send_button(ns_window, sel(c"standardWindowButton:"), kind);
+                        let send_hidden = std::mem::transmute::<unsafe extern "C" fn(), unsafe extern "C" fn(Id, Sel, i8)>(objc_msgSend);
+                        send_hidden(button, sel(c"setHidden:"), i8::from(!visible));
+                    }
+                }
+            })
+            .map_err(|e| e.to_string())
+    }
 }
 
 /// Saves where the main window is, for the next start (on closing it and on quitting).

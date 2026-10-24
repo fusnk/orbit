@@ -48,7 +48,7 @@ import { startAniListSync } from './library/anilist';
 import { loadWatch, refreshNewEpisodes, watchRecord } from './library/watch';
 import { installWatchNext } from './library/watch-next';
 import { h } from './lib/dom';
-import { isAndroid } from './lib/platform';
+import { isAndroid, isMac } from './lib/platform';
 import { settings } from './lib/ipc';
 import { loadKeymap } from './lib/keymap';
 import { navRooms, rooms } from './rooms';
@@ -291,6 +291,8 @@ if (isAndroid) {
   document.documentElement.dataset.platform = 'android';
 } else {
   startGlassSheen();
+  // The window's own buttons sit over the header there (`:root[data-platform='mac']`, app/titlebar.ts).
+  if (isMac) document.documentElement.dataset.platform = 'mac';
 }
 
 // Ambient mode after a while without input (Settings → Appearance). Over the player it reads the

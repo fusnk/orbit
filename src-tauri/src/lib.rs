@@ -347,6 +347,7 @@ pub fn run() {
             player::player_set_volume_boost,
             player::player_set_volume_boost_level,
             player::player_set_hdr,
+            main_window::window_buttons,
             player::player_set_smooth_motion,
             player::player_set_hdr_subtitles,
             player::player_set_passthrough,

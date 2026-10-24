@@ -254,6 +254,14 @@ button {
   padding-inline-start: var(--space-5);
 }
 
+/* A Mac's own close, minimize and zoom buttons sit over the header's left end
+   (main_window.rs puts them level with the round buttons, 20px in): the header
+   starts after them. Left whatever the language's direction, like the buttons.
+   macOS hides them in full screen. */
+:root[data-platform='mac'] .titlebar:not(.fullscreen) {
+  padding-left: 92px;
+}
+
 .titlebar-start {
   display: flex;
   align-items: center;

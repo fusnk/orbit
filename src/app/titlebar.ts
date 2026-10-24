@@ -2,13 +2,14 @@ import { t } from '../i18n';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { icon } from '../components/icons';
 import { h } from '../lib/dom';
-import { isAndroid } from '../lib/platform';
+import { isAndroid, isMac } from '../lib/platform';
 
 /**
  * The app header, which is also the frameless window's title bar: back and
  * wordmark on the left, the page nav in the middle, the paused-history chip,
  * the avatar, the new-episode bell, Quick settings and the Windows caption buttons on the right. The header itself is the drag region; its
- * buttons aren't marked, so they stay clickable. Android has no window to move or resize: no caption buttons there.
+ * buttons aren't marked, so they stay clickable. Android has no window to move or resize: no caption buttons there. A Mac
+ * window has its own buttons, over the header's start (main_window.rs), which leaves room for them outside full screen.
  */
 export function createTitlebar(options: { nav: HTMLElement; onBack(): void; onHome(): void; onSettings(anchor: HTMLElement): void; profile?: HTMLElement | undefined; bell?: HTMLElement | undefined; historyChip?: HTMLElement | undefined }) {
   const win = getCurrentWindow();
@@ -40,6 +41,8 @@ export function createTitlebar(options: { nav: HTMLElement; onBack(): void; onHo
       maximize.setAttribute('aria-label', maximize.title);
       maximize.replaceChildren(full ? icon('exitFullscreen') : h('span', { class: 'glyph-max' }));
       maximize.classList.toggle('exit-fullscreen', full);
+      // macOS hides its window buttons in full screen: the room left for them goes too.
+      element.classList.toggle('fullscreen', full);
       // A maximized or full-screen window can't be dragged out of (a slightly missed click on the bar
       // restored it): the header only moves a window that's neither. Full screen from a maximized
       // window doesn't resize it, so it's covered by the maximized check until the next sync.
@@ -67,7 +70,7 @@ export function createTitlebar(options: { nav: HTMLElement; onBack(): void; onHo
       options.historyChip ?? '',
       // One group, so the Arc bar can draw them as a unit (nav-layouts.css); elsewhere it adds no box of its own.
       h('div', { class: 'titlebar-tools' }, options.profile ?? '', options.bell ?? '', settings),
-      isAndroid
+      isAndroid || isMac
         ? ''
         : h(
             'div',

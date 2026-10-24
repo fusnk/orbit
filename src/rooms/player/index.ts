@@ -94,7 +94,7 @@ import { createTransport } from './transport';
 import { attachRemotePlayer, tellNowPlaying } from '../../app/remote-player';
 import { attachPlayOn, openRemoteControl } from '../../app/connect-ui';
 import { playMessage } from '../../lib/connect';
-import { isAndroid } from '../../lib/platform';
+import { isAndroid, isMac } from '../../lib/platform';
 import type { AudioOutputs } from './audio-device';
 
 export type { PlayableSource } from './panels';
@@ -1763,6 +1763,8 @@ function playerView(initial: PlayRequest, ctx: RoomContext): HTMLElement {
     pauseInfo.hide();
     if (pip) void invoke('window_pip', { on: false, aspect: 16 / 9 }).catch(() => {});
     document.documentElement.classList.remove('player-open');
+    // A Mac's window buttons come back with the header (main_window.rs).
+    if (isMac) void invoke('window_buttons', { visible: true }).catch(() => {});
     // What waited for the video to end (the update banner, an install link) may come now.
     setPlayerOpen(false);
     if (leavesFullscreen({ now: fullscreen, before: fullscreenBefore, keep: keepFullscreen })) void win.setFullscreen(false).catch(() => {});
@@ -1811,6 +1813,8 @@ function playerView(initial: PlayRequest, ctx: RoomContext): HTMLElement {
     },
   };
   document.documentElement.classList.add('player-open');
+  // The header hides while the player is open; a Mac's window buttons over it go too.
+  if (isMac) void invoke('window_buttons', { visible: false }).catch(() => {});
   setPlayerOpen(true);
   followLateSources(request);
   renderRequest();
