@@ -40,19 +40,30 @@ export function looksLikePlaceholder(request: Pick<PlayRequest, 'title' | 'episo
   return duration < shortest && !(runtime > 0 && runtime <= shortest);
 }
 
-/** Before this share of a known length, an end is taken as the stream dropping rather than the real end (credits come after). */
-const EARLY_END_SHARE = 0.85;
+/**
+ * An end this close to a known length (seconds, or this share of it, whichever is more) is the real end.
+ * Anything before it is the stream dropping: credits are short, and an episode's last scene can come after
+ * 85 % of it (a 21-minute episode's last three minutes).
+ */
+const END_SLACK_S = 30;
+const END_SLACK_SHARE = 0.02;
+/** Where the last stretch starts: a file stopping twice at the same moment past here really ends there. */
+const LAST_STRETCH = 0.85;
+/** Two stops this many seconds apart are at the same moment. */
+const SAME_SPOT_S = 5;
 
 /**
  * Whether mpv reaching the end at `timePos` of `duration` is a stream that
  * stopped early (a debrid or streaming-server session dropped mid-file, so
  * mpv's reconnect hit an error and it read that as the end) rather than the
- * movie or episode ending. Live TV, catch-up, trailers, files on this PC,
- * pasted links and downloads end where they end.
+ * movie or episode ending. Once known credits have started (`inCredits`) it's
+ * the end. Live TV, catch-up, trailers, files on this PC, pasted links and
+ * downloads end where they end.
  */
-export function endedEarly(request: Pick<PlayRequest, 'live' | 'replay' | 'trailer' | 'local' | 'link'> & { source: { url: string } }, timePos: number | null, duration: number | null): boolean {
+export function endedEarly(request: Pick<PlayRequest, 'live' | 'replay' | 'trailer' | 'local' | 'link'> & { source: { url: string } }, timePos: number | null, duration: number | null, inCredits = false): boolean {
   if (request.live || request.replay || request.trailer || request.local || request.link || request.source.url.startsWith('orbit-download:')) return false;
-  return timePos !== null && !!duration && duration > 0 && timePos < duration * EARLY_END_SHARE;
+  if (inCredits || timePos === null || !duration || !(duration > 0)) return false;
+  return timePos < duration - Math.max(END_SLACK_S, duration * END_SLACK_SHARE);
 }
 
 /**
@@ -61,9 +72,9 @@ export function endedEarly(request: Pick<PlayRequest, 'live' | 'replay' | 'trail
  * that stopped early (see `endedEarly`), or the movie or episode's real end.
  * Only `done` marks it watched or lets anything play next.
  */
-export function endOfFile(request: Parameters<typeof endedEarly>[0], placeholder: boolean, timePos: number | null, duration: number | null): 'placeholder' | 'early' | 'done' {
+export function endOfFile(request: Parameters<typeof endedEarly>[0], placeholder: boolean, timePos: number | null, duration: number | null, inCredits = false): 'placeholder' | 'early' | 'done' {
   if (placeholder) return 'placeholder';
-  return endedEarly(request, timePos, duration) ? 'early' : 'done';
+  return endedEarly(request, timePos, duration, inCredits) ? 'early' : 'done';
 }
 
 /** Played this far (seconds) past where a stopped stream was reopened, it counts as healthy again. */
@@ -83,6 +94,14 @@ export function createEarlyStopRetry() {
       if (last?.key === key && at < last.at + EARLY_RETRY_RESET_S) return false;
       last = { key, at };
       return true;
+    },
+    /**
+     * The stream `key` stopped again in the last stretch of `duration`, at the
+     * moment it was reopened from: the file really ends there (its length was
+     * overstated), so it's the end rather than a failure.
+     */
+    endsHere(key: string, at: number, duration: number): boolean {
+      return last?.key === key && at >= duration * LAST_STRETCH && Math.abs(at - last.at) <= SAME_SPOT_S;
     },
   };
 }

@@ -1676,15 +1676,16 @@ function playerView(initial: PlayRequest, ctx: RoomContext): HTMLElement {
           reconnectLive();
           break;
         }
-        const end = endOfFile(request, placeholder, status.timePos, status.duration);
+        const end = endOfFile(request, placeholder, status.timePos, status.duration, creditsStarted(skip.segments(), status.timePos));
         // A placeholder clip that played out (its error is up): not the end of the movie or episode.
         if (end === 'placeholder') break;
-        // Well before its length, the stream dropped (mpv reads a failed reconnect as the end; with keep-open
+        // Before its length, the stream dropped (mpv reads a failed reconnect as the end; with keep-open
         // there's no end-file reason to tell them apart): open it again from there once, then give way to the
-        // next source or the error. Nothing is marked watched and nothing plays next.
-        if (end === 'early') {
-          // Not the request object: late sources replace it while the same source plays.
-          const playing = `${request.title.id}/${request.episode?.episode.id ?? ''}\n${request.source.url}`;
+        // next source or the error. Nothing is marked watched and nothing plays next. Stopping again at the
+        // same moment near the end is where the file really ends.
+        // Not the request object: late sources replace it while the same source plays.
+        const playing = `${request.title.id}/${request.episode?.episode.id ?? ''}\n${request.source.url}`;
+        if (end === 'early' && !earlyStop.endsHere(playing, status.timePos ?? 0, status.duration ?? 0)) {
           if (earlyStop.reopen(playing, status.timePos ?? 0)) load(request, status.timePos ?? 0);
           else fail(STOPPED_EARLY_ERROR);
           break;
