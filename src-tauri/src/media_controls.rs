@@ -25,13 +25,19 @@
 //! (the desktop fetches it), so only a public https image with no query or
 //! login in its address is passed; anything else is left out.
 //!
+//! On macOS the same comes through Apple's MediaPlayer framework (the `mac`
+//! module below): Now Playing in Control Center and the menu bar shows the
+//! title and episode with play/pause, next, previous and the position, and the
+//! keyboard's media keys reach the player while it plays, even from the
+//! background. No poster there yet.
+//!
 //! Other platforms get no-ops.
 
 use serde::Deserialize;
 use tauri::{AppHandle, State};
 
 /// The event a pressed button reaches the page as: "play", "pause", "next" or "previous".
-#[cfg(any(windows, target_os = "linux"))]
+#[cfg(any(windows, target_os = "linux", target_os = "macos"))]
 const BUTTON_EVENT: &str = "media-controls://button";
 /// Paused this long while another window has the focus: the controls step aside.
 const DORMANT_AFTER: std::time::Duration = std::time::Duration::from_secs(5 * 60);
@@ -43,7 +49,7 @@ fn dormant_due(paused_for: Option<std::time::Duration>, focused: bool) -> bool {
 }
 
 /// What fits on the flyout; anything longer is cut.
-#[cfg_attr(not(any(windows, target_os = "linux")), allow(dead_code))]
+#[cfg_attr(not(any(windows, target_os = "linux", target_os = "macos")), allow(dead_code))]
 const MAX_TEXT: usize = 200;
 #[cfg(windows)]
 const ART_LIMIT: usize = 4 * 1024 * 1024;
@@ -65,7 +71,7 @@ pub struct NowPlaying {
 }
 
 /// Text Windows shows: no control characters, at most `MAX_TEXT` characters.
-#[cfg_attr(not(any(windows, target_os = "linux")), allow(dead_code))]
+#[cfg_attr(not(any(windows, target_os = "linux", target_os = "macos")), allow(dead_code))]
 fn clean(text: &str) -> String {
     text.chars().filter(|c| !c.is_control()).take(MAX_TEXT).collect::<String>().trim().to_owned()
 }
@@ -99,10 +105,13 @@ pub use win::MediaControls;
 #[cfg(target_os = "linux")]
 pub use mpris::MediaControls;
 
-#[cfg(not(any(windows, target_os = "linux")))]
+#[cfg(target_os = "macos")]
+pub use mac::MediaControls;
+
+#[cfg(not(any(windows, target_os = "linux", target_os = "macos")))]
 pub struct MediaControls;
 
-#[cfg(not(any(windows, target_os = "linux")))]
+#[cfg(not(any(windows, target_os = "linux", target_os = "macos")))]
 impl MediaControls {
     pub fn new(_app: &AppHandle) -> Self {
         Self
@@ -110,7 +119,7 @@ impl MediaControls {
 }
 
 /// mpv paused or played (from the player's event thread); shown on the flyout while it's in use.
-#[cfg(any(windows, target_os = "linux"))]
+#[cfg(any(windows, target_os = "linux", target_os = "macos"))]
 pub fn playback(app: &AppHandle, paused: bool) {
     use tauri::Manager;
     if let Some(controls) = app.try_state::<MediaControls>() {
@@ -118,23 +127,23 @@ pub fn playback(app: &AppHandle, paused: bool) {
     }
 }
 
-#[cfg(not(any(windows, target_os = "linux")))]
+#[cfg(not(any(windows, target_os = "linux", target_os = "macos")))]
 pub fn playback(_app: &AppHandle, _paused: bool) {}
 
-/// Where playback is (from the player's event thread): MPRIS clients read the position and length.
-#[cfg(target_os = "linux")]
+/// Where playback is (from the player's event thread): MPRIS clients and Now Playing read the position and length.
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 pub fn progress(app: &AppHandle, position: Option<f64>, duration: Option<f64>, speed: Option<f64>) {
     use tauri::Manager;
-    if let Some(controls) = app.try_state::<mpris::MediaControls>() {
+    if let Some(controls) = app.try_state::<MediaControls>() {
         controls.progress(position, duration, speed);
     }
 }
 
-/// mpv started playing again after a seek (or a new file): MPRIS clients are told the new position.
-#[cfg(target_os = "linux")]
+/// mpv started playing again after a seek (or a new file): MPRIS clients and Now Playing are told the new position.
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 pub fn restarted(app: &AppHandle) {
     use tauri::Manager;
-    if let Some(controls) = app.try_state::<mpris::MediaControls>() {
+    if let Some(controls) = app.try_state::<MediaControls>() {
         controls.restarted();
     }
 }
@@ -144,7 +153,9 @@ pub fn restarted(app: &AppHandle) {
 pub async fn media_controls_set(controls: State<'_, MediaControls>, playing: NowPlaying) -> Result<(), String> {
     #[cfg(any(windows, target_os = "linux"))]
     return controls.set(playing).await;
-    #[cfg(not(any(windows, target_os = "linux")))]
+    #[cfg(target_os = "macos")]
+    return controls.set(playing);
+    #[cfg(not(any(windows, target_os = "linux", target_os = "macos")))]
     {
         let _ = (controls, playing);
         Ok(())
@@ -154,9 +165,9 @@ pub async fn media_controls_set(controls: State<'_, MediaControls>, playing: Now
 /// The player closed: Windows' media controls go away.
 #[tauri::command]
 pub fn media_controls_clear(controls: State<'_, MediaControls>) -> Result<(), String> {
-    #[cfg(any(windows, target_os = "linux"))]
+    #[cfg(any(windows, target_os = "linux", target_os = "macos"))]
     return controls.clear();
-    #[cfg(not(any(windows, target_os = "linux")))]
+    #[cfg(not(any(windows, target_os = "linux", target_os = "macos")))]
     {
         let _ = controls;
         Ok(())
@@ -940,9 +951,307 @@ mod mpris {
     }
 }
 
+/// The playback rate Now Playing counts the position on with: 0 while paused, else the speed.
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+fn playing_rate(paused: bool, speed: Option<f64>) -> f64 {
+    if paused { 0.0 } else { speed.filter(|s| s.is_finite() && *s > 0.0).unwrap_or(1.0) }
+}
+
+/// Whether a status event changes what Now Playing counts from: the length or the speed. The
+/// position itself moves on by the rate there; a seek is sent when mpv plays on (`restarted`).
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+fn progress_changed(sent: (Option<f64>, Option<f64>), now: (Option<f64>, Option<f64>)) -> bool {
+    sent != now
+}
+
+#[cfg(target_os = "macos")]
+mod mac {
+    use std::ffi::CString;
+    use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
+
+    use block2::RcBlock;
+    use objc2::runtime::{AnyClass, AnyObject};
+    use objc2::{class, msg_send};
+    use tauri::{AppHandle, Emitter};
+
+    use super::{BUTTON_EVENT, NowPlaying, clean, playing_rate, progress_changed};
+
+    /// A seek from the Now Playing scrubber reaches the page as `{ seconds, relative }` (media-session.ts).
+    const SEEK_EVENT: &str = "media-controls://seek";
+    /// `MPNowPlayingPlaybackState`.
+    const PLAYING: usize = 1;
+    const PAUSED: usize = 2;
+    const STOPPED: usize = 3;
+    /// `MPRemoteCommandHandlerStatusSuccess` and `…CommandFailed`.
+    const SUCCESS: isize = 0;
+    const FAILED: isize = 200;
+
+    #[link(name = "MediaPlayer", kind = "framework")]
+    unsafe extern "C" {
+        static MPMediaItemPropertyTitle: *const AnyObject;
+        static MPMediaItemPropertyArtist: *const AnyObject;
+        static MPMediaItemPropertyPlaybackDuration: *const AnyObject;
+        static MPNowPlayingInfoPropertyElapsedPlaybackTime: *const AnyObject;
+        static MPNowPlayingInfoPropertyPlaybackRate: *const AnyObject;
+    }
+
+    struct Shown {
+        title: String,
+        subtitle: Option<String>,
+        can_next: bool,
+        can_previous: bool,
+    }
+
+    #[derive(Default)]
+    struct Now {
+        shown: Option<Shown>,
+        paused: Option<bool>,
+        position: Option<f64>,
+        duration: Option<f64>,
+        speed: Option<f64>,
+        /// The length and speed last sent (see `progress_changed`).
+        sent: (Option<f64>, Option<f64>),
+    }
+
+    type Shared = Arc<Mutex<Now>>;
+
+    fn lock(now: &Shared) -> MutexGuard<'_, Now> {
+        now.lock().unwrap_or_else(PoisonError::into_inner)
+    }
+
+    /// What one update hands the main thread.
+    struct Info {
+        title: String,
+        subtitle: Option<String>,
+        duration: Option<f64>,
+        position: Option<f64>,
+        rate: f64,
+        state: usize,
+        can_next: bool,
+        can_previous: bool,
+    }
+
+    pub struct MediaControls {
+        app: AppHandle,
+        now: Shared,
+    }
+
+    impl MediaControls {
+        /// Called during setup, on the main thread: the handlers are added once and stay;
+        /// the buttons are only on while something shows.
+        pub fn new(app: &AppHandle) -> Self {
+            let now = Shared::default();
+            // SAFETY: on the main thread, during setup.
+            unsafe { add_handlers(app, &now) };
+            Self { app: app.clone(), now }
+        }
+
+        pub fn set(&self, playing: NowPlaying) -> Result<(), String> {
+            let mut now = lock(&self.now);
+            now.shown = Some(Shown {
+                title: clean(&playing.title),
+                subtitle: playing.subtitle.as_deref().map(clean).filter(|s| !s.is_empty()),
+                can_next: playing.can_next,
+                can_previous: playing.can_previous,
+            });
+            self.publish(&mut now);
+            Ok(())
+        }
+
+        pub fn clear(&self) -> Result<(), String> {
+            let mut now = lock(&self.now);
+            *now = Now::default();
+            self.publish(&mut now);
+            Ok(())
+        }
+
+        pub fn playback(&self, paused: bool) {
+            let mut now = lock(&self.now);
+            if now.paused == Some(paused) {
+                return;
+            }
+            now.paused = Some(paused);
+            if now.shown.is_some() {
+                self.publish(&mut now);
+            }
+        }
+
+        pub fn progress(&self, position: Option<f64>, duration: Option<f64>, speed: Option<f64>) {
+            let mut now = lock(&self.now);
+            now.position = position.or(now.position);
+            now.duration = duration.or(now.duration);
+            now.speed = speed.or(now.speed);
+            if now.shown.is_some() && progress_changed(now.sent, (now.duration, now.speed)) {
+                self.publish(&mut now);
+            }
+        }
+
+        pub fn restarted(&self) {
+            let mut now = lock(&self.now);
+            if now.shown.is_some() {
+                self.publish(&mut now);
+            }
+        }
+
+        fn publish(&self, now: &mut Now) {
+            now.sent = (now.duration, now.speed);
+            let paused = now.paused.unwrap_or(false);
+            let info = now.shown.as_ref().map(|shown| Info {
+                title: shown.title.clone(),
+                subtitle: shown.subtitle.clone(),
+                duration: now.duration.filter(|d| d.is_finite() && *d > 0.0),
+                position: now.position.filter(|p| p.is_finite() && *p >= 0.0),
+                rate: playing_rate(paused, now.speed),
+                state: if paused { PAUSED } else { PLAYING },
+                can_next: shown.can_next,
+                can_previous: shown.can_previous,
+            });
+            // SAFETY: on the main thread, as AppKit and MediaPlayer expect.
+            let _ = self.app.run_on_main_thread(move || unsafe { show(info) });
+        }
+    }
+
+    /// An `NSString` (autoreleased) with `text`'s characters; `clean` already took out control characters.
+    unsafe fn string(text: &str) -> *mut AnyObject {
+        let text = CString::new(text.replace('\0', "")).unwrap_or_default();
+        // SAFETY: a NUL-terminated UTF-8 string.
+        unsafe { msg_send![class!(NSString), stringWithUTF8String: text.as_ptr()] }
+    }
+
+    unsafe fn number(value: f64) -> *mut AnyObject {
+        // SAFETY: `numberWithDouble:` takes a double and returns an NSNumber.
+        unsafe { msg_send![class!(NSNumber), numberWithDouble: value] }
+    }
+
+    fn media_class(name: &std::ffi::CStr) -> Option<&'static AnyClass> {
+        AnyClass::get(name)
+    }
+
+    /// The command center's commands that are buttons here: (selector name, what it sends).
+    unsafe fn command(center: *mut AnyObject, name: &str) -> *mut AnyObject {
+        // SAFETY: each name below is a property of MPRemoteCommandCenter returning an MPRemoteCommand.
+        unsafe {
+            match name {
+                "play" => msg_send![center, playCommand],
+                "pause" => msg_send![center, pauseCommand],
+                "toggle" => msg_send![center, togglePlayPauseCommand],
+                "next" => msg_send![center, nextTrackCommand],
+                "previous" => msg_send![center, previousTrackCommand],
+                _ => msg_send![center, changePlaybackPositionCommand],
+            }
+        }
+    }
+
+    unsafe fn command_center() -> Option<*mut AnyObject> {
+        let class = media_class(c"MPRemoteCommandCenter")?;
+        // SAFETY: a class method returning the shared MPRemoteCommandCenter.
+        let center: *mut AnyObject = unsafe { msg_send![class, sharedCommandCenter] };
+        (!center.is_null()).then_some(center)
+    }
+
+    /// Each button sends the page what the player's own media key would (media-session.ts); the
+    /// scrubber sends a seek to a time. Play/pause on the keyboard is "toggle": it goes by mpv's state.
+    unsafe fn add_handlers(app: &AppHandle, now: &Shared) {
+        // SAFETY: forwarded to the caller: on the main thread.
+        let Some(center) = (unsafe { command_center() }) else { return };
+        for name in ["play", "pause", "toggle", "next", "previous"] {
+            let (app, now) = (app.clone(), now.clone());
+            let block: RcBlock<dyn Fn(*mut AnyObject) -> isize> = RcBlock::new(move |_event: *mut AnyObject| {
+                let button = match name {
+                    "toggle" if lock(&now).paused == Some(false) => "pause",
+                    "toggle" => "play",
+                    other => other,
+                };
+                let _ = app.emit(BUTTON_EVENT, button);
+                SUCCESS
+            });
+            // SAFETY: `addTargetWithHandler:` copies the block and returns a token to remove it by.
+            unsafe {
+                let target = command(center, name);
+                let _: *mut AnyObject = msg_send![target, addTargetWithHandler: &*block];
+                let _: () = msg_send![target, setEnabled: false];
+            }
+        }
+        let app = app.clone();
+        let block: RcBlock<dyn Fn(*mut AnyObject) -> isize> = RcBlock::new(move |event: *mut AnyObject| {
+            if event.is_null() {
+                return FAILED;
+            }
+            // SAFETY: this command's events are MPChangePlaybackPositionCommandEvents.
+            let seconds: f64 = unsafe { msg_send![event, positionTime] };
+            if !seconds.is_finite() {
+                return FAILED;
+            }
+            let _ = app.emit(SEEK_EVENT, serde_json::json!({ "seconds": seconds, "relative": false }));
+            SUCCESS
+        });
+        // SAFETY: as above.
+        unsafe {
+            let target = command(center, "position");
+            let _: *mut AnyObject = msg_send![target, addTargetWithHandler: &*block];
+            let _: () = msg_send![target, setEnabled: false];
+        }
+    }
+
+    /// Shows `info` in Now Playing, or takes Orbit off it (None). On the main thread.
+    unsafe fn show(info: Option<Info>) {
+        let Some(class) = media_class(c"MPNowPlayingInfoCenter") else { return };
+        // SAFETY: on the main thread; every message below is MediaPlayer's or Foundation's own,
+        // with the argument types they take.
+        unsafe {
+            let center: *mut AnyObject = msg_send![class, defaultCenter];
+            let Some(commands) = command_center() else { return };
+            if center.is_null() {
+                return;
+            }
+            let on = info.is_some();
+            for name in ["play", "pause", "toggle", "position"] {
+                let _: () = msg_send![command(commands, name), setEnabled: on];
+            }
+            let _: () = msg_send![command(commands, "next"), setEnabled: info.as_ref().is_some_and(|i| i.can_next)];
+            let _: () = msg_send![command(commands, "previous"), setEnabled: info.as_ref().is_some_and(|i| i.can_previous)];
+            let Some(info) = info else {
+                let _: () = msg_send![center, setNowPlayingInfo: std::ptr::null_mut::<AnyObject>()];
+                let _: () = msg_send![center, setPlaybackState: STOPPED];
+                return;
+            };
+            let dict: *mut AnyObject = msg_send![class!(NSMutableDictionary), dictionary];
+            let _: () = msg_send![dict, setObject: string(&info.title), forKey: MPMediaItemPropertyTitle];
+            if let Some(subtitle) = &info.subtitle {
+                let _: () = msg_send![dict, setObject: string(subtitle), forKey: MPMediaItemPropertyArtist];
+            }
+            if let Some(duration) = info.duration {
+                let _: () = msg_send![dict, setObject: number(duration), forKey: MPMediaItemPropertyPlaybackDuration];
+            }
+            if let Some(position) = info.position {
+                let _: () = msg_send![dict, setObject: number(position), forKey: MPNowPlayingInfoPropertyElapsedPlaybackTime];
+            }
+            let _: () = msg_send![dict, setObject: number(info.rate), forKey: MPNowPlayingInfoPropertyPlaybackRate];
+            let _: () = msg_send![center, setNowPlayingInfo: dict];
+            let _: () = msg_send![center, setPlaybackState: info.state];
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn now_playing_counts_on_at_the_speed_and_stands_still_while_paused() {
+        assert_eq!(playing_rate(true, Some(1.5)), 0.0);
+        assert_eq!(playing_rate(false, Some(1.5)), 1.5);
+        assert_eq!(playing_rate(false, None), 1.0);
+        assert_eq!(playing_rate(false, Some(f64::NAN)), 1.0);
+        assert_eq!(playing_rate(false, Some(0.0)), 1.0);
+    }
+
+    #[test]
+    fn now_playing_is_only_updated_when_the_length_or_speed_changes() {
+        assert!(!progress_changed((Some(100.0), Some(1.0)), (Some(100.0), Some(1.0))));
+        assert!(progress_changed((None, Some(1.0)), (Some(100.0), Some(1.0))));
+        assert!(progress_changed((Some(100.0), Some(1.0)), (Some(100.0), Some(2.0))));
+    }
 
     #[test]
     fn text_is_plain_and_short() {

@@ -529,13 +529,13 @@ fn event_loop(mpv: &Mpv, surface: &Surface, stop: &AtomicBool, app: &AppHandle, 
     let emit_for = |entry: i64, event: PlayerEvent| {
         if let Some(load) = load_for(current.lock().ok().and_then(|c| *c), entry) {
             mirror_to_remote(app, &event);
-            // Windows' media flyout and Linux's MPRIS show mpv's play/pause (see media_controls.rs).
+            // Windows' media flyout, Linux's MPRIS and the Mac's Now Playing show mpv's play/pause (see media_controls.rs).
             if let PlayerEvent::Status(s) = &event {
                 crate::media_controls::playback(app, s.paused);
-                #[cfg(target_os = "linux")]
+                #[cfg(any(target_os = "linux", target_os = "macos"))]
                 crate::media_controls::progress(app, s.time_pos, s.duration, s.speed);
             }
-            #[cfg(target_os = "linux")]
+            #[cfg(any(target_os = "linux", target_os = "macos"))]
             if matches!(event, PlayerEvent::Ready) {
                 crate::media_controls::restarted(app);
             }
