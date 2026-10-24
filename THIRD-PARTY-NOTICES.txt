@@ -159,7 +159,7 @@ Rust crates (in Orbit itself) (447):
   ctor 0.8.0 - Apache-2.0 OR MIT - https://github.com/mmastrac/rust-ctor - [74, 81]
   ctor-proc-macro 0.0.7 - Apache-2.0 OR MIT - https://github.com/mmastrac/rust-ctor - [74, 81]
   ctr 0.10.1 - MIT OR Apache-2.0 - https://github.com/RustCrypto/block-modes - [21, 82]
-  ctutils 0.4.2 - Apache-2.0 OR MIT - https://github.com/RustCrypto/utils - [62, 83]
+  ctutils 0.4.5 - Apache-2.0 OR MIT - https://github.com/RustCrypto/utils - [62, 83]
   darling 0.24.1 - MIT - https://github.com/TedDriggs/darling - [84]
   darling_core 0.24.1 - MIT - https://github.com/TedDriggs/darling - [84]
   darling_macro 0.24.1 - MIT - https://github.com/TedDriggs/darling - [84]
@@ -440,7 +440,7 @@ Rust crates (in Orbit itself) (447):
   time-macros 0.2.32 - MIT OR Apache-2.0 - https://github.com/time-rs/time - [15, 259]
   tinystr 0.8.4 - Unicode-3.0 - https://github.com/unicode-org/icu4x - [139]
   tinyvec 1.13.3 - Zlib OR Apache-2.0 OR MIT - https://github.com/Lokathor/tinyvec - [62, 81, 260]
-  tokio 1.53.1 - MIT - https://github.com/tokio-rs/tokio - [261]
+  tokio 1.53.3 - MIT - https://github.com/tokio-rs/tokio - [261]
   tokio-macros 2.7.2 - MIT - https://github.com/tokio-rs/tokio - [262]
   tokio-rustls 0.26.5 - MIT OR Apache-2.0 - https://github.com/rustls/tokio-rustls - [263, 264]
   tokio-socks 0.5.3 - MIT - https://github.com/sticnarf/tokio-socks - [265]
@@ -10583,7 +10583,7 @@ according to those terms.
 
 
 ==============================================================================
-[62] Used by: chardetng 1.0.0 (LICENSE-APACHE); cmov 0.5.4 (LICENSE-APACHE); ctutils 0.4.2 (LICENSE-APACHE); encoding_rs 0.8.42 (LICENSE-APACHE); flume 0.12.0 (LICENSE-APACHE); lru-slab 0.1.3 (LICENSE-APACHE); multiversion_no_op 1.0.0 (LICENSE-APACHE); qrcode 0.14.1 (LICENSE-APACHE.txt); quinn 0.11.12 (LICENSE-APACHE); quinn-proto 0.11.18 (LICENSE-APACHE); quinn-udp 0.5.15 (LICENSE-APACHE); rustls-platform-verifier 0.7.0 (LICENSE-APACHE); serialize-to-javascript 0.1.2 (LICENSE-APACHE); serialize-to-javascript-impl 0.1.2 (LICENSE-APACHE); spinning_top 0.3.0 (LICENSE-APACHE); tinyvec 1.13.3 (LICENSE-APACHE.md); utf8_iter 1.0.4 (LICENSE-APACHE); zeroize 1.9.0 (LICENSE-APACHE)
+[62] Used by: chardetng 1.0.0 (LICENSE-APACHE); cmov 0.5.4 (LICENSE-APACHE); ctutils 0.4.5 (LICENSE-APACHE); encoding_rs 0.8.42 (LICENSE-APACHE); flume 0.12.0 (LICENSE-APACHE); lru-slab 0.1.3 (LICENSE-APACHE); multiversion_no_op 1.0.0 (LICENSE-APACHE); qrcode 0.14.1 (LICENSE-APACHE.txt); quinn 0.11.12 (LICENSE-APACHE); quinn-proto 0.11.18 (LICENSE-APACHE); quinn-udp 0.5.15 (LICENSE-APACHE); rustls-platform-verifier 0.7.0 (LICENSE-APACHE); serialize-to-javascript 0.1.2 (LICENSE-APACHE); serialize-to-javascript-impl 0.1.2 (LICENSE-APACHE); spinning_top 0.3.0 (LICENSE-APACHE); tinyvec 1.13.3 (LICENSE-APACHE.md); utf8_iter 1.0.4 (LICENSE-APACHE); zeroize 1.9.0 (LICENSE-APACHE)
 ==============================================================================
 
 Apache License
@@ -12865,7 +12865,7 @@ DEALINGS IN THE SOFTWARE.
 
 
 ==============================================================================
-[83] Used by: ctutils 0.4.2 (LICENSE-MIT)
+[83] Used by: ctutils 0.4.5 (LICENSE-MIT)
 ==============================================================================
 
 Copyright (c) 2025-2026 The RustCrypto Project Developers
@@ -22321,7 +22321,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 
 ==============================================================================
-[261] Used by: tokio 1.53.1 (LICENSE); tokio-stream 0.1.19 (LICENSE); tokio-util 0.7.19 (LICENSE)
+[261] Used by: tokio 1.53.3 (LICENSE); tokio-stream 0.1.19 (LICENSE); tokio-util 0.7.19 (LICENSE)
 ==============================================================================
 
 MIT License
