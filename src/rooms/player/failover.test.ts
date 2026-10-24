@@ -50,9 +50,20 @@ describe('a stream that ends early', () => {
     expect(endedEarly(web, 6000, 7200)).toBe(true);
   });
 
-  it('takes an end in the last stretch (credits) as the real end', () => {
-    expect(endedEarly(web, 6200, 7200)).toBe(false);
+  it('takes an end in the last moments as the real end', () => {
     expect(endedEarly(web, 7199, 7200)).toBe(false);
+    expect(endedEarly(web, 7100, 7200)).toBe(false);
+  });
+
+  it('takes a drop minutes before the end as the stream dropping, not the end (The Office cut off ~3 min early)', () => {
+    // A 21:11 episode that stopped at 18:20: 87 %, which used to count as finished and start the next one.
+    expect(endedEarly(web, 1100, 1271)).toBe(true);
+    expect(endedEarly(web, 6200, 7200)).toBe(true);
+    expect(endedEarly(web, 1245, 1271)).toBe(false);
+  });
+
+  it('takes an end once known credits have started as the real end', () => {
+    expect(endedEarly(web, 6200, 7200, true)).toBe(false);
   });
 
   it('leaves live TV, catch-up, trailers, files on this PC, downloads and unknown lengths alone', () => {
@@ -82,6 +93,21 @@ describe('reopening a stream that stopped early', () => {
     expect(retry.reopen(film, 1800 + EARLY_RETRY_RESET_S)).toBe(true);
     // That reopen is the new starting point.
     expect(retry.reopen(film, 1800 + EARLY_RETRY_RESET_S + 60)).toBe(false);
+  });
+
+  it('takes a second end at the same moment near the end as where the file really ends (its length was overstated)', () => {
+    const retry = createEarlyStopRetry();
+    expect(retry.endsHere(film, 6900, 7200)).toBe(false);
+    expect(retry.reopen(film, 6900)).toBe(true);
+    expect(retry.endsHere(film, 6902, 7200)).toBe(true);
+    expect(retry.endsHere(film, 6950, 7200)).toBe(false);
+    expect(retry.endsHere('tt1/\nhttps://other.example/film.mkv', 6902, 7200)).toBe(false);
+  });
+
+  it('never takes a stop well before the end as the end, however often it happens', () => {
+    const retry = createEarlyStopRetry();
+    expect(retry.reopen(film, 1800)).toBe(true);
+    expect(retry.endsHere(film, 1800, 7200)).toBe(false);
   });
 
   it('keeps each title, episode and source to itself', () => {
