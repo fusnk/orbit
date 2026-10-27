@@ -153,6 +153,10 @@ pub fn run() {
             let db_ms = started.elapsed().as_millis();
             app.manage(profiles::ActiveProfile::default());
             app.manage(quit::Quit::default());
+            #[cfg(target_os = "macos")]
+            if let Err(e) = quit::menu_quit(app) {
+                diagnostics::warn(&format!("menu: Cmd+Q quits without the last saves: {e}"));
+            }
             // PINs saved before PINs were hashed: hashed now, off the main thread (each takes a moment on purpose).
             let pins = app.handle().clone();
             if let Err(e) = std::thread::Builder::new().name("pin-upgrade".into()).spawn(move || profiles::upgrade_plain_pins(&pins.state::<db::Db>())) {

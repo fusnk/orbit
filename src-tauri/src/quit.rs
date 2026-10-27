@@ -63,6 +63,42 @@ pub fn request(app: &AppHandle) {
     });
 }
 
+/// The menu item that replaces the macOS app menu's own Quit.
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+const MENU_QUIT: &str = "app-quit";
+
+/// Whether an app-menu item is the stock Quit, which `menu_quit` replaces.
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+fn is_stock_quit(text: &str) -> bool {
+    text.starts_with("Quit")
+}
+
+/// On macOS, Cmd+Q is the app menu's Quit, which ended Orbit at once and skipped
+/// the page's last saves (macOS gives no chance to wait). It's replaced by one
+/// that quits as closing the window does.
+#[cfg(target_os = "macos")]
+pub fn menu_quit(app: &tauri::App) -> tauri::Result<()> {
+    use tauri::menu::{Menu, MenuItem, MenuItemKind};
+    let menu = Menu::default(app.handle())?;
+    if let Some(MenuItemKind::Submenu(app_menu)) = menu.items()?.into_iter().next() {
+        for item in app_menu.items()? {
+            if let MenuItemKind::Predefined(stock) = &item
+                && is_stock_quit(&stock.text()?)
+            {
+                app_menu.remove(stock)?;
+            }
+        }
+        app_menu.append(&MenuItem::with_id(app, MENU_QUIT, "Quit Orbit", true, Some("CmdOrCtrl+Q"))?)?;
+    }
+    app.set_menu(menu)?;
+    app.on_menu_event(|app, event| {
+        if event.id().as_ref() == MENU_QUIT {
+            request(app);
+        }
+    });
+    Ok(())
+}
+
 /// The page has saved what it had to: Orbit ends.
 #[tauri::command]
 pub fn quit_ready(app: AppHandle, quit: tauri::State<'_, Quit>) {
@@ -74,7 +110,15 @@ pub fn quit_ready(app: AppHandle, quit: tauri::State<'_, Quit>) {
 
 #[cfg(test)]
 mod tests {
-    use super::Quit;
+    use super::{Quit, is_stock_quit};
+
+    #[test]
+    fn only_the_stock_quit_is_replaced() {
+        assert!(is_stock_quit("Quit Orbit"));
+        for other in ["About Orbit", "Services", "Hide Orbit", "Hide Others", ""] {
+            assert!(!is_stock_quit(other), "{other}");
+        }
+    }
 
     #[test]
     fn only_the_first_request_asks_the_page() {

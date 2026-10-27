@@ -105,6 +105,15 @@ describe('keymap defaults', () => {
 describe('on a Mac', () => {
   const mac = (key: string, mods?: Partial<Omit<KeyLike, 'key'>>) => comboFromEvent(press(key, mods), true);
 
+  it('Option is typing in a text field, as it makes characters and moves by word; Cmd and Control are commands', () => {
+    expect(isCommand(press('ArrowLeft', { altKey: true }), true)).toBe(false);
+    expect(isCommand(press('™', { altKey: true }), true)).toBe(false);
+    expect(isCommand(press('k', { metaKey: true }), true)).toBe(true);
+    expect(isCommand(press('k', { ctrlKey: true }), true)).toBe(true);
+    // Elsewhere Alt still commands.
+    expect(isCommand(press('ArrowLeft', { altKey: true }), false)).toBe(true);
+  });
+
   it('Cmd does what Ctrl does elsewhere, so the defaults and editing keys work with Cmd', () => {
     expect(mac('k', { metaKey: true })).toBe('Ctrl+K');
     expect(mac(',', { metaKey: true })).toBe('Ctrl+,');

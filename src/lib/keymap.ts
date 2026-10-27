@@ -175,9 +175,11 @@ export function undoRedo(event: KeyLike): 'undo' | 'redo' | null {
 /**
  * Whether a key press is a command (Ctrl, Alt or Win held) rather than
  * typing. AltGr types characters (on Windows it arrives as Ctrl+Alt), so it
- * never counts: in a text field it must never fire a shortcut.
+ * never counts: in a text field it must never fire a shortcut. On a Mac,
+ * Option is typing too: it makes characters (é, ™) and moves by word.
  */
-export function isCommand(event: KeyLike): boolean {
+export function isCommand(event: KeyLike, mac = isMac): boolean {
+  if (mac) return event.metaKey || event.ctrlKey;
   const altGraph = event.getModifierState?.('AltGraph') === true;
   return event.metaKey || (!altGraph && (event.ctrlKey || event.altKey));
 }
