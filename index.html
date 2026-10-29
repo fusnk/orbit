@@ -43,21 +43,33 @@
       </div>
       <div class="stage">
         <div class="ring" aria-hidden="true"><i></i></div>
-        <div class="app" id="app" role="img" aria-label="Orbit's Home screen, styled by the Look you pick below">
-          <div class="app-bar"><span class="m"></span><b>orbit</b><div class="pills"><span class="on">Home</span><span>Movies</span><span>TV Shows</span><span>Anime</span><span>Discover</span><span>Live TV</span></div></div>
-          <div class="hero-art" id="art"></div>
-          <div class="hero-copy">
-            <span class="tagline">#1 IN MOVIES</span>
-            <h4>Glass Horizon</h4>
-            <div class="meta"><b>2026</b> · 1h 58m · Drama · 4K HDR</div>
-            <span class="play">Continue at 42:10</span>
+        <div class="app" id="app" role="img" aria-label="Orbit's Home screen in the Look you pick below">
+          <div class="a-bar"><span class="m"></span><b>orbit</b><span class="ic"><em>Sam</em><i class="av"></i><i></i><i></i></span></div>
+          <div class="a-nav" id="nav"></div>
+          <div class="a-main">
+            <div class="banner">
+              <div class="peek l" id="peekL"></div><div class="peek r" id="peekR"></div>
+              <div class="b-art" id="art"></div>
+              <div class="b-copy">
+                <span class="tagline">#1 IN MOVIES</span>
+                <div class="ttl">Glass Horizon</div>
+                <div class="meta"><b>2026</b> · 1h 58m · Drama · 4K HDR</div>
+                <div class="btns"><span class="play">Play</span><span class="det">Details</span><span class="plus"></span></div>
+              </div>
+              <span class="tagline spot-tag">#1 IN MOVIES</span>
+              <div class="thumbs" id="thumbs"></div>
+              <div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+              <div class="count">1 / 5<i></i></div>
+            </div>
+            <div class="mood"><div class="mh">What are you in the mood for?</div><div class="chips"><span>Action</span><span>Something funny</span><span>Feel-good</span><span>On the edge</span><span>Scare me</span><span>Mind-bending</span><span>Romance</span><span>Under 90 min</span></div></div>
+            <div class="rowlab">Continue Watching</div>
+            <div class="row" id="row"></div>
           </div>
-          <div class="rowlab">Continue Watching</div>
-          <div class="row" id="row"></div>
         </div>
         <div class="looks" role="group" aria-label="Try a Look">
           <span class="eyebrow">Try a Look</span>
         </div>
+        <p class="look-note" id="lookNote" aria-live="polite"></p>
       </div>
     </div>
   </div>
