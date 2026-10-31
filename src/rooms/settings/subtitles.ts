@@ -14,6 +14,7 @@ import { toast } from '../../components/toast';
 import { locale, t } from '../../i18n';
 import { h } from '../../lib/dom';
 import { settings } from '../../lib/ipc';
+import { languageFlag } from '../../lib/language-flags';
 import { languageName } from '../../lib/languages';
 import { LANGUAGE_CHOICES, LANGUAGE_SETTINGS, parseAudioLanguage, parseLanguages } from '../player/preferred-language';
 import {
@@ -68,13 +69,14 @@ function languagePicker(label: string, key: string, current: string, none: strin
   let chosen = current;
   // Drawn like the page's other values (compact.ts): what's chosen, and a chevron that opens the list.
   const button = h('button', { class: 'setting-value', 'aria-haspopup': 'menu', 'aria-label': label });
-  const draw = () => button.replaceChildren(h('span', { class: 'setting-value-text' }, chosen ? languageName(chosen) : none), icon('chevronRight'));
+  const draw = () => button.replaceChildren(...(chosen ? [languageFlag(chosen)] : []), h('span', { class: 'setting-value-text' }, chosen ? languageName(chosen) : none), icon('chevronRight'));
   draw();
   button.addEventListener('click', () =>
     openMenuFrom(
       button,
       ['', ...LANGUAGE_CHOICES].map((code) => ({
         label: code ? languageName(code) : none,
+        flag: code,
         checked: () => code === chosen,
         action: () => {
           chosen = code;
@@ -110,13 +112,13 @@ function languageList(label: string, key: string, initial: readonly string[], no
       down.addEventListener('click', () => change(chosen.map((c, j) => (j === i + 1 ? code : j === i ? chosen[i + 1]! : c)), `${code}:down`));
       const remove = h('button', { class: 'button icon-only', 'data-focus-id': `${code}:remove`, title: t('homerows.remove-row', { name }), 'aria-label': t('homerows.remove-row', { name }) }, icon('close'));
       remove.addEventListener('click', () => change(chosen.filter((c) => c !== code), 'add'));
-      return h('div', { class: 'language-list-item' }, h('span', { class: 'language-list-name' }, h('span', { class: 'language-list-rank', 'aria-hidden': 'true' }, String(i + 1)), name), h('span', { class: 'language-list-controls' }, up, down, remove));
+      return h('div', { class: 'language-list-item' }, h('span', { class: 'language-list-name' }, h('span', { class: 'language-list-rank', 'aria-hidden': 'true' }, String(i + 1)), languageFlag(code), name), h('span', { class: 'language-list-controls' }, up, down, remove));
     });
     const add = h('button', { class: 'button', 'data-focus-id': 'add', disabled: chosen.length >= max, 'aria-haspopup': 'menu' }, icon('plus'), t('pages.subs.add'));
     add.addEventListener('click', () =>
       openMenuFrom(
         add,
-        LANGUAGE_CHOICES.filter((code) => !chosen.includes(code)).map((code) => ({ label: languageName(code), action: () => change([...chosen, code], `${code}:remove`) })),
+        LANGUAGE_CHOICES.filter((code) => !chosen.includes(code)).map((code) => ({ label: languageName(code), flag: code, action: () => change([...chosen, code], `${code}:remove`) })),
       ),
     );
     list.replaceChildren(...(items.length ? items : [h('span', { class: 'muted language-list-none' }, none)]), add);

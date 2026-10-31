@@ -1,6 +1,7 @@
 import { onBack } from '../app/back';
 import { isRtl } from '../i18n';
 import { h } from '../lib/dom';
+import { languageFlag } from '../lib/language-flags';
 import { icon } from './icons';
 import { pushLayer } from './layers';
 
@@ -17,6 +18,8 @@ export interface MenuItem {
   swatch?: string;
   /** The typeface the label is shown in (a font choice). */
   font?: string;
+  /** A language code: its flag shows before the label ('' keeps an empty slot so labels line up). */
+  flag?: string;
 }
 
 interface Edges {
@@ -63,6 +66,7 @@ function open(anchor: Edges, gap: number, items: MenuItem[], opener?: HTMLElemen
       dot.style.setProperty('--swatch', item.swatch);
       button.prepend(dot);
     }
+    if (item.flag !== undefined) button.prepend(languageFlag(item.flag));
     if (item.font) button.style.fontFamily = item.font;
     if (item.checked) {
       button.append(icon('check'));

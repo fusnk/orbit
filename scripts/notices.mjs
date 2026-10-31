@@ -289,6 +289,8 @@ const entries = [
     .sort()
     .map((f) => ({ name: f.slice(4, -4), version: '', licence: 'OFL-1.1', authors: [], url: '', kind: 'subtitle font', files: [{ name: f, text: readFileSync(join(root, 'public', 'fonts', f), 'utf8') }] })),
   { name: 'libmpv (mpv, FFmpeg and the libraries it contains)', version: 'v0.41.0-1089-gb4b5d69a4', licence: 'LGPL-2.1-or-later (mpv); LGPL-3.0-or-later (FFmpeg)', authors: [], url: 'https://mpv.io', kind: 'bundled library', files: [{ name: 'LGPL-2.1', text: readFileSync(join(root, 'scripts', 'licenses', 'LGPL-2.1.txt'), 'utf8') }, { name: 'LGPL-3.0', text: readFileSync(join(root, 'scripts', 'licenses', 'LGPL-3.0.txt'), 'utf8') }] },
+  // Language flags in src/assets/flags (lib/language-flags.ts): a subset of flag-icons' SVGs, minified.
+  { name: 'flag-icons', version: '7.6.0', licence: 'MIT', authors: [], url: 'https://github.com/lipis/flag-icons', kind: 'bundled artwork', files: [{ name: 'LICENSE', text: readFileSync(join(root, 'scripts', 'licenses', 'flag-icons-LICENSE.txt'), 'utf8') }] },
   { name: 'yt-dlp', version: '2026.08.19', licence: 'Unlicense', authors: [], url: 'https://github.com/yt-dlp/yt-dlp', kind: 'bundled program', files: [{ name: 'Unlicense', text: UNLICENSE }, { name: 'THIRD_PARTY_LICENSES.txt', text: readFileSync(join(root, 'scripts', 'licenses', 'yt-dlp-THIRD_PARTY_LICENSES.txt'), 'utf8') }] },
 ];
 
@@ -317,7 +319,7 @@ for (const e of entries.sort((a, b) => a.kind.localeCompare(b.kind) || a.name.lo
 const rule = '='.repeat(78);
 const out = [HEADER, LIBMPV, YTDLP];
 out.push(`Components\n----------\n\nEach line: name, version, declared licence, and the numbers of its licence\ntexts in the next section.`);
-const HEADINGS = { 'bundled library': 'Bundled libraries', 'bundled program': 'Bundled programs', 'npm package': 'npm packages (in the interface)', 'Rust crate': 'Rust crates (in Orbit itself)', 'subtitle font': 'Subtitle fonts' };
+const HEADINGS = { 'bundled library': 'Bundled libraries', 'bundled program': 'Bundled programs', 'npm package': 'npm packages (in the interface)', 'Rust crate': 'Rust crates (in Orbit itself)', 'subtitle font': 'Subtitle fonts', 'bundled artwork': 'Bundled artwork' };
 for (const kind of [...new Set(entries.map((e) => e.kind))]) {
   const lines = entries.filter((e) => e.kind === kind).map((e) => `  ${e.name}${e.version ? ` ${e.version}` : ''} - ${e.licence}${e.url ? ` - ${e.url}` : ''} - [${e.refs.join(', ') || 'no licence text available'}]`);
   out.push(`${HEADINGS[kind]} (${lines.length}):\n${lines.join('\n')}`);

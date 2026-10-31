@@ -2205,6 +2205,42 @@ button {
   box-shadow: inset 0 0 0 1px var(--color-border-strong);
 }
 
+/*
+ * A language's flag (lib/language-flags.ts): small, 3:2 like most flags, with a
+ * hairline so white and pale flags keep their edge on light and dark Looks.
+ * A language without one keeps the empty slot, so names in a list line up.
+ */
+.language-flag {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 24px;
+  height: 16px;
+  overflow: hidden;
+  /* A small rounded rectangle, the hero's shape in miniature: wide, corners just softened. */
+  border-radius: 2.5px;
+  vertical-align: middle;
+}
+
+.language-flag img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.language-flag:not(.none)::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.18);
+  content: '';
+}
+
+.menu-item .language-flag {
+  margin-inline-end: var(--space-2);
+}
+
 /* ── Switch ───────────────────────────────────────────────────────────── */
 
 .switch {

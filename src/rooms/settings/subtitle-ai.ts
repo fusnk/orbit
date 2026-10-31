@@ -14,6 +14,7 @@ import { createSwitch } from '../../components/switch';
 import { createTextField } from '../../components/text-field';
 import { t } from '../../i18n';
 import { h } from '../../lib/dom';
+import { languageFlag } from '../../lib/language-flags';
 import { languageName } from '../../lib/languages';
 import { LANGUAGE_CHOICES } from '../player/preferred-language';
 import { AI_SUBS_ENABLED_KEY, AI_SUBS_KEY, errorMessage, parseAiSubs, type AiProvider, type AiSubs } from '../player/subtitle-translate';
@@ -145,13 +146,14 @@ export function aiTranslationSection(enabledValue: unknown, savedValue: unknown)
 
   // Target language.
   const target = h('button', { class: 'button', 'aria-label': t('subtrans.settings.target') });
-  const drawTarget = () => target.replaceChildren(prefs.target ? languageName(prefs.target) : t('subtrans.settings.target-app'), icon('chevronDown'));
+  const drawTarget = () => target.replaceChildren(...(prefs.target ? [languageFlag(prefs.target)] : []), prefs.target ? languageName(prefs.target) : t('subtrans.settings.target-app'), icon('chevronDown'));
   drawTarget();
   target.addEventListener('click', () =>
     openMenuFrom(
       target,
       ['', ...LANGUAGE_CHOICES].map((code) => ({
         label: code ? languageName(code) : t('subtrans.settings.target-app'),
+        flag: code,
         action: () => {
           prefs = { ...prefs, target: code };
           drawTarget();

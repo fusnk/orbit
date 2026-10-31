@@ -14,6 +14,7 @@ import { beginEditing, createTextField } from '../../components/text-field';
 import { locale, t, tn, type MessageKey } from '../../i18n';
 import type { AutoplayGate } from '../../lib/autoplay';
 import { h } from '../../lib/dom';
+import { languageFlag } from '../../lib/language-flags';
 import { languageKey, languageName } from '../../lib/languages';
 import { addonGroups, fromAddon, offerAddonFilter } from '../../lib/source-filter';
 import type { QueueItem } from '../../library/queue';
@@ -32,7 +33,7 @@ import { timingNote, withKey } from './keys';
 import type { UpNext } from './next-up';
 import { SOUND_HINTS, SOUND_MODES, SOUND_NAMES, type SoundMode } from './sound';
 import { isPreset, SPEED_PRESETS, speedLabel, stepSpeed } from './speed';
-import { audioLabel, type SubtitleGroup, type SubtitleOption, type TrackInfo } from './tracks';
+import { audioLabel, UPLOADED_GROUP, type SubtitleGroup, type SubtitleOption, type TrackInfo } from './tracks';
 import './favourite.css';
 import { applySubtitleCss } from './subtitle-css';
 import { SUBTITLE_FONTS } from './subtitle-style';
@@ -105,8 +106,8 @@ const SUBTITLE_TYPES = '.srt,.vtt,.ass,.ssa,.sub,.txt';
 /** A search box appears once the language list gets long. */
 const SEARCH_FROM = 8;
 
-/** One selectable row: label, optional detail, a check when selected. */
-function row(options: { label: string; detail?: string; note?: string; chip?: string | undefined; selected?: boolean; focusId: string; lead?: IconName; trail?: string; expanded?: boolean }, onPick: () => void): HTMLElement {
+/** One selectable row: label, optional detail, a check when selected; `flag` (a language code) puts its flag first. */
+function row(options: { label: string; detail?: string; note?: string; chip?: string | undefined; selected?: boolean; focusId: string; lead?: IconName; flag?: string | null; trail?: string; expanded?: boolean }, onPick: () => void): HTMLElement {
   const attrs: Record<string, string | boolean> = { class: `panel-row${options.selected ? ' selected' : ''}`, 'data-focus-id': options.focusId };
   if (options.expanded !== undefined) attrs['aria-expanded'] = String(options.expanded);
   else attrs['aria-pressed'] = String(!!options.selected);
@@ -114,6 +115,7 @@ function row(options: { label: string; detail?: string; note?: string; chip?: st
     'button',
     attrs,
     options.lead ? icon(options.lead) : '',
+    options.flag !== undefined ? languageFlag(options.flag) : '',
     h(
       'span',
       { class: 'panel-row-text' },
@@ -331,7 +333,7 @@ export function audioView(p: TracksPanel): HTMLElement[] {
           { class: 'panel-list' },
           ...audio.map((t) => {
             const { label, detail } = audioLabel(t);
-            return row({ label, detail, selected: t.selected, focusId: `audio-${t.id}` }, () => p.onAudio(t.id));
+            return row({ label, detail, flag: t.lang, selected: t.selected, focusId: `audio-${t.id}` }, () => p.onAudio(t.id));
           }),
         ),
         ...(p.forget ? [row({ label: p.forget.label, detail: t('watching.tracks.forget-detail'), focusId: 'tracks-forget' }, p.forget.onForget)] : []),
@@ -371,7 +373,7 @@ export function subtitlesView(p: TracksPanel): HTMLElement[] {
   for (const group of shownGroups(p.groups, p.filter)) {
     const open = p.expanded === group.key;
     rows.push(
-      row({ label: group.name, selected: group.selected && !open, focusId: `lang-${group.key}`, trail: String(group.options.length), expanded: open }, () =>
+      row({ label: group.name, flag: group.key === UPLOADED_GROUP ? null : group.key, selected: group.selected && !open, focusId: `lang-${group.key}`, trail: String(group.options.length), expanded: open }, () =>
         p.onExpand(open ? null : group.key),
       ),
     );
@@ -421,7 +423,7 @@ export function subtitlesView(p: TracksPanel): HTMLElement[] {
         t('player.tracks.second'),
         row({ label: t('player.tracks.off'), selected: !second, focusId: 'sub2-off' }, () => p.onSecondary(null)),
         ...subs.map((t) =>
-          row({ label: languageName(languageKey(t.lang)), ...(t.title ? { detail: t.title } : {}), selected: t.secondary, focusId: `sub2-${t.id}` }, () => p.onSecondary(t.id)),
+          row({ label: languageName(languageKey(t.lang)), flag: t.lang, ...(t.title ? { detail: t.title } : {}), selected: t.secondary, focusId: `sub2-${t.id}` }, () => p.onSecondary(t.id)),
         ),
       ),
     );
