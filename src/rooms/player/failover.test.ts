@@ -52,14 +52,18 @@ describe('a stream that ends early', () => {
 
   it('takes an end in the last moments as the real end', () => {
     expect(endedEarly(web, 7199, 7200)).toBe(false);
-    expect(endedEarly(web, 7100, 7200)).toBe(false);
+    expect(endedEarly(web, 7196, 7200)).toBe(false);
+  });
+
+  it('takes a stop 20 to 30 s before the end as the stream dropping (The Office ending early)', () => {
+    expect(endedEarly(web, 1271 - 25, 1271)).toBe(true);
+    expect(endedEarly(web, 7200 - 20, 7200)).toBe(true);
   });
 
   it('takes a drop minutes before the end as the stream dropping, not the end (The Office cut off ~3 min early)', () => {
     // A 21:11 episode that stopped at 18:20: 87 %, which used to count as finished and start the next one.
     expect(endedEarly(web, 1100, 1271)).toBe(true);
     expect(endedEarly(web, 6200, 7200)).toBe(true);
-    expect(endedEarly(web, 1245, 1271)).toBe(false);
   });
 
   it('takes an end once known credits have started as the real end', () => {

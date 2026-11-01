@@ -41,12 +41,13 @@ export function looksLikePlaceholder(request: Pick<PlayRequest, 'title' | 'episo
 }
 
 /**
- * An end this close to a known length (seconds, or this share of it, whichever is more) is the real end.
- * Anything before it is the stream dropping: credits are short, and an episode's last scene can come after
- * 85 % of it (a 21-minute episode's last three minutes).
+ * An end this close to a known length (seconds) is the real end: mpv stops
+ * within a frame or so of it. Anything earlier is the stream dropping, even
+ * in the last half minute, where a sitcom's last scene can be (The Office).
+ * A file whose length is overstated stops twice at the same moment (see
+ * `endsHere`), and that is its end.
  */
-const END_SLACK_S = 30;
-const END_SLACK_SHARE = 0.02;
+const END_SLACK_S = 5;
 /** Where the last stretch starts: a file stopping twice at the same moment past here really ends there. */
 const LAST_STRETCH = 0.85;
 /** Two stops this many seconds apart are at the same moment. */
@@ -63,7 +64,7 @@ const SAME_SPOT_S = 5;
 export function endedEarly(request: Pick<PlayRequest, 'live' | 'replay' | 'trailer' | 'local' | 'link'> & { source: { url: string } }, timePos: number | null, duration: number | null, inCredits = false): boolean {
   if (request.live || request.replay || request.trailer || request.local || request.link || request.source.url.startsWith('orbit-download:')) return false;
   if (inCredits || timePos === null || !duration || !(duration > 0)) return false;
-  return timePos < duration - Math.max(END_SLACK_S, duration * END_SLACK_SHARE);
+  return timePos < duration - END_SLACK_S;
 }
 
 /**
