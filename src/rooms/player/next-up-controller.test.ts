@@ -196,11 +196,12 @@ describe('when the Next Up card appears', () => {
   });
 
   it('gives the picture its place back when the viewer seeks out of the credits', () => {
-    const { card, at } = setup({ credits: 1450 });
-    at(1460);
+    const { state, card, at } = setup({ credits: 2850 });
+    state.duration = 3000;
+    at(2860);
     expect(card.classes.has('takeover')).toBe(true);
     // Still past where the card appears, but before the credits.
-    at(1420);
+    at(2830);
     expect(card.hidden).toBe(false);
     expect(card.classes.has('takeover')).toBe(false);
     expect(invoke).toHaveBeenLastCalledWith('player_set_corner', { on: false });
@@ -354,6 +355,39 @@ describe('the countdown', () => {
   });
 });
 
+describe('short credits with the last scene under them (The Office)', () => {
+  // A 21:32 episode whose credits (TheIntroDB) start 50 s before its end, over the last scene.
+  const OFFICE = { duration: 1292, credits: 1242 };
+
+  it('plays the episode to its end before starting the next one', async () => {
+    const { state, card, played, at } = setup({ credits: OFFICE.credits });
+    state.duration = OFFICE.duration;
+    at(OFFICE.credits);
+    // The card is up, without taking the picture over.
+    expect(card.hidden).toBe(false);
+    expect(card.classes.has('takeover')).toBe(false);
+    for (let t = OFFICE.credits; t < OFFICE.duration - 10; t++) {
+      at(t);
+      await vi.advanceTimersByTimeAsync(1000);
+    }
+    // Used to start the next episode 10 s into the credits, 40 s before the end.
+    expect(played).toHaveLength(0);
+    for (let t = OFFICE.duration - 10; t <= OFFICE.duration; t++) {
+      at(t);
+      await vi.advanceTimersByTimeAsync(1000);
+    }
+    expect(played).toHaveLength(1);
+  });
+
+  it('still takes over long credits, and counts down from their start', async () => {
+    const { card, played, at } = setup({ credits: 1300 });
+    at(1300);
+    expect(card.classes.has('takeover')).toBe(true);
+    await vi.advanceTimersByTimeAsync(10_000);
+    expect(played).toHaveLength(1);
+  });
+});
+
 describe('Still watching?', () => {
   it('asks after the chosen number of episodes in a row, pausing instead of playing on', async () => {
     const { nextUp, host, played, at, advance } = setup({ credits: CREDITS });
@@ -407,20 +441,22 @@ describe('Still watching?', () => {
 
   it('leaving from its Back button counts the episode as watched, as playing on would have', async () => {
     // Credits known to start after the card comes (94 %): leaving there is only "finished" because of the prompt.
-    const { nextUp, host, played, at, advance } = setup({ credits: 1480 });
+    const { nextUp, host, state, played, at, advance } = setup({ credits: 2900 });
+    // Long credits, which the card takes over (short ones play out).
+    state.duration = 3000;
     nextUp.configure({ limit: 1 });
-    at(1450);
+    at(2850);
     await vi.advanceTimersByTimeAsync(10_000);
     advance();
     expect(nextUp.leftAsked()).toBe(false);
-    at(1450);
+    at(2850);
     await vi.advanceTimersByTimeAsync(10_000);
     expect(nextUp.asking()).toBe(true);
     const leave = (nextUp.prompt as unknown as FakeEl).all().filter((el) => el.tag === 'button')[1]!;
     leave.click();
     expect(host.back).toHaveBeenCalledOnce();
     expect(played).toHaveLength(1);
-    expect(leftAt(1450, DURATION, leavesFinished(nextUp.leftAsked(), false, creditsStarted(host.segments(), 1450)))).toBe(DURATION);
+    expect(leftAt(2850, 3000, leavesFinished(nextUp.leftAsked(), false, creditsStarted(host.segments(), 2850)))).toBe(3000);
     // The next file is someone else's choice again.
     nextUp.reset();
     expect(nextUp.leftAsked()).toBe(false);

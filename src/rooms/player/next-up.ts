@@ -6,6 +6,7 @@ import { infoHashOf } from '../../lib/torrent-files';
 import type { EpisodeRef } from '../detail/title-actions';
 import type { PlayableSource } from './panels';
 import { MAX_VOLUME_BOOST } from './player-settings';
+import type { Segment } from './skip';
 
 /** Spec default for the Next Up countdown, in seconds (Settings → Playback). */
 export const DEFAULT_COUNTDOWN = 10;
@@ -44,6 +45,22 @@ export function reachedNextUp(timePos: number, duration: number, at: NextUpAt): 
   if (!(duration > 0)) return false;
   if (at.mode === 'percent') return timePos / duration >= at.value / 100;
   return timePos >= Math.max(duration - at.value * 60, duration / 2);
+}
+
+/**
+ * Closing credits (or a "next time" preview) this close to the end (seconds
+ * from their start) play out: Next Up treats them as unknown, so the picture
+ * keeps its place and the countdown runs out no earlier than the end. A
+ * sitcom's last scene often runs under short credits (The Office), and there's
+ * little to save by cutting them.
+ */
+export const SHORT_CREDITS_S = 90;
+
+/** The credits Next Up takes over at, if known and long enough to be worth cutting (see `SHORT_CREDITS_S`). */
+export function takeoverCredits(segments: readonly Segment[], duration: number | null): Segment | undefined {
+  const credits = segments.find((s) => s.kind === 'credits' || s.kind === 'preview');
+  if (!credits || (!!duration && duration - credits.start <= SHORT_CREDITS_S)) return undefined;
+  return credits;
 }
 
 /** Settings → Playback → Next Up style: the small card in the corner, or a panel docked along the side. */

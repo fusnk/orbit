@@ -35,7 +35,7 @@ import { openStreams, resolveSources } from '../detail/streams';
 import type { EpisodeRef } from '../detail/title-actions';
 import type { PlayRequest } from './index';
 import { failedRecently, whereKey } from './failed-sources';
-import { airedForAutoplay, countdownWaits, createAutoplayChain, DEFAULT_AUTOPLAY_LIMIT, DEFAULT_COUNTDOWN, DEFAULT_NEXT_UP_AT, handsOff, pickNextSource, PLAYBACK_SETTINGS, reachedNextUp, sameUpNext, type AutoplayMode, type NextUpAt, type NextUpStyle, type UpNext } from './next-up';
+import { airedForAutoplay, countdownWaits, createAutoplayChain, DEFAULT_AUTOPLAY_LIMIT, DEFAULT_COUNTDOWN, DEFAULT_NEXT_UP_AT, handsOff, pickNextSource, PLAYBACK_SETTINGS, reachedNextUp, sameUpNext, takeoverCredits, type AutoplayMode, type NextUpAt, type NextUpStyle, type UpNext } from './next-up';
 import { createPrefetch } from './next-prefetch';
 import { episodeStill } from './next-up-bridge';
 import { upNextName, type PlayableSource } from './panels';
@@ -244,10 +244,10 @@ export function createNextUp(host: NextUpHost) {
     return at !== undefined && at > Date.now();
   };
 
-  /** With the credits unknown, the seconds left of the episode (the countdown runs out no earlier than its end). */
+  /** With the credits unknown (or short, see `takeoverCredits`), the seconds left of the episode (the countdown runs out no earlier than its end). */
   function secondsToEnd(): number | undefined {
-    if (host.segments().some((s) => s.kind === 'credits' || s.kind === 'preview')) return undefined;
     const { timePos, duration } = host.status();
+    if (takeoverCredits(host.segments(), duration)) return undefined;
     return timePos !== null && !!duration ? duration - timePos : undefined;
   }
 
@@ -360,8 +360,8 @@ export function createNextUp(host: NextUpHost) {
     // Playing again after seeking back from the end is no longer the end.
     if (atEnd) ended = true;
     else if (!paused && timePos !== null && !!duration && timePos < duration - 1) ended = false;
-    // A "next time on…" preview after the credits counts as part of them, as it always has.
-    const credits = host.segments().find((s) => s.kind === 'credits' || s.kind === 'preview');
+    // A "next time on…" preview after the credits counts as part of them, as it always has. Short ones play out.
+    const credits = takeoverCredits(host.segments(), duration);
     const inCredits = !!credits && timePos !== null && timePos >= credits.start;
     const { title, episode } = host.request();
     // The series' exact air times, so an episode that isn't out yet isn't offered (looked up once, cached).
