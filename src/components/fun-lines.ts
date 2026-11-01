@@ -6,12 +6,18 @@
  * Reduce motion, fun.css).
  */
 import { funPrefs } from '../app/fun-settings';
+import { seasonNow } from '../app/seasonal';
 import { t, type MessageKey } from '../i18n';
 import { h } from '../lib/dom';
 import { createRotation } from '../lib/fun';
 import '../app/fun.css';
 
 const QUIPS = Array.from({ length: 16 }, (_, i) => `fun.quip.${i + 1}` as MessageKey);
+/** A few lines for the holidays, mixed in (and one of them first) while Seasonal touches shows the season. */
+const HOLIDAY_QUIPS: Partial<Record<string, MessageKey[]>> = {
+  thanksgiving: Array.from({ length: 4 }, (_, i) => `fun.quip.thanksgiving.${i + 1}` as MessageKey),
+  christmas: Array.from({ length: 4 }, (_, i) => `fun.quip.christmas.${i + 1}` as MessageKey),
+};
 const HINTS = Array.from({ length: 7 }, (_, i) => `fun.hint.${i + 1}` as MessageKey);
 const QUIP_MS = 3000;
 const HINT_MS = 3500;
@@ -26,14 +32,19 @@ const SWAP_MS = 200;
  */
 export function quipLine(className: string, paused: (line: HTMLElement) => boolean = () => false): HTMLElement | '' {
   if (!funPrefs().quips) return '';
-  const next = createRotation(QUIPS.length);
-  const line = h('span', { class: `loading-quip ${className}`, 'aria-hidden': 'true', dir: 'auto' }, t(QUIPS[next()]!));
+  const season = seasonNow();
+  const holiday = (season && HOLIDAY_QUIPS[season]) || [];
+  const quips = [...holiday, ...QUIPS];
+  const next = createRotation(quips.length);
+  // The season's own line first, so it's seen even on a quick load.
+  const first = holiday.length ? holiday[Math.floor(Math.random() * holiday.length)]! : quips[next()]!;
+  const line = h('span', { class: `loading-quip ${className}`, 'aria-hidden': 'true', dir: 'auto' }, t(first));
   // Both loading screens attach the line as they're drawn, so one that's off the page at
   // a tick is gone (a screen closed within the first few seconds included) and stops here.
   const timer = window.setInterval(() => {
     if (!line.isConnected) return window.clearInterval(timer);
     if (paused(line)) return;
-    swap(line, () => (line.textContent = t(QUIPS[next()]!)));
+    swap(line, () => (line.textContent = t(quips[next()]!)));
   }, QUIP_MS);
   return line;
 }

@@ -190,6 +190,37 @@ button {
   display: block;
 }
 
+/* Seasonal touches (app/seasonal.ts): around the holidays the glow takes on
+   the season, under the artwork's own hue. Thanksgiving: harvest amber from the top left and a
+   low ember at the right. Christmas: cranberry and pine from the two top
+   corners. Still the one tint, on the same pages, at the same strength. */
+:root[data-season='thanksgiving'] .ambient {
+  background:
+    radial-gradient(45% 38% at 8% 0%, oklch(0.52 0.12 60 / 0.42), transparent 72%),
+    radial-gradient(40% 32% at 92% 0%, oklch(0.42 0.11 38 / 0.34), transparent 72%),
+    radial-gradient(60% 40% at 50% 0%, oklch(0.4 0.07 var(--ambient-hue) / 0.22), transparent 70%);
+}
+
+:root[data-season='christmas'] .ambient {
+  background:
+    radial-gradient(45% 38% at 8% 0%, oklch(0.42 0.13 20 / 0.4), transparent 72%),
+    radial-gradient(40% 34% at 92% 0%, oklch(0.4 0.08 160 / 0.36), transparent 72%),
+    radial-gradient(60% 40% at 50% 0%, oklch(0.4 0.07 var(--ambient-hue) / 0.22), transparent 70%);
+}
+
+/* Light themes: the same corners as a pale wash, not a dark stain on white. */
+:root[data-theme='light'][data-season='thanksgiving'] .ambient {
+  background:
+    radial-gradient(45% 38% at 8% 0%, oklch(0.88 0.08 70 / 0.7), transparent 72%),
+    radial-gradient(40% 32% at 92% 0%, oklch(0.88 0.06 45 / 0.6), transparent 72%);
+}
+
+:root[data-theme='light'][data-season='christmas'] .ambient {
+  background:
+    radial-gradient(45% 38% at 8% 0%, oklch(0.88 0.06 20 / 0.7), transparent 72%),
+    radial-gradient(40% 34% at 92% 0%, oklch(0.9 0.05 160 / 0.7), transparent 72%);
+}
+
 /* AMOLED theme: nothing lit behind the pages. Reduce visual effects: no glow,
    a window-sized gradient layer that repaints whenever its hue changes. */
 :root[data-true-black='true'] .ambient,

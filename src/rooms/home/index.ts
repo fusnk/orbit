@@ -52,6 +52,9 @@ import { daySeed, mixHero, type HeroPick } from './hero-mix';
 import { decodeHero, encodeHero, heroKey, readHero, writeHero } from './hero-cache';
 import { openGenrePage } from './genre-page';
 import { nearObserver } from '../../lib/near-view';
+import { renderHolidayRow } from './holiday-row';
+import { SEASON_CHANGED, seasonNow } from '../../app/seasonal';
+import { holidayOn } from '../../lib/fun';
 
 const RAIL_TYPES = new Set(['movie', 'series']);
 /** "Because you watched…" rails, from the most recently watched titles. */
@@ -115,6 +118,11 @@ export const homeRoom: Room = {
       forYouSeeds = '';
       refreshForYou();
     });
+
+    // Around the holidays (Seasonal touches): that season's films, a row of its own after Continue Watching.
+    const holidaySlot = h('div', { class: 'holiday-slot' });
+    const refreshHoliday = () => void renderHolidayRow(holidaySlot, { openDetail, withMenu, go: ctx.go });
+    for (const event of [SEASON_CHANGED, HOME_ROWS_CHANGED, TMDB_CHANGED]) document.addEventListener(event, refreshHoliday);
 
     // A quiet way into the Home builder, after the rows it arranges (shown once they're drawn).
     const edit = h('button', { class: 'button home-edit' }, icon('sliders'), t('browse.home.edit'));
@@ -192,7 +200,7 @@ export const homeRoom: Room = {
       attempt?.abort();
       attempt = new AbortController();
       const { signal } = attempt;
-      void loadHome(ctx, { page, heroSlot, greeting, railsSlot, cwSlot, forYouSlot, openDetail, play, withMenu, go: ctx.go, retry, whenShown, signal })
+      void loadHome(ctx, { page, heroSlot, greeting, railsSlot, cwSlot, holidaySlot, forYouSlot, openDetail, play, withMenu, go: ctx.go, retry, whenShown, signal })
         .then((drawn) => {
           if (!signal.aborted) footer.hidden = !drawn;
         })
@@ -210,6 +218,8 @@ export const homeRoom: Room = {
       start();
     };
     start();
+    // After `start`: it tells the layout whether this profile is new, which its first read (and save) needs.
+    refreshHoliday();
     // The banner's form as soon as the layout is read (after `start`, which sets up its first read), so it doesn't change height once drawn.
     void homeLayout()
       .then((layout) => {
@@ -229,6 +239,8 @@ interface HomeParts {
   greeting: HTMLElement;
   railsSlot: HTMLElement;
   cwSlot: HTMLElement;
+  /** The holiday row (holiday-row.ts); empty outside the holidays. */
+  holidaySlot: HTMLElement;
   forYouSlot: HTMLElement;
   openDetail(title: Title): void;
   play(title: Title): void;
@@ -249,7 +261,9 @@ async function greetingText(): Promise<string> {
   const profile = profiles.find((p) => p.id === id);
   // A new install's profile is still called by its placeholder: greeted without a name.
   const name = profile && chosenName(profile);
-  const part = dayPart(new Date().getHours());
+  const now = new Date();
+  // Thanksgiving Day, Christmas Eve and Day greet with the holiday instead (with Seasonal touches on).
+  const part = (seasonNow() && holidayOn(now)) || dayPart(now.getHours());
   return name ? t(`homerows.greeting.${part}`, { name }) : t(`homerows.greeting.${part}-plain`);
 }
 
@@ -346,6 +360,7 @@ async function loadHome(ctx: RoomContext, parts: HomeParts): Promise<boolean> {
     return [
       fixed('mood-chips', t('homerows.chips.label'), moodChips),
       fixed('continue', t('browse.home.continue-watching'), parts.cwSlot, () => [continueFeed]),
+      fixed('holiday', t('pages.seasonal.label'), parts.holidaySlot),
       fixed('for-you', t('browse.home.for-you-row'), parts.forYouSlot, () => forYouFeeds(tasteSeeds())),
       fixed('letterboxd', t('browse.home.letterboxd-row'), letterboxdSlot, letterboxdFeeds),
       ...(tmdb

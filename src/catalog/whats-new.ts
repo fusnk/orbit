@@ -42,7 +42,7 @@ export function whatsNewQuery(id: WhatsNewId, today: string, region: string): Di
 }
 
 export interface SeasonalList {
-  id: 'halloween' | 'christmas' | 'true-story';
+  id: 'halloween' | 'thanksgiving' | 'christmas' | 'true-story';
   /** TMDB keyword ids ("a|b": any of them). */
   keywords: string;
   title: MessageKey;
@@ -50,13 +50,15 @@ export interface SeasonalList {
 }
 
 /**
- * The seasonal row's list for the date: Halloween in October, Christmas in
- * December, and the rest of the year films based on a true story.
+ * The seasonal row's list for the date: Halloween in October, Thanksgiving in
+ * November, Christmas in December, and the rest of the year films based on a
+ * true story.
  */
 export function seasonalList(now: Date): SeasonalList {
   const month = now.getMonth();
-  // TMDB keywords: 3335 "halloween", 207317 "christmas", 9672 "based on true story".
+  // TMDB keywords: 3335 "halloween", 4543 "thanksgiving", 207317 "christmas", 9672 "based on true story".
   if (month === 9) return { id: 'halloween', keywords: '3335', title: 'pages.seasonal.halloween', sub: 'pages.seasonal.halloween-sub' };
+  if (month === 10) return { id: 'thanksgiving', keywords: '4543', title: 'pages.seasonal.thanksgiving', sub: 'pages.seasonal.thanksgiving-sub' };
   if (month === 11) return { id: 'christmas', keywords: '207317', title: 'pages.seasonal.christmas', sub: 'pages.seasonal.christmas-sub' };
   return { id: 'true-story', keywords: '9672', title: 'pages.seasonal.true-story', sub: 'pages.seasonal.true-story-sub' };
 }

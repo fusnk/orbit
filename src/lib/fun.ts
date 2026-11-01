@@ -5,15 +5,33 @@
  * season a date falls in, the saved switches, and the orders things rotate in.
  */
 
-export type Season = 'halloween' | 'winter';
+export type Season = 'halloween' | 'thanksgiving' | 'christmas';
 
-/** Halloween from 15 to 31 October, winter from 15 to 31 December (local dates). */
+/**
+ * Halloween from 15 to 31 October, Thanksgiving through November, Christmas
+ * through December (local dates).
+ */
 export function seasonOn(date: Date): Season | null {
   const month = date.getMonth();
   const day = date.getDate();
   if (month === 9 && day >= 15) return 'halloween';
-  if (month === 11 && day >= 15) return 'winter';
+  if (month === 10) return 'thanksgiving';
+  if (month === 11) return 'christmas';
   return null;
+}
+
+/** The day itself, for Home's greeting: Thanksgiving (the fourth Thursday of November), Christmas Eve and Day. */
+export type Holiday = 'thanksgiving' | 'christmas';
+
+export function holidayOn(date: Date): Holiday | null {
+  const month = date.getMonth();
+  const day = date.getDate();
+  if (month === 11 && (day === 24 || day === 25)) return 'christmas';
+  if (month !== 10) return null;
+  // The first Thursday falls on day 1 to 7; the fourth is three weeks on.
+  const firstWeekday = new Date(date.getFullYear(), 10, 1).getDay();
+  const fourthThursday = 1 + ((4 - firstWeekday + 7) % 7) + 21;
+  return day === fourthThursday ? 'thanksgiving' : null;
 }
 
 export interface FunPrefs {
@@ -25,7 +43,7 @@ export interface FunPrefs {
   quips: boolean;
   /** Example searches cycling in the empty search field. */
   hints: boolean;
-  /** A tiny glyph by the logo around Halloween and late December. */
+  /** Holiday touches: a glyph by the logo, a warmer glow, a holiday row on Home and a few holiday quips. */
   seasonal: boolean;
   /** Joke languages (Pirate, UwU, runes, upside down) offered in the language picker. */
   languages: boolean;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createRotation, FUN_DEFAULTS, parseFun, rouletteReel, seasonOn } from './fun';
+import { createRotation, FUN_DEFAULTS, holidayOn, parseFun, rouletteReel, seasonOn } from './fun';
 
 /** A repeatable stand-in for Math.random. */
 function seeded(seed: number): () => number {
@@ -17,13 +17,19 @@ describe('seasonOn', () => {
     expect(on(10, 14)).toBeNull();
     expect(on(10, 15)).toBe('halloween');
     expect(on(10, 31)).toBe('halloween');
-    expect(on(11, 1)).toBeNull();
   });
 
-  it('is winter from 15 to 31 December', () => {
-    expect(on(12, 14)).toBeNull();
-    expect(on(12, 15)).toBe('winter');
-    expect(on(12, 31)).toBe('winter');
+  // November had nothing at all: Halloween's bat went on the 31st and Thanksgiving was skipped.
+  it('is Thanksgiving through November', () => {
+    expect(on(11, 1)).toBe('thanksgiving');
+    expect(on(11, 26)).toBe('thanksgiving');
+    expect(on(11, 30)).toBe('thanksgiving');
+  });
+
+  it('is Christmas through December', () => {
+    expect(on(12, 1)).toBe('christmas');
+    expect(on(12, 25)).toBe('christmas');
+    expect(on(12, 31)).toBe('christmas');
     expect(on(1, 1)).toBeNull();
   });
 
@@ -35,6 +41,26 @@ describe('seasonOn', () => {
   it('follows the local date, not UTC', () => {
     expect(seasonOn(new Date(2026, 9, 15, 0, 5))).toBe('halloween');
     expect(seasonOn(new Date(2026, 9, 31, 23, 55))).toBe('halloween');
+    expect(seasonOn(new Date(2026, 10, 1, 0, 5))).toBe('thanksgiving');
+  });
+});
+
+describe('holidayOn', () => {
+  it('is Thanksgiving on the fourth Thursday of November only', () => {
+    // 2026: 26 November; 2025: 27th; 2029 (1 November is a Thursday): 22nd; 2027 (a Monday): 25th.
+    expect(holidayOn(new Date(2026, 10, 26, 9))).toBe('thanksgiving');
+    expect(holidayOn(new Date(2026, 10, 25, 9))).toBeNull();
+    expect(holidayOn(new Date(2026, 10, 19, 9))).toBeNull();
+    expect(holidayOn(new Date(2025, 10, 27, 9))).toBe('thanksgiving');
+    expect(holidayOn(new Date(2029, 10, 22, 9))).toBe('thanksgiving');
+    expect(holidayOn(new Date(2027, 10, 25, 9))).toBe('thanksgiving');
+  });
+
+  it('is Christmas on the 24th and 25th of December', () => {
+    expect(holidayOn(new Date(2026, 11, 23, 9))).toBeNull();
+    expect(holidayOn(new Date(2026, 11, 24, 9))).toBe('christmas');
+    expect(holidayOn(new Date(2026, 11, 25, 23, 50))).toBe('christmas');
+    expect(holidayOn(new Date(2026, 11, 26, 9))).toBeNull();
   });
 });
 

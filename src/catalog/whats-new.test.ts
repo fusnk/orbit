@@ -27,11 +27,15 @@ describe('seasonalList', () => {
     expect(seasonalList(new Date(2026, 9, 1)).id).toBe('halloween');
     expect(seasonalList(new Date(2026, 9, 31)).id).toBe('halloween');
     expect(seasonalList(new Date(2026, 11, 24)).id).toBe('christmas');
-    expect(seasonalList(new Date(2026, 10, 15)).id).toBe('true-story');
+    // November was "Based on a true story": Thanksgiving was skipped.
+    expect(seasonalList(new Date(2026, 10, 1)).id).toBe('thanksgiving');
+    expect(seasonalList(new Date(2026, 10, 30)).id).toBe('thanksgiving');
+    expect(seasonalList(new Date(2026, 8, 30)).id).toBe('true-story');
     expect(seasonalList(new Date(2027, 0, 2)).id).toBe('true-story');
   });
 
   it('asks TMDB for the list by keyword', () => {
     expect(seasonalQuery(seasonalList(new Date(2026, 9, 14)), 'movie').filters).toEqual({ withKeywords: '3335', voteCountGte: 50 });
+    expect(seasonalQuery(seasonalList(new Date(2026, 10, 14)), 'movie').filters).toEqual({ withKeywords: '4543', voteCountGte: 50 });
   });
 });

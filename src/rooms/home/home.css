@@ -15,8 +15,9 @@
   }
 }
 
-/* Takes no space when empty, so the section gap stays even. */
-.cw-slot {
+/* Takes no space when empty, so the section gap stays even (the holiday row's too, outside the holidays). */
+.cw-slot,
+.holiday-slot {
   display: contents;
 }
 

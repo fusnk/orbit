@@ -112,6 +112,65 @@
   margin-block-start: 1px;
 }
 
+/* The holidays get their colour: a harvest amber, a frost blue. Light
+   themes take a deeper shade of each so it reads on white. */
+.seasonal-mark.thanksgiving {
+  width: 14px;
+  height: 14px;
+  margin-block-start: -3px;
+  margin-inline-start: -4px;
+  color: var(--season-glyph);
+  stroke-width: 2;
+}
+
+.seasonal-mark.christmas {
+  width: 14px;
+  height: 14px;
+  margin-block-start: -3px;
+  margin-inline-start: -4px;
+  color: var(--season-glyph);
+  stroke-width: 1.9;
+}
+
+:root {
+  --season-glyph: var(--color-text-muted);
+}
+
+:root[data-season='thanksgiving'] {
+  --season-glyph: oklch(0.78 0.14 62);
+}
+
+:root[data-season='christmas'] {
+  --season-glyph: oklch(0.86 0.07 230);
+}
+
+:root[data-theme='light'][data-season='thanksgiving'] {
+  --season-glyph: oklch(0.6 0.15 55);
+}
+
+:root[data-theme='light'][data-season='christmas'] {
+  --season-glyph: oklch(0.55 0.12 240);
+}
+
+/* The holiday row on Home (rooms/home/holiday-row.ts) leads with the same glyph. */
+.holiday-rail .rail-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.holiday-rail .rail-heading .seasonal-mark {
+  align-self: center;
+  width: 0.8em;
+  height: 0.8em;
+  margin: 0;
+}
+
+.holiday-rail .rail-heading .seasonal-mark.halloween {
+  width: 1.3em;
+  height: 0.65em;
+}
+
 :root[data-effects='reduced'] .seasonal-mark {
   display: none;
 }
