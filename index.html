@@ -80,12 +80,13 @@
 
   <section id="play" class="scene scene-play">
     <div class="wrap">
-      <div class="sec-head">
-        <h2>Press play. Orbit does the rest.</h2>
-        <p>Every addon you install answers with its own list of sources. Orbit reads them all, ranks them by what you care about, and starts the best one, usually before you've let go of the button.</p>
-      </div>
+      <div class="ribbon ribbon-a" aria-hidden="true"></div>
+      <div class="ribbon ribbon-b" aria-hidden="true"></div>
       <div class="reel">
-        <div class="projector" aria-hidden="true"></div>
+        <div class="reel-main">
+        <h2 class="h2">Press play. Orbit does the rest.</h2>
+        <div class="stack">
+        <div class="slab" aria-hidden="true"></div>
         <div class="sources" aria-label="Example of ranked sources for one film">
           <div class="hd"><span>Glass Horizon · 6 sources</span><span>Score</span></div>
           <div class="src best"><span class="rank">01</span><span><b>2160p · HDR10 · Atmos</b> · cached <span class="pick">PICKED</span></span><span class="score">96</span></div>
@@ -95,12 +96,17 @@
           <div class="src"><span class="rank">05</span><span><b>720p</b> · web</span><span class="score">52</span></div>
           <div class="src"><span class="rank">06</span><span><b>480p</b> · placeholder clip</span><span class="score">0</span></div>
         </div>
+        </div>
+        </div>
+        <div class="reel-side">
+        <p class="reel-lede">Every addon you install answers with its own list of sources. Orbit reads them all, ranks them by what you care about, and starts the best one, usually before you've let go of the button.</p>
         <ol class="steps">
           <li><time>0:00:00</time><div><h3>The best source starts</h3><p>Ranked by quality, audio, size and what played well for you before, with a "Why?" next to every pick. Sources that stalled last time drop down the list, and if one fails Orbit moves to the next.</p></div></li>
           <li><time>0:00:02</time><div><h3>Subtitles match the release</h3><p>Orbit picks the subtitle made for the file you're watching, in your language, and can strip the [DOOR CREAKS] lines if you'd rather not see them.</p></div></li>
           <li><time>0:01:32</time><div><h3>The intro skips itself</h3><p>Intros, recaps and credits show on the timeline, so you can skip them by hand or let Orbit do it.</p></div></li>
           <li><time>0:42:10</time><div><h3>It remembers where you stopped</h3><p>Come back tomorrow and the button says “Continue at 42:10”. Next episode, same source, same subtitles.</p></div></li>
         </ol>
+        </div>
       </div>
     </div>
   </section>

@@ -554,3 +554,37 @@ footer a { text-underline-offset: 3px; }
   background: linear-gradient(to bottom, var(--ink), transparent 22%), url(images/orbit-dawn.jpg) center 78% / cover no-repeat; }
 .closing h2 { text-shadow: 0 2px 24px rgba(0, 0, 0, 0.3); }
 @media (max-width: 700px) { .closing::after { background: linear-gradient(to bottom, var(--ink), transparent 22%), url(images/orbit-dawn-1280.jpg) 70% 80% / cover no-repeat; } }
+
+/* How it plays: headline over a glass card stacked on a tilted glass slab, steps on the right, soft glass ribbons behind. */
+.scene-play { position: relative; overflow: clip; }
+.scene-play .wrap { position: relative; }
+.reel { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 64px; align-items: start; }
+.reel-main h2 { margin-bottom: 52px; }
+.reel-side { padding-top: clamp(24px, 3.5vw, 56px); }
+.reel-lede { color: var(--muted); max-width: 32em; margin-bottom: 52px; }
+.stack { position: relative; isolation: isolate; }
+.slab { -webkit-backdrop-filter: blur(6px) saturate(1.4); backdrop-filter: blur(6px) saturate(1.4); position: absolute; z-index: -1; inset: -6% -2% -14% -12%; border-radius: 48px; transform: rotate(-11deg); background: linear-gradient(160deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 55%); box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 0 0 1px rgba(255,255,255,.10), 0 30px 80px rgba(0,0,0,.45); }
+.stack .sources { position: relative; overflow: hidden; border-radius: 24px; background: linear-gradient(170deg, rgba(255,255,255,.10), rgba(255,255,255,.035)); box-shadow: inset 0 1px 0 rgba(255,255,255,.32), inset 0 0 0 1px rgba(255,255,255,.16), 0 24px 60px rgba(0,0,0,.4); }
+.stack .sources::after { content: ''; position: absolute; z-index: -1; right: -18%; bottom: -38%; width: 60%; height: 70%; border-radius: 50%; background: radial-gradient(closest-side, rgba(229,72,77,.45), transparent); pointer-events: none; }
+.stack .sources > * { position: relative; }
+.ribbon { position: absolute; z-index: 0; pointer-events: none; border-radius: 50%; background: radial-gradient(circle closest-side, transparent 88%, rgba(255,226,214,.07) 94%, rgba(255,226,214,.16) 97.5%, rgba(255,226,214,.03) 99.5%, transparent); filter: blur(1.5px); }
+.ribbon-a { width: 1300px; height: 1300px; right: -700px; top: -820px; }
+.ribbon-b { width: 1200px; height: 1200px; left: -720px; bottom: -900px; }
+.scene-play .reel { position: relative; z-index: 1; }
+@media (max-width: 900px) {
+  .reel { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .reel-side { padding-top: 0; }
+  .reel-main h2 { margin-bottom: 40px; }
+  .slab { inset: -4% 2% -8% -4%; transform: rotate(-6deg); }
+  .ribbon-a { width: 700px; height: 700px; right: -420px; top: -360px; }
+  .ribbon-b { display: none; }
+}
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  .slab, .ribbon, .stack .sources::after { display: none; }
+}
+.scene-play .steps li { grid-template-columns: 100px minmax(0, 1fr); }
+.scene-play .steps time { justify-self: start; align-self: start; margin-top: 2px; padding: 5px 10px; border-radius: 999px; font-size: 12.5px; background: rgba(213,138,79,.08); box-shadow: inset 0 0 0 1px rgba(213,138,79,.32), inset 0 1px 0 rgba(255,255,255,.08); }
+@media (max-width: 700px) {
+  .scene-play .steps li { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .scene-play .steps h3 { font-size: 24px; }
+}
