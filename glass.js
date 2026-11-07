@@ -12,7 +12,7 @@
  */
 (() => {
 'use strict';
-const LENS_SURFACES = '.top-bar, .btn, .looks button, .pane, .lens-orb, .sources, .paste, .trust > div, .glass-panel, .sun';
+const LENS_SURFACES = '.top-bar, .btn, .looks button, .pane, .sources, .paste, .trust > div, .glass-panel, .sun';
 const AIR_GAP = 8;
 const MIN_RISE = 0.3;
 const RISE_SPAN = 0.7;

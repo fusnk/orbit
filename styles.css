@@ -499,3 +499,44 @@ footer a { text-underline-offset: 3px; }
 .reel::before, .scene-addons .aurora, .scene-features .aurora, .vault { display: none; }
 .sources, .paste, .trust > div, .programme.glass-panel { background: color-mix(in oklab, var(--cream) 3%, transparent); box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.06); }
 .trust .k { color: var(--copper); }
+
+/* ---------- Hero over a painted sky ----------
+   The original painting (images/orbit-hero.jpg) fills the hero: the words sit in the calm dark sky, the app preview
+   floats on its glass pane over the horizon and the lake, so the glass has real light to bend. */
+.hero { padding-block: 132px 96px; }
+.sky { position: absolute; inset: 0 0 auto 0; height: max(860px, 56.25vw); pointer-events: none; z-index: 0;
+  background: url(images/orbit-hero.jpg) center 62% / cover no-repeat;
+  -webkit-mask: linear-gradient(to bottom, #000 72%, transparent); mask: linear-gradient(to bottom, #000 72%, transparent); }
+.sky::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(15, 11, 14, 0.35), transparent 30%, transparent 70%, rgba(15, 11, 14, 0.25)); }
+@media (max-width: 700px) { .sky { background-image: url(images/orbit-hero-1280.jpg); height: 760px; background-position: 70% 60%; } }
+.hero-grid { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 72px; }
+.hero-copy { text-align: center; max-width: 860px; }
+.hero-copy::before { display: none; }
+.hero h1 { font-size: clamp(52px, 7.6vw, 112px); text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35); }
+.hero .lede { margin-inline: auto; max-width: 34em; color: color-mix(in oklab, var(--cream) 80%, transparent); text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4); }
+.hero .ctas { justify-content: center; }
+.hero .fine { margin-inline: auto; max-width: 40em; }
+.hero .eyebrow { color: color-mix(in oklab, var(--cream) 70%, transparent); }
+.stage { width: min(100%, 1000px); }
+.stage .looks { justify-content: center; }
+.stage .look-note { text-align: center; margin-inline: auto; }
+.ring { display: none; }
+
+/* The brighter glass from his reference, for glass that sits on the painting: a soft white body, a lit top edge,
+   more colour through it, and a small press when used. */
+.top-bar, .hero .btn:not(.primary), .looks button {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.32), inset 0 0 0 0.5px rgba(255, 255, 255, 0.16);
+  --glass-lens-saturation: 1.85;
+}
+.top-bar[data-glass-lens="on"], .hero .btn:not(.primary)[data-glass-lens="on"], .looks button[data-glass-lens="on"] { background: rgba(255, 255, 255, 0.07); }
+.pane { --glass-lens-saturation: 1.85; background: rgba(255, 255, 255, 0.05); box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 0 0 0.5px rgba(255, 255, 255, 0.18); }
+.btn, .looks button { transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s, background 0.2s; }
+.btn:hover, .looks button:hover { transform: scale(1.03); }
+.btn:active, .looks button:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) { .btn:hover, .btn:active, .looks button:hover, .looks button:active { transform: none; } }
+@media (max-width: 900px) { .hero { padding-block: 112px 64px; } .hero-grid { gap: 48px; } }
+.sky { height: max(1180px, 82vw); background-position: center 46%; -webkit-mask: linear-gradient(to bottom, #000 80%, transparent); mask: linear-gradient(to bottom, #000 80%, transparent); }
+.sky::after { background: radial-gradient(42% 30% at 50% 30%, rgba(15, 11, 14, 0.45), transparent 75%), linear-gradient(to bottom, rgba(15, 11, 14, 0.35), transparent 30%, transparent 70%, rgba(15, 11, 14, 0.25)); }
+.stage { width: min(100%, 940px); }
+@media (max-width: 700px) { .sky { height: 980px; background-position: 66% 40%; } }
