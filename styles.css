@@ -31,26 +31,49 @@ p { margin: 0; }
 :focus-visible { outline: 2px solid var(--dot); outline-offset: 3px; border-radius: 6px; }
 
 /* Top bar */
-.top { position: sticky; top: 0; z-index: 20; backdrop-filter: blur(14px); background: color-mix(in oklab, var(--ink) 78%, transparent); border-bottom: 1px solid var(--line); }
-.top .wrap { display: flex; align-items: center; gap: 28px; padding-block: 14px; }
+.top { position: sticky; top: 0; z-index: 20; padding-top: 12px; margin-bottom: -68px; pointer-events: none; }
+.top-bar { pointer-events: auto; display: flex; align-items: center; gap: 28px; height: 56px; padding-inline: 22px 6px; border-radius: 28px; }
 .brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 800; font-size: 24px; letter-spacing: -0.04em; text-decoration: none; }
 .mark { position: relative; width: 26px; height: 26px; flex: none; }
 .mark::before { content: ''; position: absolute; inset: 2px; border: 4px solid var(--cream); border-radius: 50%; }
 .mark::after { content: ''; position: absolute; width: 8px; height: 8px; right: 0; top: 0; border-radius: 50%; background: var(--dot); }
-.top nav { display: flex; gap: 22px; margin-inline-start: auto; font-size: 15px; color: var(--muted); }
+.top nav { display: flex; gap: 22px; margin-inline-start: auto; font-size: 15px; font-weight: 400; color: color-mix(in oklab, var(--cream) 78%, transparent); }
 .top nav a { text-decoration: none; }
 .top nav a:hover { color: var(--cream); }
-.top .gh { display: inline-flex; color: var(--muted); }
+.top .gh { display: inline-flex; color: color-mix(in oklab, var(--cream) 78%, transparent); }
 .top .gh:hover { color: var(--cream); }
 .top .gh svg { width: 22px; height: 22px; fill: currentColor; }
-.btn { display: inline-flex; align-items: center; gap: 10px; height: 46px; padding-inline: 22px; border-radius: 23px; border: 1px solid var(--line); background: transparent; color: var(--cream); font: 600 15px var(--body); text-decoration: none; cursor: pointer; }
+.btn { display: inline-flex; align-items: center; gap: 10px; height: 46px; padding-inline: 22px; border-radius: 23px; border: 1px solid var(--line); background: transparent; color: var(--cream); font: 500 15px var(--body); text-decoration: none; cursor: pointer; }
 .btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.btn.primary { background: var(--cream); color: var(--ink); border-color: var(--cream); }
+.btn.primary { background: var(--cream); color: var(--ink); border-color: var(--cream); font-weight: 600; }
 .btn.primary:hover { background: #fff; }
 .btn:hover { border-color: var(--muted); }
 
+/* Liquid glass (glass.js bends the rim in Chromium; Safari and Firefox get the frosted fallback). Clear, a thin
+   dark tint, a hairline ring and no white haze. */
+.top-bar, .btn:not(.primary), .looks button {
+  --glass-tint: 20%;
+  --glass-lens-depth: 1.8; --glass-lens-blur: 0.5; --glass-lens-saturation: 1.35; --glass-lens-dispersion: 0.35; --glass-lens-rim: 0.25;
+  border: 0;
+  background: color-mix(in oklab, var(--ink) var(--glass-tint), transparent);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 8px 28px rgba(0, 0, 0, 0.22);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+}
+.top-bar { --glass-tint: 45%; --glass-lens-bevel: 20; --glass-lens-blur: 7; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+.btn:not(.primary), .looks button { --glass-tint: 30%; --glass-lens-bevel: 12; }
+.btn:not(.primary):hover, .looks button:hover { box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 28px rgba(0, 0, 0, 0.22); }
+.looks button[aria-pressed="true"] { box-shadow: inset 0 0 0 1px var(--cream), 0 8px 28px rgba(0, 0, 0, 0.22); }
+/* With the lens, the glass is clear: the rim does the work, so the frost goes and the tint thins to 20%. */
+[data-glass-lens="on"] { -webkit-backdrop-filter: var(--glass-lens); backdrop-filter: var(--glass-lens); }
+.top-bar[data-glass-lens="on"] { --glass-tint: 30%; }
+.btn[data-glass-lens="on"], .looks button[data-glass-lens="on"] { --glass-tint: 20%; }
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  .top-bar, .btn:not(.primary), .looks button { background: var(--ink-2); -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: inset 0 0 0 1px var(--line); }
+}
+
 /* Hero */
-.hero { position: relative; overflow: clip; padding-block: 72px 40px; }
+.hero { position: relative; overflow: clip; padding-block: 140px 40px; }
 .beam { position: absolute; inset: -20% -10% auto 30%; height: 900px; background: radial-gradient(60% 55% at 60% 30%, rgba(243, 234, 217, 0.10), transparent 70%); pointer-events: none; }
 .hero-grid { position: relative; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr); gap: 56px; align-items: center; }
 .hero h1 { font-size: clamp(52px, 7.4vw, 104px); }
@@ -62,7 +85,7 @@ p { margin: 0; }
 .fine a { text-underline-offset: 3px; }
 
 /* The orbit drawn behind the mock */
-.stage { position: relative; }
+.stage { position: relative; container-type: inline-size; }
 .ring { position: absolute; inset: -9% -6%; border: 1px dashed rgba(243, 234, 217, 0.18); border-radius: 50%; transform: rotate(-9deg); pointer-events: none; }
 .ring i { position: absolute; width: 14px; height: 14px; margin: -7px; border-radius: 50%; background: var(--dot); box-shadow: 0 0 24px var(--dot); offset-path: ellipse(50% 50% at 50% 50%); offset-rotate: 0deg; animation: orbit 14s linear infinite; }
 @keyframes orbit { from { offset-distance: 0%; } to { offset-distance: 100%; } }
@@ -189,7 +212,7 @@ p { margin: 0; }
 
 .looks { position: relative; z-index: 1; margin-top: 26px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .looks .eyebrow { margin-inline-end: 8px; }
-.looks button { height: 36px; padding-inline: 14px; border-radius: 18px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: 600 14px var(--body); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.looks button { height: 36px; padding-inline: 14px; border-radius: 18px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: 500 14px var(--body); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
 .looks button i { width: 10px; height: 10px; border-radius: 50%; }
 .looks button[aria-pressed="true"] { color: var(--cream); border-color: var(--cream); }
 .look-note { margin-top: 14px; min-height: 3.2em; max-width: 40em; font-size: 15px; color: var(--muted); }
@@ -281,3 +304,198 @@ footer a { text-underline-offset: 3px; }
   .steps li { grid-template-columns: 74px minmax(0, 1fr); gap: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .ring i { animation: none; offset-distance: 12%; } .app, .b-art, .b-art::after, .tile { transition: none; } .app.swap .a-nav, .app.swap .a-main { animation: none; } }
+
+/* A low horizon of Orbit's own light (copper into the red dot) behind the hero and the closing call, so the glass
+   above has something to bend. Idea from Glassy UI's Halcyon and Still templates. */
+.closing::before { content: ''; position: absolute; inset-inline: 0; pointer-events: none; z-index: 0; }
+.closing::before {
+  inset-block: 0; 
+  background:
+    linear-gradient(to right, transparent 8%, color-mix(in oklab, var(--copper) 45%, transparent) 30%, color-mix(in oklab, var(--cream) 55%, transparent) 42%, color-mix(in oklab, var(--copper) 45%, transparent) 60%, transparent 88%) 0 calc(100% - 122px) / 100% 1px no-repeat,
+    radial-gradient(40% 46% at 36% calc(100% - 122px), color-mix(in oklab, var(--copper) 22%, transparent), transparent 72%),
+    radial-gradient(18% 22% at 30% calc(100% - 122px), color-mix(in oklab, var(--dot) 18%, transparent), transparent 70%);
+}
+.hero .wrap, .closing .wrap { position: relative; z-index: 1; }
+
+/* Lights in orbit behind a pane of glass: three soft lights circle the app preview on slow, tilted orbits, and the
+   pane between them and the preview frosts what passes behind it and bends it at the rim. */
+.orbits { position: absolute; left: -10%; right: -10%; top: calc(32.5cqw - 60cqw); height: 120cqw; pointer-events: none; transform: rotate(-9deg) scaleY(0.62); }
+.orbits span { position: absolute; inset: 0; animation: circle var(--t) linear infinite; animation-delay: var(--d); }
+.orbits i { position: absolute; left: 50%; top: 0; width: var(--s); aspect-ratio: 1; margin-left: calc(var(--s) / -2); margin-top: calc(var(--s) / -2); border-radius: 50%; background: radial-gradient(closest-side, var(--c), color-mix(in oklab, var(--c) 40%, transparent) 45%, transparent); }
+.orbits span:nth-child(1) { --t: 38s; --d: -6s; --s: 520px; --c: #ff3d5a; }
+.orbits span:nth-child(2) { --t: 52s; --d: -30s; --s: 460px; --c: #ff9a4d; inset: 10%; }
+.orbits span:nth-child(3) { --t: 67s; --d: -47s; --s: 560px; --c: #8a4dff; inset: 6% 16%; animation-direction: reverse; }
+@keyframes circle { to { transform: rotate(1turn); } }
+.pane {
+  position: absolute; left: -28px; right: -28px; top: -28px; height: calc(65cqw + 56px); border-radius: 36px; pointer-events: none;
+  --glass-lens-depth: 1.6; --glass-lens-blur: 26; --glass-lens-saturation: 1.5; --glass-lens-dispersion: 0.4; --glass-lens-bevel: 36; --glass-lens-rim: 0.3;
+  background: color-mix(in oklab, var(--ink) 32%, transparent);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 40px 100px rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(34px) saturate(1.5);
+  backdrop-filter: blur(34px) saturate(1.5);
+}
+.pane[data-glass-lens="on"] { -webkit-backdrop-filter: var(--glass-lens); backdrop-filter: var(--glass-lens); }
+.stage .app, .stage .looks, .stage .look-note { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .orbits span { animation: none; } }
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) { .orbits { display: none; } .pane { background: var(--ink-2); backdrop-filter: none; -webkit-backdrop-filter: none; } }
+@media (max-width: 900px) { .orbits span:nth-child(n) { --s: 300px; } .pane { left: -14px; right: -14px; top: -14px; height: calc(65cqw + 28px); border-radius: 26px; } }
+/* The Look chips sit clear of the pane's rim, on the glow, as small glass beads of their own. */
+.stage .looks { margin-top: 56px; }
+@media (max-width: 900px) { .stage .looks { margin-top: 34px; } }
+.looks button { --glass-tint: 14%; color: color-mix(in oklab, var(--cream) 82%, transparent); box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 6px 18px rgba(0, 0, 0, 0.25); }
+.looks button[data-glass-lens="on"] { --glass-tint: 12%; }
+.looks button[aria-pressed="true"] { color: var(--cream); background: color-mix(in oklab, var(--cream) 12%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--cream) 70%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 6px 18px rgba(0, 0, 0, 0.25); }
+/* Download buttons: glass too, filled with a warm cream light so they still lead. */
+.btn.primary {
+  --glass-lens-depth: 1.8; --glass-lens-blur: 0.5; --glass-lens-saturation: 1.4; --glass-lens-dispersion: 0.35; --glass-lens-rim: 0.3; --glass-lens-bevel: 14;
+  color: #fff; border: 0;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--cream) 34%, transparent), color-mix(in oklab, var(--copper) 22%, transparent));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--cream) 55%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 8px 30px color-mix(in oklab, var(--copper) 28%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.btn.primary:hover { background: linear-gradient(180deg, color-mix(in oklab, var(--cream) 46%, transparent), color-mix(in oklab, var(--copper) 30%, transparent)); }
+.btn.primary[data-glass-lens="on"] { -webkit-backdrop-filter: var(--glass-lens); backdrop-filter: var(--glass-lens); }
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) { .btn.primary { background: var(--cream); color: var(--ink); text-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; } }
+
+/* ---------- A glass scene for every section ---------- */
+.scene { position: relative; overflow: clip; }
+.scene > .wrap { position: relative; z-index: 1; }
+.lit-glass {
+  --glass-lens-depth: 1.4; --glass-lens-blur: 18; --glass-lens-saturation: 1.5; --glass-lens-dispersion: 0.35; --glass-lens-bevel: 28; --glass-lens-rim: 0.3;
+}
+.sources, .paste, .trust > div, .glass-panel {
+  --glass-lens-depth: 1.4; --glass-lens-blur: 18; --glass-lens-saturation: 1.5; --glass-lens-dispersion: 0.35; --glass-lens-bevel: 28; --glass-lens-rim: 0.3;
+  position: relative; z-index: 1; border: 0;
+  background: color-mix(in oklab, var(--ink) 42%, transparent);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 30px 80px rgba(0, 0, 0, 0.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5); backdrop-filter: blur(24px) saturate(1.5);
+}
+.sources[data-glass-lens="on"], .paste[data-glass-lens="on"], .trust > div[data-glass-lens="on"], .glass-panel[data-glass-lens="on"], .lens-orb[data-glass-lens="on"], .item svg[data-glass-lens="on"], .sun[data-glass-lens="on"] { -webkit-backdrop-filter: var(--glass-lens); backdrop-filter: var(--glass-lens); }
+.sources .hd, .src, .review, .steps li { border-color: rgba(255, 255, 255, 0.08); }
+
+/* Hero: a glass lens drifts over the headline and bends it, splitting the light at its edge. */
+.hero-copy { position: relative; }
+.hero-copy::before { content: ''; position: absolute; z-index: -1; left: -30%; top: 20%; width: 120%; height: 80%; pointer-events: none; background: radial-gradient(40% 36% at 62% 34%, color-mix(in oklab, var(--copper) 26%, transparent), transparent 72%), radial-gradient(30% 30% at 30% 80%, color-mix(in oklab, var(--dot) 16%, transparent), transparent 72%); }
+.hero-grid > .hero-copy { z-index: 0; isolation: isolate; }
+.lens-orb {
+  --glass-lens-depth: 1.3; --glass-lens-blur: 0; --glass-lens-saturation: 1.3; --glass-lens-dispersion: 0.55; --glass-lens-bevel: 34; --glass-lens-rim: 0.2;
+  position: absolute; z-index: 2; width: 150px; aspect-ratio: 1; border-radius: 50%; pointer-events: none;
+  left: 0; top: 0; offset-path: path('M 400 250 C 470 280 480 360 420 400 C 360 440 290 400 300 340 C 310 280 350 230 400 250 Z'); offset-rotate: 0deg; offset-anchor: 50% 50%;
+  animation: drift 46s ease-in-out infinite;
+  background:
+    radial-gradient(34% 20% at 36% 20%, rgba(255, 255, 255, 0.38), transparent 75%),
+    radial-gradient(80% 60% at 60% 90%, color-mix(in oklab, var(--copper) 34%, transparent), transparent 70%),
+    radial-gradient(closest-side, transparent 70%, rgba(255, 255, 255, 0.10));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32), inset 0 -14px 30px color-mix(in oklab, var(--dot) 28%, transparent), inset 0 10px 22px rgba(255, 255, 255, 0.10), 0 24px 60px rgba(0, 0, 0, 0.4), 0 0 60px color-mix(in oklab, var(--copper) 18%, transparent);
+}
+.lens-orb i { position: absolute; left: 10%; right: 10%; bottom: -46%; height: 30%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in oklab, var(--copper) 30%, transparent), transparent); filter: blur(6px); }
+@keyframes drift { to { offset-distance: 100%; } }
+
+/* How it plays: a projector throws red light across the sources; the picked one glows through the glass. */
+.reel { position: relative; }
+.projector { display: none; position: absolute; z-index: 0; left: -18%; top: -30%; width: 90%; height: 160%; pointer-events: none;
+  background: conic-gradient(from 118deg at 0% 0%, transparent 0deg, color-mix(in oklab, var(--dot) 30%, transparent) 14deg, color-mix(in oklab, var(--copper) 22%, transparent) 26deg, transparent 40deg);
+  filter: blur(24px); -webkit-mask: radial-gradient(90% 90% at 0% 0%, #000 30%, transparent 80%); mask: radial-gradient(90% 90% at 0% 0%, #000 30%, transparent 80%); }
+.reel::before { content: ''; position: absolute; z-index: 0; left: -4%; top: -6%; width: 64%; height: 56%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in oklab, var(--dot) 55%, transparent), transparent); pointer-events: none; }
+.reel > * { position: relative; z-index: 1; }
+.reel > .projector { position: absolute; z-index: 0; }
+
+/* Addons: Looks-coloured addon tiles float behind a frosted card. */
+.paste-scene { position: relative; }
+.tiles { position: absolute; inset: -18% -10%; z-index: 0; pointer-events: none; }
+.tiles i { position: absolute; width: 74px; aspect-ratio: 1; border-radius: 20px; background: var(--c); opacity: 0.85; animation: bob var(--t, 9s) ease-in-out infinite alternate; box-shadow: 0 0 40px var(--c); }
+.tiles i:nth-child(1) { --c: #e5484d; left: 2%; top: 6%; --t: 8s; }
+.tiles i:nth-child(2) { --c: #f5b942; left: 34%; top: 0%; width: 56px; --t: 11s; }
+.tiles i:nth-child(3) { --c: #4f8cff; right: 6%; top: 10%; width: 90px; --t: 10s; }
+.tiles i:nth-child(4) { --c: #7c5cff; left: 12%; top: 44%; width: 60px; --t: 12s; }
+.tiles i:nth-child(5) { --c: #ff7a3d; right: 18%; top: 46%; width: 66px; --t: 9s; }
+.tiles i:nth-child(6) { --c: #6fd3ff; left: 46%; bottom: 4%; width: 52px; --t: 13s; }
+.tiles i:nth-child(7) { --c: #ff9a6b; right: 0%; bottom: 8%; width: 78px; --t: 10s; }
+.tiles i:nth-child(8) { --c: #d6334a; left: 0%; bottom: 0%; width: 58px; --t: 11s; }
+.tiles i:nth-child(9) { --c: #3ad0a0; left: 60%; top: 30%; width: 44px; --t: 14s; }
+@keyframes bob { from { transform: translateY(-8px) rotate(-6deg); } to { transform: translateY(10px) rotate(6deg); } }
+.paste { --glass-lens-blur: 22; background: color-mix(in oklab, var(--ink) 38%, transparent); }
+.field input { background: color-mix(in oklab, var(--ink) 55%, transparent); border-color: rgba(255, 255, 255, 0.12); }
+.note { background: color-mix(in oklab, var(--copper) 16%, transparent); }
+
+/* Features: each icon is a small glass bead lit from behind by the colour of one Look. */
+.item { position: relative; }
+.item::before { content: ''; position: absolute; left: -6px; top: 18px; width: 56px; height: 56px; border-radius: 50%; background: radial-gradient(closest-side, var(--c), transparent); pointer-events: none; }
+.item svg { position: relative; width: 44px; height: 44px; padding: 9px; margin-top: -6px; border-radius: 14px; stroke: #fff;
+  --glass-lens-depth: 1.6; --glass-lens-blur: 4; --glass-lens-saturation: 1.6; --glass-lens-dispersion: 0.4; --glass-lens-bevel: 12; --glass-lens-rim: 0.3;
+  background: color-mix(in oklab, var(--ink) 18%, transparent); box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(6px) saturate(1.6); backdrop-filter: blur(6px) saturate(1.6); }
+.programme .item:nth-child(1) { --c: #e5484d; } .programme .item:nth-child(2) { --c: #4f8cff; }
+.programme .item:nth-child(3) { --c: #ff7a3d; } .programme .item:nth-child(4) { --c: #7c5cff; }
+.programme .item:nth-child(5) { --c: #f5b942; } .programme .item:nth-child(6) { --c: #6fd3ff; }
+.programme .item:nth-child(7) { --c: #3ad0a0; } .programme .item:nth-child(8) { --c: #d58a4f; }
+.item { grid-template-columns: 52px minmax(0, 1fr); }
+
+/* Private by design: three glass cards over the cool light of a vault. */
+.vault { position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(30% 42% at 22% 72%, rgba(79, 140, 255, 0.55), transparent 72%),
+    radial-gradient(26% 38% at 52% 64%, rgba(111, 211, 255, 0.38), transparent 72%),
+    radial-gradient(30% 42% at 82% 70%, rgba(124, 92, 255, 0.5), transparent 72%); }
+.trust > div { padding: 28px; border-radius: 22px; }
+.trust { gap: 20px; }
+.trust .k { color: #8fb4ff; }
+
+/* Where Orbit runs + FAQ: glass sheets over a slow aurora. */
+.aurora { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.aurora i { position: absolute; width: 70%; height: 46%; border-radius: 50%; filter: blur(60px); opacity: 0.5; animation: sway 24s ease-in-out infinite alternate; }
+.aurora i:nth-child(1) { left: -10%; top: 30%; background: linear-gradient(90deg, #3ad0a0, #4f8cff); transform: rotate(-12deg); }
+.aurora i:nth-child(2) { right: -12%; top: 18%; background: linear-gradient(90deg, #7c5cff, #e5484d); transform: rotate(10deg); animation-duration: 30s; }
+@keyframes sway { to { translate: 6% -8%; } }
+.glass-panel { border-radius: 22px; padding: 8px 24px; }
+.plat.glass-panel { margin-top: 36px; }
+.plat div:last-child, .faq details:last-child { border-bottom: 0; }
+.plat div, details { border-color: rgba(255, 255, 255, 0.08); }
+
+/* Closing: a glass orb rising on the horizon. */
+.sun {
+  --glass-lens-depth: 2.4; --glass-lens-blur: 1; --glass-lens-saturation: 1.4; --glass-lens-dispersion: 0.6; --glass-lens-bevel: 120; --glass-lens-rim: 0.25;
+  position: absolute; z-index: 0; right: 5%; bottom: calc(122px - 150px); width: 300px; aspect-ratio: 1; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(40% 20% at 40% 16%, rgba(255, 255, 255, 0.34), transparent 75%), radial-gradient(closest-side, transparent 72%, rgba(255, 220, 190, 0.14)), radial-gradient(80% 70% at 50% 58%, color-mix(in oklab, var(--copper) 55%, transparent), color-mix(in oklab, var(--dot) 30%, transparent) 55%, transparent 80%);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.28), inset 0 -30px 60px color-mix(in oklab, var(--dot) 26%, transparent), 0 0 120px color-mix(in oklab, var(--copper) 26%, transparent);
+  animation: rise 14s ease-in-out infinite alternate;
+}
+@keyframes rise { from { translate: 0 26px; } to { translate: 0 -6px; } }
+
+@media (max-width: 900px) {
+  .lens-orb { width: 120px; offset-path: path('M 200 170 C 270 210 290 300 210 330 C 130 360 60 300 90 240 C 120 190 150 150 200 170 Z'); }
+  .sun { width: 220px; right: -40px; }
+  .trust > div { padding: 22px; }
+}
+@media (prefers-reduced-motion: reduce) { .lens-orb, .tiles i, .aurora i, .sun { animation: none; } .lens-orb { offset-distance: 40%; } }
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  .lens-orb, .sun, .tiles, .aurora, .projector, .vault, .item::before { display: none; }
+  .sources, .paste, .trust > div, .glass-panel, .item svg { background: var(--ink-2); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+@media (max-width: 900px) {
+  .lens-orb { display: none; }
+  .tiles { inset: 4% -4% -6%; }
+  .tiles i { width: 46px !important; }
+  .sun { width: 180px; right: -60px; bottom: calc(122px - 90px); }
+}
+
+/* Addons and Features take the FAQ's aurora too, each in its own light. */
+.paste-scene .aurora { inset: -30% -25%; }
+.aurora-ember i:nth-child(1) { left: 0; top: 18%; width: 80%; background: linear-gradient(90deg, #ff7a3d, #e5484d); transform: rotate(-16deg); }
+.aurora-ember i:nth-child(2) { right: -6%; top: 46%; width: 70%; background: linear-gradient(90deg, #f5b942, #d6334a); transform: rotate(12deg); animation-duration: 28s; }
+.aurora-dusk i:nth-child(1) { left: -8%; top: 36%; width: 64%; background: linear-gradient(90deg, #4f8cff, #7c5cff); transform: rotate(8deg); }
+.aurora-dusk i:nth-child(2) { right: -10%; top: 52%; width: 66%; background: linear-gradient(90deg, #ff9a6b, #f5b942); transform: rotate(-10deg); animation-duration: 32s; opacity: 0.4; }
+.programme.glass-panel { padding: 8px 32px; column-gap: 56px; }
+.programme .item:nth-last-child(-n+2) { border-bottom: 0; }
+.programme .item { border-color: rgba(255, 255, 255, 0.08); }
+/* Icons back to plain line icons. */
+.programme .item::before { display: none; }
+.programme .item svg { width: 28px; height: 28px; padding: 0; margin-top: 2px; border-radius: 0; background: none; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; stroke: var(--cream); --glass-lens-depth: 0; }
+.programme .item { grid-template-columns: 44px minmax(0, 1fr); }
+@media (max-width: 900px) { .programme.glass-panel { padding: 4px 20px; } .programme .item:nth-last-child(2) { border-bottom: 1px solid rgba(255, 255, 255, 0.08); } }
+
+/* Glow only where it earns it (hero, FAQ, closing); the middle sections stay calm, quiet glass on the page. */
+.reel::before, .scene-addons .aurora, .scene-features .aurora, .vault { display: none; }
+.sources, .paste, .trust > div, .programme.glass-panel { background: color-mix(in oklab, var(--cream) 3%, transparent); box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+.trust .k { color: var(--copper); }
